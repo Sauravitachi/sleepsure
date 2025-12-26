@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepSure</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+     
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+  
+<body>
+    <!-- Your HTML content remains exactly the same -->
+    <div class="top-alert-bar">
+        Use code SLEEP (till 1st Oct) to get up to 30% off + Additional 11% off with bank offers.
+    </div>
+
+    <header class="main-header">
+        <div class="header-container">
+
+            <button class="menu-toggle-btn" id="menuToggle" aria-label="Menu">
+                <span class="material-icons">menu</span>
+            </button>
+
+            <div class="brand-logo">
+               <a href="index.html">
+                 <img src="assets/images/logo.png" alt="Home Icon" class="home-icon">
+               </a>
+            </div>
+
+            <div class="search-container">
+                <span class="material-icons search-icon">search</span>
+                <input type="text" placeholder="Search for Mattress" class="search-input">
+            </div>
+
+            <nav class="header-links desktop-only">
+                <a class="become-dealer-btn" id="openModal">
+                    Become Dealer
+                </a>
+
+                <!-- Modal -->
+                <div class="modal-backdrop" id="modalBackdrop">
+                    <div class="dealer-modal">
+                        <div class="modal-header">
+                            <h2>Become a SleepSure Dealer</h2>
+                            <button class="close-btn" id="closeModal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="dealerForm">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="fullName">Full Name</label>
+                                            <input type="text" id="fullName" placeholder="Enter your full name"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="city">City</label>
+                                            <input type="text" id="city" placeholder="Enter your city" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email Address</label>
+                                            <input type="email" id="email" placeholder="Enter your email address"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="mobile">Mobile Number</label>
+                                            <input type="tel" id="mobile" placeholder="Enter your mobile number"
+                                                required>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+                                <div class="user-type-group">
+                                    <label class="user-type-label">I am a</label>
+                                    <div class="radio-options">
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="landlord" required>
+                                            Landlord
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="dealer" required>
+                                            Dealer
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifications">
+                                    <label for="notifications">Send me notifications</label>
+                                </div>
+
+                                <button type="submit" class="submit-btn">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="stores.html">Stores</a>
+                <a href="bulk-order.html">Bulk Orders</a>
+            </nav>
+
+
+
+
+
+            <div class="header-icons">
+                <span class="material-icons desktop-only">phone</span>
+                <a href="wishlist.html">
+                    <span class="material-icons desktop-only">favorite_border</span>
+                </a>
+                <a href="cart.html">
+                    <span class="material-icons">shopping_cart</span>
+                </a>
+                <div class="account-icon">
+                    <a href="login.html">
+                        <span class="material-icons">account_circle</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="category-nav desktop-only">
+        <div class="container nav-container">
+            <ul class="nav-list-items">
+                <li class="nav-item">Home</li>
+
+                <li class="nav-item nav-item-mat">
+                    <a href="#" class="nav-link-mat">Mattress</a>
+
+                    <div class="mat-dropdown-container">
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">ShapeSense Orthopedic Classic Memory Foam Mattress</a></li>
+                                <li><a href="#">Dual Comfort Mattress</a></li>
+                                <li><a href="#">ErgoTech EcoLatex Mattress</a></li>
+                                <li><a href="#">Elevate Pocket Spring</a></li>
+                                <li><a href="#">XpertGRID Mattress</a></li>
+                                <li><a href="#">DreamPod Mattress</a></li>
+                                <li><a href="#">Flexagon Trifold Mattress</a></li>
+                                <li><a href="#">Rollup Mattress</a></li>
+                                <li><a href="#">Baby Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Plus Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Plus Mattress</a></li>
+                                <li><a href="#">Duo Plus Rebonded Mattress</a></li>
+                                <li><a href="#">EcoLatex Plus Mattress</a></li>
+                                <li><a href="#">Latex Hybrid Spring Mattress</a></li>
+                                <li><a href="#">XpertGRID Plus Mattress</a></li>
+                                <li><a href="#">XpertGRID Hybrid Spring Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Infiniti Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Infiniti Mattress</a></li>
+                            </ul>
+                            <br>
+                            <h4 class="col-title">Mattress By Size</h4>
+                            <ul class="col-links">
+                                <li><a href="#">King Size</a></li>
+                                <li><a href="#">Queen Size</a></li>
+                                <li><a href="#">Single Bed</a></li>
+                                <li><a href="#">Diwan Size</a></li>
+                                <li><a href="#">Kids Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col last-col">
+                            <h4 class="col-title">Sleepsure PureSleep Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">PostureFlex PureSleep Mattress</a></li>
+                                <li><a href="#">DualSwitch PureSleep Mattress</a></li>
+                                <li><a href="#">Natura PureSleep Latex Mattress</a></li>
+                                <li><a href="#">Ortho Plus ActiveCool Mattress</a></li>
+                                <li><a href="#">Spinecore Firm Plus Activecool Mattress</a></li>
+                                <li><a href="#">Optima Plus Active Cool Pocket Spring Mattress</a></li>
+                                <li><a href="#">IcyBreeze ActiveCool HR Foam Mattress</a></li>
+                                <li><a href="#">BlissMax Mattress</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">Pillow</li>
+                <li class="nav-item">Comforter</li>
+                <li class="nav-item">Protector</li>
+
+            </ul>
+        </div>
+    </nav>
+
+
+    <aside class="mobile-sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-account-header">
+                <span class="material-icons">account_circle</span>
+               <a href="login.html">
+                 <div class="account-info">
+                    My Account
+                    <strong>Log in</strong>
+                </div>
+               </a>
+                <div class="pincode-entry">
+                    <span class="material-icons location-icon">location_on</span>
+                    Enter <strong>Pincode</strong> <span class="material-icons edit-icon">edit</span>
+                </div>
+            </div>
+
+            <div class="sidebar-utility-buttons">
+                <a href="cart.html" class="utility-btn">
+                   
+                        <span class="material-icons">shopping_cart</span> My Cart
+                    
+                </a>
+                <a href="orders.html" class="utility-btn">
+                    <span class="material-icons">assignment</span> My Orders
+                </a>
+            </div>
+
+            <nav class="sidebar-menu-links">
+                <a href="category.html"><span class="material-icons">apps</span> <strong>Browse Categories</strong></a>
+                <a href="offer.html"><span class="material-icons">local_offer</span> <strong>Offers</strong></a>
+                <a href="blog.html"><span class="material-icons">article</span> <strong>Blog</strong></a>
+                <a href="contact.html"><span class="material-icons">call</span> <strong>Contact Us</strong></a>
+                <a href="faq.html"><span class="material-icons">help_outline</span> <strong>FAQ</strong></a>
+            </nav>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container breadcrumb-container">
+            <a href="#">Home</a>
+            <span>/</span>
+            <a href="#">Cart</a>
+            <span>/</span>
+            <span>Checkout</span>
+        </div>
+    </section>
+
+    <!-- Checkout Section -->
+    <section class="checkout-section">
+        <div class="container-fluid">
+            <h1 class="checkout-title">
+                <i class="fas fa-shopping-bag"></i> Checkout
+            </h1>
+
+            <div class="checkout-container">
+                <div class="checkout-form">
+                    <!-- Shipping Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-truck"></i> Shipping Information
+                        </h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" placeholder="Enter your first name">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" placeholder="Enter your last name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Street Address</label>
+                            <input type="text" id="address" placeholder="Enter your street address">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" placeholder="Enter your city">
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <select id="state">
+                                    <option value="">Select State</option>
+                                    <option value="CA">California</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="NY">New York</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="IL">Illinois</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="zipCode">ZIP Code</label>
+                                <input type="text" id="zipCode" placeholder="Enter ZIP code">
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select id="country">
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="UK">United Kingdom</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="saveAddress">
+                            <label for="saveAddress">Save this address for future orders</label>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Method -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-shipping-fast"></i> Shipping Method
+                        </h2>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="radio" id="standardShipping" name="shipping" checked>
+                                <label for="standardShipping">Standard Shipping (5-7 business days) - FREE</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="radio" id="expressShipping" name="shipping">
+                                <label for="expressShipping">Express Shipping (2-3 business days) - ₹1,249</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="radio" id="overnightShipping" name="shipping">
+                                <label for="overnightShipping">Overnight Shipping (1 business day) - ₹1,249</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-credit-card"></i> Payment Method
+                        </h2>
+                        <div class="payment-methods">
+                            <div class="payment-method active" data-method="card">
+                                <div class="payment-icon">
+                                    <i class="far fa-credit-card"></i>
+                                </div>
+                                <div>Credit Card</div>
+                            </div>
+                            <div class="payment-method" data-method="paypal">
+                                <div class="payment-icon">
+                                    <i class="fab fa-paypal"></i>
+                                </div>
+                                <div>PayPal</div>
+                            </div>
+                            <div class="payment-method" data-method="apple">
+                                <div class="payment-icon">
+                                    <i class="fab fa-apple-pay"></i>
+                                </div>
+                                <div>Apple Pay</div>
+                            </div>
+                        </div>
+
+                        <!-- Card Details -->
+                        <div class="card-details active" id="cardDetails">
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="card-row">
+                                <div class="form-group">
+                                    <label for="expiryDate">Expiry Date</label>
+                                    <input type="text" id="expiryDate" placeholder="MM/YY">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" id="cvv" placeholder="123">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cardName">Name on Card</label>
+                                <input type="text" id="cardName" placeholder="Enter name as shown on card">
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="saveCard">
+                                <label for="saveCard">Save this card for future purchases</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Billing Address -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-file-invoice-dollar"></i> Billing Address
+                        </h2>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="sameAsShipping" checked>
+                            <label for="sameAsShipping">Same as shipping address</label>
+                        </div>
+                        <div id="billingAddress" style="display: none;">
+                            <!-- Billing address fields would go here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h2 class="summary-title">Order Summary</h2>
+                    <div class="order-items">
+                        <div class="order-item">
+                            <div class="order-item-image">
+                                <img src="assets/images/4.jpg" alt="SleepSure Premium Mattress">
+                            </div>
+                            <div class="order-item-details">
+                                <h3 class="order-item-name">SleepSure Premium Hybrid Mattress</h3>
+                                <p class="order-item-size">Size: Queen</p>
+                                <p class="order-item-price">₹5,249</p>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-item-image">
+                                <img src="assets/images/13.jpg" alt="SleepSure Memory Foam Pillow">
+                            </div>
+                            <div class="order-item-details">
+                                <h3 class="order-item-name">SleepSure Memory Foam Pillow</h3>
+                                <p class="order-item-size">Size: Standard</p>
+                                <p class="order-item-price">₹5,249 × 2</p>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-item-image">
+                                <img src="assets/images/Comfy Mattress .jpg" alt="SleepSure Cooling Mattress Protector">
+                            </div>
+                            <div class="order-item-details">
+                                <h3 class="order-item-name">SleepSure Cooling Mattress Protector</h3>
+                                <p class="order-item-size">Size: Queen</p>
+                                <p class="order-item-price">₹5,249</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-row">
+                        <span>Subtotal (3 items)</span>
+                        <span>₹21,249</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span>₹500</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span class="amount">₹21,749</span>
+                    </div>
+                    <button class="place-order-btn" id="placeOrderBtn">
+                        <i class="fas fa-lock"></i> Place Your Order
+                    </button>
+                    <div class="secure-checkout">
+                        <i class="fas fa-shield-alt"></i> Secure checkout - 256-bit SSL encryption
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-column footer-brand">
+                    <h3 class="footer-logo">SleepSure</h3>
+                    <p class="footer-mission">
+                        Dedicated to providing the highest quality sleep products for a better tomorrow.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="category.html">Shop All Mattresses</a></li>
+                        <li><a href="category.html">Pillows & Comfort</a></li>
+                        <li><a href="bulk-order.html">Bulk Orders (B2B)</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="faq.html">FAQs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About SleepSure</a></li>
+                        <li><a href="career.html">Careers</a></li>
+                        <li><a href="Our-Guarantees.html">Our Guarantees</a></li>
+                        <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column footer-contact">
+                    <h4 class="footer-heading">Get in Touch</h4>
+                    <p>Email: <a href="mailto:sleepsureonline@gmail.com">sleepsureonline@gmail.com
+                        </a></p>
+                    <p>Phone: <a href="tel:+919822016710">+91 98220 16710</a></p>
+                    <p>Address: <a>Plot No. C-76, Add.- jejuri Industrial Area (MIDC) Near Henkal Godown, Tal. Purandar,
+                            Dist- Pune, Pin - 412303(Maharashtra)</a></p>
+                </div>
+            </div>
+        </footer>
+
+        <footer class="sleepsure-main-footer">
+            <div class="footer-grid-container">
+                <div class="footer-column-item">
+                    <h4 class="footer-title">DIY Guides & Home Decor ideas</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Mattress Size Guide</a></li>
+                        <li><a href="#">Bed Size Guide</a></li>
+                        <li><a href="#">Bed Assembly Guide</a></li>
+                        <li><a href="#">Bedroom Decor Ideas</a></li>
+                        <li><a href="#">Living Room Decor Ideas</a></li>
+                    </ul>
+
+                    <h4 class="footer-title footer-retail-heading">Retail Stores</h4>
+                    <ul class="footer-nav-list footer-city-links">
+                        <li><a href="#">Ahmedabad</a> | <a href="#">Bengaluru</a> | <a href="#">Chennai</a> | <a
+                                href="#">Coimbatore</a></li>
+                        <li><a href="#">Delhi</a> | <a href="#">Faridabad</a> | <a href="#">Ghaziabad</a> | <a
+                                href="#">Goa</a> | <a href="#">Greater Noida</a></li>
+                        <li><a href="#">Gurugram</a> | <a href="#">Hyderabad</a> | <a href="#">Indore</a> | <a
+                                href="#">Jaipur</a> | <a href="#">Kochi</a></li>
+                        <li><a href="#">Kolkata</a> | <a href="#">Lucknow</a> | <a href="#">Mumbai</a> | <a
+                                href="#">Mysore</a> | <a href="#">Nagpur</a></li>
+                        <li><a href="#">Nellore</a> | <a href="#">Noida</a> | <a href="#">Patna</a> | <a
+                                href="#">Pune</a> | <a href="#">Raipur</a> | <a href="#">Surat</a></li>
+                        <li><a href="#">Vadodara</a> | <a href="#">Vijayawada</a> | <a href="#">Visakhapatnam</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item">
+                    <h4 class="footer-title">Shop Bestsellers By Cities</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Bangalore Mattress</a> | <a href="#">Sofa</a></li>
+                        <li><a href="#">Hyderabad Mattress</a> | <a href="#">Sofa</a></li>
+                        <li><a href="#">Chennai Mattress</a></li>
+                        <li><a href="#">Gurugram Mattress</a></li>
+                        <li><a href="#">Kolkata Mattress</a></li>
+                        <li><a href="#">Mumbai Mattress</a></li>
+                        <li><a href="#">Pune Mattress</a></li>
+                    </ul>
+
+                    <h4 class="footer-title footer-design-heading">Design & Science</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Mattress</a> | <a href="#">Bed</a> | <a href="#">Sofa Set</a> | <a
+                                href="#">Sleeping Pillow</a></li>
+                        <li><a href="#">Wardrobe</a> | <a href="#">TV Unit</a> | <a href="#">Study Table</a></li>
+                        <li><a href="#">Science of Sleep</a> | <a href="#">Science of Ergonomics</a></li>
+                        <li><a href="#">Buy Bed Online</a></li>
+                        <li><a href="#">Sheesham Wood Online Bed Benefits</a></li>
+                        <li><a href="#">Mattress Comparison Buying Guide</a> | <a href="#">Guides</a></li>
+                        <li><a href="#">Table Decor Items</a> | <a href="#">Dining Decor Items</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item">
+                    <h4 class="footer-title">Shop By Popular Categories</h4>
+
+                    <p class="footer-category-title">MATTRESSES</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">Single Bed Mattresses</a> | <a href="#">Double Bed Mattresses</a></li>
+                        <li><a href="#">King Size Mattresses</a> | <a href="#">Queen Size Mattress</a></li>
+                        <li><a href="#">Memory Foam Mattress</a> | <a href="#">Orthopaedic Mattress</a></li>
+                        <li><a href="#">100 Nights Free Trial On Mattress</a></li>
+                    </ul>
+
+                    <p class="footer-category-title">BEDS</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">King Size Beds</a> | <a href="#">Queen Size Beds</a></li>
+                        <li><a href="#">Hydraulic Beds</a> | <a href="#">Storage Beds</a></li>
+                        <li><a href="#">Without Storage Beds</a></li>
+                    </ul>
+
+                    <p class="footer-category-title">ACCESSORIES</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">Bedding</a> | <a href="#">Bedsheets</a> | <a href="#">Decor</a> | <a
+                                href="#">Lights & Lamps</a></li>
+                        <li><a href="#">Floor Furnishing</a> | <a href="#">Decorative Items</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item footer-payment-block">
+                    <h4 class="footer-title">Payment Methods</h4>
+                    <p class="footer-payment-info">EMI & No Cost EMI | Credit Cards | Debit Cards</p>
+                    <div class="footer-logo-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+                            alt="Visa Mastercard Amex">
+                        <img src="https://pngimg.com/d/mastercard_PNG16.png" alt="GPay Paytm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/349/349228.png" alt="GPay Paytm">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/2560px-Google_Pay_Logo.svg.png"
+                            alt="GPay Paytm">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Paytm_Logo.png" alt="GPay Paytm">
+                    </div>
+                </div>
+
+                <div class="footer-column-item ">
+                    <h4 class="footer-title">Trusted Websites</h4>
+                    <p class="footer-trusted-info">SSL Certified | ISO Certified | Data Protection | Website Term Of Use
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-copyright-bar">
+                <p>© 2025 SleepSure. All Rights Reserved </p>
+            </div>
+        </footer>
+
+    <script>
+        // Checkout functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Payment method selection
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            const cardDetails = document.getElementById('cardDetails');
+            
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    // Remove active class from all payment methods
+                    paymentMethods.forEach(m => m.classList.remove('active'));
+                    // Add active class to clicked method
+                    this.classList.add('active');
+                    
+                    // Show card details only for credit card
+                    const methodType = this.getAttribute('data-method');
+                    if (methodType === 'card') {
+                        cardDetails.classList.add('active');
+                    } else {
+                        cardDetails.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Same as shipping address toggle
+            const sameAsShipping = document.getElementById('sameAsShipping');
+            const billingAddress = document.getElementById('billingAddress');
+            
+            sameAsShipping.addEventListener('change', function() {
+                if (this.checked) {
+                    billingAddress.style.display = 'none';
+                } else {
+                    billingAddress.style.display = 'block';
+                }
+            });
+            
+            // Place order button
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            
+            placeOrderBtn.addEventListener('click', function() {
+                // Validate form
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                const address = document.getElementById('address').value;
+                
+                if (!firstName || !lastName || !email || !address) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Show loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                this.disabled = true;
+                
+                // Simulate order processing
+                setTimeout(() => {
+                    // In a real application, this would submit the form
+                    alert('Order placed successfully! Thank you for your purchase.');
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    
+                    // Redirect to confirmation page
+                    // window.location.href = 'order-confirmation.html';
+                }, 2000);
+            });
+            
+            // Format card number input
+            const cardNumber = document.getElementById('cardNumber');
+            
+            cardNumber.addEventListener('input', function() {
+                let value = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                this.value = formattedValue;
+            });
+            
+            // Format expiry date input
+            const expiryDate = document.getElementById('expiryDate');
+            
+            expiryDate.addEventListener('input', function() {
+                let value = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                
+                if (value.length >= 2) {
+                    this.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                } else {
+                    this.value = value;
+                }
+            });
+        });
+    </script>
+
+    <div class="chat-button">
+        <span class="material-icons">chat</span>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

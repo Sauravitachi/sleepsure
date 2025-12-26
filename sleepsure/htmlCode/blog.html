@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepSure</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
+   
+
+
+</head>
+
+<body>
+    <!-- Your HTML content remains exactly the same -->
+    <div class="top-alert-bar">
+        Use code SLEEP (till 1st Oct) to get up to 30% off + Additional 11% off with bank offers.
+    </div>
+
+    <header class="main-header">
+        <div class="header-container">
+
+            <button class="menu-toggle-btn" id="menuToggle" aria-label="Menu">
+                <span class="material-icons">menu</span>
+            </button>
+
+            <div class="brand-logo">
+                <a href="index.html">
+                    <img src="assets/images/logo.png" alt="Home Icon" class="home-icon">
+                </a>
+            </div>
+
+            <div class="search-container">
+                <span class="material-icons search-icon">search</span>
+                <input type="text" placeholder="Search for Mattress" class="search-input">
+            </div>
+
+            <nav class="header-links desktop-only">
+                <a class="become-dealer-btn" id="openModal">
+                    Become Dealer
+                </a>
+
+                <!-- Modal -->
+                <div class="modal-backdrop" id="modalBackdrop">
+                    <div class="dealer-modal">
+                        <div class="modal-header">
+                            <h2>Become a SleepSure Dealer</h2>
+                            <button class="close-btn" id="closeModal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="dealerForm">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="fullName">Full Name</label>
+                                            <input type="text" id="fullName" placeholder="Enter your full name"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="city">City</label>
+                                            <input type="text" id="city" placeholder="Enter your city" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email Address</label>
+                                            <input type="email" id="email" placeholder="Enter your email address"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="mobile">Mobile Number</label>
+                                            <input type="tel" id="mobile" placeholder="Enter your mobile number"
+                                                required>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+                                <div class="user-type-group">
+                                    <label class="user-type-label">I am a</label>
+                                    <div class="radio-options">
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="landlord" required>
+                                            Landlord
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="dealer" required>
+                                            Dealer
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifications">
+                                    <label for="notifications">Send me notifications</label>
+                                </div>
+
+                                <button type="submit" class="submit-btn">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="stores.html">Stores</a>
+                <a href="bulk-order.html">Bulk Orders</a>
+            </nav>
+
+
+
+
+
+            <div class="header-icons">
+                <span class="material-icons desktop-only">phone</span>
+                <a href="wishlist.html">
+                    <span class="material-icons desktop-only">favorite_border</span>
+                </a>
+                <a href="cart.html">
+                    <span class="material-icons">shopping_cart</span>
+                </a>
+                <div class="account-icon">
+                    <a href="login.html">
+                        <span class="material-icons">account_circle</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="category-nav desktop-only">
+        <div class="container nav-container">
+            <ul class="nav-list-items">
+                <li class="nav-item">Home</li>
+
+                <li class="nav-item nav-item-mat">
+                    <a href="#" class="nav-link-mat">Mattress</a>
+
+                    <div class="mat-dropdown-container">
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">ShapeSense Orthopedic Classic Memory Foam Mattress</a></li>
+                                <li><a href="#">Dual Comfort Mattress</a></li>
+                                <li><a href="#">ErgoTech EcoLatex Mattress</a></li>
+                                <li><a href="#">Elevate Pocket Spring</a></li>
+                                <li><a href="#">XpertGRID Mattress</a></li>
+                                <li><a href="#">DreamPod Mattress</a></li>
+                                <li><a href="#">Flexagon Trifold Mattress</a></li>
+                                <li><a href="#">Rollup Mattress</a></li>
+                                <li><a href="#">Baby Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Plus Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Plus Mattress</a></li>
+                                <li><a href="#">Duo Plus Rebonded Mattress</a></li>
+                                <li><a href="#">EcoLatex Plus Mattress</a></li>
+                                <li><a href="#">Latex Hybrid Spring Mattress</a></li>
+                                <li><a href="#">XpertGRID Plus Mattress</a></li>
+                                <li><a href="#">XpertGRID Hybrid Spring Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Infiniti Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Infiniti Mattress</a></li>
+                            </ul>
+                            <br>
+                            <h4 class="col-title">Mattress By Size</h4>
+                            <ul class="col-links">
+                                <li><a href="#">King Size</a></li>
+                                <li><a href="#">Queen Size</a></li>
+                                <li><a href="#">Single Bed</a></li>
+                                <li><a href="#">Diwan Size</a></li>
+                                <li><a href="#">Kids Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col last-col">
+                            <h4 class="col-title">Sleepsure PureSleep Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">PostureFlex PureSleep Mattress</a></li>
+                                <li><a href="#">DualSwitch PureSleep Mattress</a></li>
+                                <li><a href="#">Natura PureSleep Latex Mattress</a></li>
+                                <li><a href="#">Ortho Plus ActiveCool Mattress</a></li>
+                                <li><a href="#">Spinecore Firm Plus Activecool Mattress</a></li>
+                                <li><a href="#">Optima Plus Active Cool Pocket Spring Mattress</a></li>
+                                <li><a href="#">IcyBreeze ActiveCool HR Foam Mattress</a></li>
+                                <li><a href="#">BlissMax Mattress</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">Pillow</li>
+                <li class="nav-item">Comforter</li>
+                <li class="nav-item">Protector</li>
+
+            </ul>
+        </div>
+    </nav>
+
+
+    <aside class="mobile-sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-account-header">
+                <span class="material-icons">account_circle</span>
+                <a href="login.html">
+                    <div class="account-info">
+                        My Account
+                        <strong>Log in</strong>
+                    </div>
+                </a>
+                <div class="pincode-entry">
+                    <span class="material-icons location-icon">location_on</span>
+                    Enter <strong>Pincode</strong> <span class="material-icons edit-icon">edit</span>
+                </div>
+            </div>
+
+            <div class="sidebar-utility-buttons">
+                <a href="cart.html" class="utility-btn">
+
+                    <span class="material-icons">shopping_cart</span> My Cart
+
+                </a>
+                <a href="orders.html" class="utility-btn">
+                    <span class="material-icons">assignment</span> My Orders
+                </a>
+            </div>
+
+            <nav class="sidebar-menu-links">
+                <a href="category.html"><span class="material-icons">apps</span> <strong>Browse Categories</strong></a>
+                <a href="offer.html"><span class="material-icons">local_offer</span> <strong>Offers</strong></a>
+                <a href="blog.html"><span class="material-icons">article</span> <strong>Blog</strong></a>
+                <a href="contact.html"><span class="material-icons">call</span> <strong>Contact Us</strong></a>
+                <a href="faq.html"><span class="material-icons">help_outline</span> <strong>FAQ</strong></a>
+            </nav>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="blog-list-page">
+    
+    <h1 class="page-title"><i class="fas fa-bed"></i> SleepSure Insights: Our Latest Articles</h1>
+    
+    <main class="blog-grid">
+        <article class="blog-card">
+            <img src="https://media.istockphoto.com/id/1336961980/photo/young-african-american-woman-sleeping-in-modern-bedroom-with-eyes-closed.jpg?s=612x612&w=0&k=20&c=j2VHEjE9AOGkfuz51mm2o64R4J8o_ZsrMUoh43zLnho=" alt="A person sleeping peacefully" class="blog-card-image">
+            <div class="blog-card-content">
+                <span class="blog-card-category">Sleep Hygiene</span>
+                <h2 class="blog-card-title">The Definitive Guide to Achieving 8 Hours of Quality Sleep</h2>
+                <p class="blog-card-excerpt">Discover our top five expert tips to transform your nightly routine and wake up feeling truly refreshed...</p>
+                <div class="blog-card-meta">
+                    <span class="date"><i class="far fa-calendar-alt"></i> Oct 25, 2025</span>
+                    <a href="#" class="read-more-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </article>
+        <article class="blog-card">
+            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?fit=crop&w=600&h=200" alt="Close-up of memory foam material" class="blog-card-image">
+            <div class="blog-card-content">
+                <span class="blog-card-category" style="background-color: var(--light-green-bg); color: var(--sleepsure-green);">Mattress Tech</span>
+                <h2 class="blog-card-title">Memory Foam vs. Innerspring: Which is Best for Your Back?</h2>
+                <p class="blog-card-excerpt">We break down the science of support, durability, and temperature regulation for both mattress types.</p>
+                <div class="blog-card-meta">
+                    <span class="date"><i class="far fa-calendar-alt"></i> Oct 18, 2025</span>
+                    <a href="#" class="read-more-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </article>
+        <article class="blog-card">
+            <img src="https://static.wixstatic.com/media/e2a116_fe20d02a311a496d9fe6b118237c230a~mv2.jpg/v1/fill/w_568,h_284,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/e2a116_fe20d02a311a496d9fe6b118237c230a~mv2.jpg" alt="Person doing stretching exercises" class="blog-card-image">
+            <div class="blog-card-content">
+                <span class="blog-card-category" style="background-color: #ffe5f0; color: var(--alert-red);">Health & Wellness</span>
+                <h2 class="blog-card-title">The Connection Between Daily Stretching and Deep Sleep</h2>
+                <p class="blog-card-excerpt">A simple 10-minute routine before bed can drastically improve your circulation and sleep quality.</p>
+                <div class="blog-card-meta">
+                    <span class="date"><i class="far fa-calendar-alt"></i> Oct 10, 2025</span>
+                    <a href="#" class="read-more-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </article>
+    </main>
+
+</div>
+
+</div>
+
+
+
+     <footer class="sleepsure-main-footer">
+        <div class="footer-grid-container">
+            <div class="footer-column-item">
+                <h4 class="footer-title">DIY Guides & Home Decor ideas</h4>
+                <ul class="footer-nav-list">
+                    <li><a href="#">Mattress Size Guide</a></li>
+                    <li><a href="#">Bed Size Guide</a></li>
+                    <li><a href="#">Bed Assembly Guide</a></li>
+                    <li><a href="#">Bedroom Decor Ideas</a></li>
+                    <li><a href="#">Living Room Decor Ideas</a></li>
+                </ul>
+
+                <h4 class="footer-title footer-retail-heading">Retail Stores</h4>
+                <ul class="footer-nav-list footer-city-links">
+                    <li><a href="#">Ahmedabad</a> | <a href="#">Bengaluru</a> | <a href="#">Chennai</a> | <a
+                            href="#">Coimbatore</a></li>
+                    <li><a href="#">Delhi</a> | <a href="#">Faridabad</a> | <a href="#">Ghaziabad</a> | <a
+                            href="#">Goa</a> | <a href="#">Greater Noida</a></li>
+                    <li><a href="#">Gurugram</a> | <a href="#">Hyderabad</a> | <a href="#">Indore</a> | <a
+                            href="#">Jaipur</a> | <a href="#">Kochi</a></li>
+                    <li><a href="#">Kolkata</a> | <a href="#">Lucknow</a> | <a href="#">Mumbai</a> | <a
+                            href="#">Mysore</a> | <a href="#">Nagpur</a></li>
+                    <li><a href="#">Nellore</a> | <a href="#">Noida</a> | <a href="#">Patna</a> | <a href="#">Pune</a> |
+                        <a href="#">Raipur</a> | <a href="#">Surat</a></li>
+                    <li><a href="#">Vadodara</a> | <a href="#">Vijayawada</a> | <a href="#">Visakhapatnam</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column-item">
+                <h4 class="footer-title">Shop Bestsellers By Cities</h4>
+                <ul class="footer-nav-list">
+                    <li><a href="#">Bangalore Mattress</a> | <a href="#">Sofa</a></li>
+                    <li><a href="#">Hyderabad Mattress</a> | <a href="#">Sofa</a></li>
+                    <li><a href="#">Chennai Mattress</a></li>
+                    <li><a href="#">Gurugram Mattress</a></li>
+                    <li><a href="#">Kolkata Mattress</a></li>
+                    <li><a href="#">Mumbai Mattress</a></li>
+                    <li><a href="#">Pune Mattress</a></li>
+                </ul>
+
+                <h4 class="footer-title footer-design-heading">Design & Science</h4>
+                <ul class="footer-nav-list">
+                    <li><a href="#">Mattress</a> | <a href="#">Bed</a> | <a href="#">Sofa Set</a> | <a href="#">Sleeping
+                            Pillow</a></li>
+                    <li><a href="#">Wardrobe</a> | <a href="#">TV Unit</a> | <a href="#">Study Table</a></li>
+                    <li><a href="#">Science of Sleep</a> | <a href="#">Science of Ergonomics</a></li>
+                    <li><a href="#">Buy Bed Online</a></li>
+                    <li><a href="#">Sheesham Wood Online Bed Benefits</a></li>
+                    <li><a href="#">Mattress Comparison Buying Guide</a> | <a href="#">Guides</a></li>
+                    <li><a href="#">Table Decor Items</a> | <a href="#">Dining Decor Items</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column-item">
+                <h4 class="footer-title">Shop By Popular Categories</h4>
+
+                <p class="footer-category-title">MATTRESSES</p>
+                <ul class="footer-nav-list footer-category-list">
+                    <li><a href="#">Single Bed Mattresses</a> | <a href="#">Double Bed Mattresses</a></li>
+                    <li><a href="#">King Size Mattresses</a> | <a href="#">Queen Size Mattress</a></li>
+                    <li><a href="#">Memory Foam Mattress</a> | <a href="#">Orthopaedic Mattress</a></li>
+                    <li><a href="#">100 Nights Free Trial On Mattress</a></li>
+                </ul>
+
+                <p class="footer-category-title">BEDS</p>
+                <ul class="footer-nav-list footer-category-list">
+                    <li><a href="#">King Size Beds</a> | <a href="#">Queen Size Beds</a></li>
+                    <li><a href="#">Hydraulic Beds</a> | <a href="#">Storage Beds</a></li>
+                    <li><a href="#">Without Storage Beds</a></li>
+                </ul>
+
+                <p class="footer-category-title">ACCESSORIES</p>
+                <ul class="footer-nav-list footer-category-list">
+                    <li><a href="#">Bedding</a> | <a href="#">Bedsheets</a> | <a href="#">Decor</a> | <a href="#">Lights
+                            & Lamps</a></li>
+                    <li><a href="#">Floor Furnishing</a> | <a href="#">Decorative Items</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column-item footer-payment-block">
+                <h4 class="footer-title">Payment Methods</h4>
+                <p class="footer-payment-info">EMI & No Cost EMI | Credit Cards | Debit Cards</p>
+                <div class="footer-logo-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+                        alt="Visa Mastercard Amex">
+                    <img src="https://pngimg.com/d/mastercard_PNG16.png" alt="GPay Paytm">
+                    <img src="https://cdn-icons-png.flaticon.com/512/349/349228.png" alt="GPay Paytm">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/2560px-Google_Pay_Logo.svg.png"
+                        alt="GPay Paytm">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Paytm_Logo.png" alt="GPay Paytm">
+                </div>
+            </div>
+
+            <div class="footer-column-item ">
+                <h4 class="footer-title">Trusted Websites</h4>
+                <p class="footer-trusted-info">SSL Certified | ISO Certified | Data Protection | Website Term Of Use
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-copyright-bar">
+            <p>© 2025 SleepSure. All Rights Reserved </p>
+        </div>
+    </footer>
+
+
+    <div class="chat-button">
+        <span class="material-icons">chat</span>
+    </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            const openModalBtn = document.getElementById('openModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const dealerForm = document.getElementById('dealerForm');
+
+            // Open modal
+            openModalBtn.addEventListener('click', function () {
+                modalBackdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Close modal
+            closeModalBtn.addEventListener('click', function () {
+                modalBackdrop.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close modal when clicking outside
+            modalBackdrop.addEventListener('click', function (e) {
+                if (e.target === modalBackdrop) {
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Form submission
+            dealerForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Get form data
+                const formData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    mobile: document.getElementById('mobile').value,
+                    city: document.getElementById('city').value,
+                    userType: document.querySelector('input[name="userType"]:checked').value,
+                    notifications: document.getElementById('notifications').checked
+                };
+
+                // Show loading state
+                const submitBtn = dealerForm.querySelector('.submit-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+
+                // Simulate API call
+                setTimeout(() => {
+                    alert('Thank you for your interest! We will contact you soon.');
+                    dealerForm.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }, 2000);
+            });
+
+            // Close with Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modalBackdrop.classList.contains('active')) {
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>

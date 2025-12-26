@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepSure</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+</head>
+  
+<body>
+    <section class="otp-main">
+         <div class="otp-container">
+        <div class="otp-header">
+            <a href="login.html" class="back-btn" id="backBtn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="logo">
+            <img src="assets/images/logo.png" alt="" width="125px">
+            </div>
+        </div>
+        
+        <div class="otp-content">
+            <h1 class="otp-title">Verify OTP</h1>
+            <p class="otp-subtitle">Enter the 6-digit code sent to your mobile number</p>
+            
+            <div class="phone-number" id="phoneNumber">
+                +91 ••••• •9876
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> OTP sent successfully!
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> Invalid OTP. Please try again.
+            </div>
+            
+            <form id="otpForm">
+                <div class="otp-inputs">
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                    <input type="text" class="otp-input" maxlength="1" inputmode="numeric" required>
+                </div>
+                
+                <div class="timer-section">
+                    <div class="timer">
+                        Code expires in <span class="countdown" id="countdown">02:00</span>
+                    </div>
+                </div>
+                
+                <div class="resend-otp">
+                    <a href="#" class="resend-link disabled" id="resendOtp">
+                        <i class="fas fa-redo"></i> Resend OTP
+                    </a>
+                </div>
+                
+                <button type="submit" class="verify-btn" id="verifyBtn">
+                    <i class="fas fa-shield-alt"></i> Verify & Continue
+                </button>
+            </form>
+            
+            <div class="help-text">
+                Didn't receive the code? Check your SMS messages or wait for the timer to resend.
+            </div>
+            
+            <div class="contact-support">
+                <a href="#" class="support-link">
+                    <i class="fas fa-headset"></i> Need help? Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+    </section>
+
+ 
+</body>
+</html>

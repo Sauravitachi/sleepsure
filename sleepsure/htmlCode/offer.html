@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepSure</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+     
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+
+  <style>
+        .coupon-section {
+            width: 100%;
+            /* max-width: 800px; */
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-heavy);
+            overflow: hidden;
+        }
+
+        .coupon-header {
+            background: linear-gradient(135deg, var(--sleepsure-blue), #2a68d4);
+            color: var(--text-light);
+            padding: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+        }
+
+        .coupon-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="white"/></svg>');
+            background-size: 50px;
+        }
+
+        .coupon-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+        }
+
+        .coupon-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .coupon-container {
+            padding: var(--spacing-xxl);
+        }
+
+        .active-coupon {
+            background: linear-gradient(135deg, var(--sleepsure-green), #52b848);
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active-coupon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        }
+
+        .coupon-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+        }
+
+        .coupon-code {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin: var(--spacing-md) 0;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .coupon-discount {
+            font-size: 1.3rem;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .copy-btn:hover {
+            background: white;
+            color: var(--sleepsure-green);
+            transform: translateY(-2px);
+        }
+
+        .coupon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .coupon-card {
+            background: white;
+            border: 2px dashed var(--sleepsure-blue);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .coupon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--sleepsure-green);
+        }
+
+        .coupon-card.popular::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--alert-red);
+            color: white;
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-xl);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .coupon-card-title {
+            color: var(--sleepsure-blue);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .coupon-card-code {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sleepsure-green);
+            margin: var(--spacing-md) 0;
+            letter-spacing: 2px;
+        }
+
+        .coupon-card-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .coupon-card-btn {
+            background: var(--sleepsure-blue);
+            color: white;
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .coupon-card-btn:hover {
+            background: var(--sleepsure-green);
+            transform: translateY(-2px);
+        }
+
+        .terms-section {
+            background: var(--light-blue-bg);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            border-left: 4px solid var(--sleepsure-green);
+        }
+
+        .terms-title {
+            color: var(--sleepsure-blue);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .terms-list {
+            list-style: none;
+            color: #555;
+        }
+
+        .terms-list li {
+            padding: var(--spacing-xs) 0;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+
+        .terms-list li i {
+            color: var(--sleepsure-green);
+            margin-top: 2px;
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--sleepsure-green);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-heavy);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .copy-notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .coupon-title {
+                font-size: 1.8rem;
+            }
+            
+            .coupon-code {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+            
+            .coupon-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+<body>
+   <!-- Your HTML content remains exactly the same -->
+    <div class="top-alert-bar">
+        Use code SLEEP (till 1st Oct) to get up to 30% off + Additional 11% off with bank offers.
+    </div>
+
+    <header class="main-header">
+        <div class="header-container">
+
+            <button class="menu-toggle-btn" id="menuToggle" aria-label="Menu">
+                <span class="material-icons">menu</span>
+            </button>
+
+            <div class="brand-logo">
+               <a href="index.html">
+                 <img src="assets/images/logo.png" alt="Home Icon" class="home-icon">
+               </a>
+            </div>
+
+            <div class="search-container">
+                <span class="material-icons search-icon">search</span>
+                <input type="text" placeholder="Search for Mattress" class="search-input">
+            </div>
+
+            <nav class="header-links desktop-only">
+                <a class="become-dealer-btn" id="openModal">
+                    Become Dealer
+                </a>
+
+                <!-- Modal -->
+                <div class="modal-backdrop" id="modalBackdrop">
+                    <div class="dealer-modal">
+                        <div class="modal-header">
+                            <h2>Become a SleepSure Dealer</h2>
+                            <button class="close-btn" id="closeModal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="dealerForm">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="fullName">Full Name</label>
+                                            <input type="text" id="fullName" placeholder="Enter your full name"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="city">City</label>
+                                            <input type="text" id="city" placeholder="Enter your city" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email Address</label>
+                                            <input type="email" id="email" placeholder="Enter your email address"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="mobile">Mobile Number</label>
+                                            <input type="tel" id="mobile" placeholder="Enter your mobile number"
+                                                required>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+                                <div class="user-type-group">
+                                    <label class="user-type-label">I am a</label>
+                                    <div class="radio-options">
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="landlord" required>
+                                            Landlord
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="dealer" required>
+                                            Dealer
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifications">
+                                    <label for="notifications">Send me notifications</label>
+                                </div>
+
+                                <button type="submit" class="submit-btn">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="stores.html">Stores</a>
+                <a href="bulk-order.html">Bulk Orders</a>
+            </nav>
+
+
+
+
+
+            <div class="header-icons">
+                <span class="material-icons desktop-only">phone</span>
+                <a href="wishlist.html">
+                    <span class="material-icons desktop-only">favorite_border</span>
+                </a>
+                <a href="cart.html">
+                    <span class="material-icons">shopping_cart</span>
+                </a>
+                <div class="account-icon">
+                    <a href="login.html">
+                        <span class="material-icons">account_circle</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+     <nav class="category-nav desktop-only">
+        <div class="container nav-container">
+            <ul class="nav-list-items">
+                <li class="nav-item">Home</li>
+
+                <li class="nav-item nav-item-mat">
+                    <a href="#" class="nav-link-mat">Mattress</a>
+
+                    <div class="mat-dropdown-container">
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">ShapeSense Orthopedic Classic Memory Foam Mattress</a></li>
+                                <li><a href="#">Dual Comfort Mattress</a></li>
+                                <li><a href="#">ErgoTech EcoLatex Mattress</a></li>
+                                <li><a href="#">Elevate Pocket Spring</a></li>
+                                <li><a href="#">XpertGRID Mattress</a></li>
+                                <li><a href="#">DreamPod Mattress</a></li>
+                                <li><a href="#">Flexagon Trifold Mattress</a></li>
+                                <li><a href="#">Rollup Mattress</a></li>
+                                <li><a href="#">Baby Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Plus Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Plus Mattress</a></li>
+                                <li><a href="#">Duo Plus Rebonded Mattress</a></li>
+                                <li><a href="#">EcoLatex Plus Mattress</a></li>
+                                <li><a href="#">Latex Hybrid Spring Mattress</a></li>
+                                <li><a href="#">XpertGRID Plus Mattress</a></li>
+                                <li><a href="#">XpertGRID Hybrid Spring Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Infiniti Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Infiniti Mattress</a></li>
+                            </ul>
+                            <br>
+                            <h4 class="col-title">Mattress By Size</h4>
+                            <ul class="col-links">
+                                <li><a href="#">King Size</a></li>
+                                <li><a href="#">Queen Size</a></li>
+                                <li><a href="#">Single Bed</a></li>
+                                <li><a href="#">Diwan Size</a></li>
+                                <li><a href="#">Kids Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col last-col">
+                            <h4 class="col-title">Sleepsure PureSleep Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">PostureFlex PureSleep Mattress</a></li>
+                                <li><a href="#">DualSwitch PureSleep Mattress</a></li>
+                                <li><a href="#">Natura PureSleep Latex Mattress</a></li>
+                                <li><a href="#">Ortho Plus ActiveCool Mattress</a></li>
+                                <li><a href="#">Spinecore Firm Plus Activecool Mattress</a></li>
+                                <li><a href="#">Optima Plus Active Cool Pocket Spring Mattress</a></li>
+                                <li><a href="#">IcyBreeze ActiveCool HR Foam Mattress</a></li>
+                                <li><a href="#">BlissMax Mattress</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">Pillow</li>
+                <li class="nav-item">Comforter</li>
+                <li class="nav-item">Protector</li>
+
+            </ul>
+        </div>
+    </nav>
+
+
+    <aside class="mobile-sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-account-header">
+                <span class="material-icons">account_circle</span>
+               <a href="login.html">
+                 <div class="account-info">
+                    My Account
+                    <strong>Log in</strong>
+                </div>
+               </a>
+                <div class="pincode-entry">
+                    <span class="material-icons location-icon">location_on</span>
+                    Enter <strong>Pincode</strong> <span class="material-icons edit-icon">edit</span>
+                </div>
+            </div>
+
+            <div class="sidebar-utility-buttons">
+                <a href="cart.html" class="utility-btn">
+                   
+                        <span class="material-icons">shopping_cart</span> My Cart
+                    
+                </a>
+                <a href="orders.html" class="utility-btn">
+                    <span class="material-icons">assignment</span> My Orders
+                </a>
+            </div>
+
+            <nav class="sidebar-menu-links">
+                <a href="category.html"><span class="material-icons">apps</span> <strong>Browse Categories</strong></a>
+                <a href="offer.html"><span class="material-icons">local_offer</span> <strong>Offers</strong></a>
+                <a href="blog.html"><span class="material-icons">article</span> <strong>Blog</strong></a>
+                <a href="contact.html"><span class="material-icons">call</span> <strong>Contact Us</strong></a>
+                <a href="faq.html"><span class="material-icons">help_outline</span> <strong>FAQ</strong></a>
+            </nav>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+
+     <main class="main-content" style="display: block;">
+        <section class="hero-section">
+
+            <div id="carouselExampleIndicators" class="carousel slide">
+                
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="assets/images/banner2.png" class="d-block w-100" alt="...">
+                    </div>
+                  
+                </div>
+               
+            </div>
+        </section>
+
+         <!-- bank offer -->
+        <div class="offers-section">
+
+
+            <div class="filter-buttons">
+                <button class="active" data-type="cards">Cards</button>
+                <button data-type="emi">EMI</button>
+                <button data-type="upi">UPI</button>
+                <button data-type="cashback">Cashback</button>
+                <button data-type="gst">GST</button>
+                <button data-type="rewards">Rewards</button>
+            </div>
+
+            <div class="offers-cards">
+                <div class="offer-card" data-type="cards">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/ICICI_Bank_Logo.svg/1200px-ICICI_Bank_Logo.svg.png"
+                        alt="ICICI Bank">
+                    <p>Flat 11% Off</p>
+                </div>
+                <div class="offer-card" data-type="cards">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/64/YESBANKLOGO.png/1200px-YESBANKLOGO.png"
+                        alt="Yes Bank">
+                    <p>Flat 1% Off</p>
+                </div>
+
+                <div class="offer-card" data-type="emi">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/ICICI_Bank_Logo.svg" alt="ICICI EMI">
+                    <p>No Cost EMI Available</p>
+                </div>
+
+                <div class="offer-card" data-type="upi">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Yes_Bank_logo.svg" alt="Yes Bank UPI">
+                    <p>5% Cashback on UPI</p>
+                </div>
+
+                <div class="offer-card" data-type="cashback">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/ICICI_Bank_Logo.svg"
+                        alt="ICICI Cashback">
+                    <p>Get ₹500 Cashback</p>
+                </div>
+
+                <div class="offer-card" data-type="gst">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Yes_Bank_logo.svg" alt="GST">
+                    <p>GST Benefits</p>
+                </div>
+
+                <div class="offer-card" data-type="rewards">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/ICICI_Bank_Logo.svg" alt="Rewards">
+                    <p>Earn 200 Reward Points</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="coupon-section">
+        <div class="coupon-header">
+            <h2 class="coupon-title">Special Discount Coupons</h2>
+            <p class="coupon-subtitle">Copy your favorite coupon code and apply at checkout</p>
+        </div>
+
+        <div class="coupon-container">
+            <!-- Active Coupon -->
+            <div class="active-coupon">
+                <div class="coupon-label">YOUR ACTIVE COUPON</div>
+                <div class="coupon-code">SLEEP40</div>
+                <div class="coupon-discount">Get 40% OFF on all premium mattresses</div>
+                <button class="copy-btn" onclick="copyCoupon('SLEEP40')">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+
+            <!-- Coupon Grid -->
+            <div class="coupon-grid">
+                <!-- Coupon 1 -->
+                <div class="coupon-card popular">
+                    <h3 class="coupon-card-title">First Order Special</h3>
+                    <div class="coupon-card-code">WELCOME25</div>
+                    <p class="coupon-card-desc">25% off on your first mattress purchase</p>
+                    <button class="coupon-card-btn" onclick="copyCoupon('WELCOME25')">
+                        Copy Code
+                    </button>
+                </div>
+
+                <!-- Coupon 2 -->
+                <div class="coupon-card">
+                    <h3 class="coupon-card-title">Luxury Upgrade</h3>
+                    <div class="coupon-card-code">LUXURY30</div>
+                    <p class="coupon-card-desc">30% off on SleepSure Luxury collection</p>
+                    <button class="coupon-card-btn" onclick="copyCoupon('LUXURY30')">
+                        Copy Code
+                    </button>
+                </div>
+
+                <!-- Coupon 3 -->
+                <div class="coupon-card">
+                    <h3 class="coupon-card-title">Bundle Deal</h3>
+                    <div class="coupon-card-code">BUNDLE35</div>
+                    <p class="coupon-card-desc">35% off when you buy mattress + bedding</p>
+                    <button class="coupon-card-btn" onclick="copyCoupon('BUNDLE35')">
+                        Copy Code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Terms & Conditions -->
+            <div class="terms-section">
+                <h4 class="terms-title">Terms & Conditions</h4>
+                <ul class="terms-list">
+                    <li><i class="fas fa-check"></i> One coupon code per order</li>
+                    <li><i class="fas fa-check"></i> Cannot be combined with other offers</li>
+                    <li><i class="fas fa-check"></i> Valid until December 31, 2024</li>
+                    <li><i class="fas fa-check"></i> Minimum purchase of $499 required</li>
+                    <li><i class="fas fa-check"></i> Not applicable on clearance items</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+     </main>
+
+      <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-column footer-brand">
+                    <h3 class="footer-logo">SleepSure</h3>
+                    <p class="footer-mission">
+                        Dedicated to providing the highest quality sleep products for a better tomorrow.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="category.html">Shop All Mattresses</a></li>
+                        <li><a href="category.html">Pillows & Comfort</a></li>
+                        <li><a href="bulk-order.html">Bulk Orders (B2B)</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="faq.html">FAQs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About SleepSure</a></li>
+                        <li><a href="career.html">Careers</a></li>
+                        <li><a href="Our-Guarantees.html">Our Guarantees</a></li>
+                        <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column footer-contact">
+                    <h4 class="footer-heading">Get in Touch</h4>
+                    <p>Email: <a href="mailto:sleepsureonline@gmail.com">sleepsureonline@gmail.com
+                        </a></p>
+                    <p>Phone: <a href="tel:+919822016710">+91 98220 16710</a></p>
+                    <p>Address: <a>Plot No. C-76, Add.- jejuri Industrial Area (MIDC) Near Henkal Godown, Tal. Purandar,
+                            Dist- Pune, Pin - 412303(Maharashtra)</a></p>
+                </div>
+            </div>
+        </footer>
+
+        <footer class="sleepsure-main-footer">
+            <div class="footer-grid-container">
+                <div class="footer-column-item">
+                    <h4 class="footer-title">DIY Guides & Home Decor ideas</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Mattress Size Guide</a></li>
+                        <li><a href="#">Bed Size Guide</a></li>
+                        <li><a href="#">Bed Assembly Guide</a></li>
+                        <li><a href="#">Bedroom Decor Ideas</a></li>
+                        <li><a href="#">Living Room Decor Ideas</a></li>
+                    </ul>
+
+                    <h4 class="footer-title footer-retail-heading">Retail Stores</h4>
+                    <ul class="footer-nav-list footer-city-links">
+                        <li><a href="#">Ahmedabad</a> | <a href="#">Bengaluru</a> | <a href="#">Chennai</a> | <a
+                                href="#">Coimbatore</a></li>
+                        <li><a href="#">Delhi</a> | <a href="#">Faridabad</a> | <a href="#">Ghaziabad</a> | <a
+                                href="#">Goa</a> | <a href="#">Greater Noida</a></li>
+                        <li><a href="#">Gurugram</a> | <a href="#">Hyderabad</a> | <a href="#">Indore</a> | <a
+                                href="#">Jaipur</a> | <a href="#">Kochi</a></li>
+                        <li><a href="#">Kolkata</a> | <a href="#">Lucknow</a> | <a href="#">Mumbai</a> | <a
+                                href="#">Mysore</a> | <a href="#">Nagpur</a></li>
+                        <li><a href="#">Nellore</a> | <a href="#">Noida</a> | <a href="#">Patna</a> | <a
+                                href="#">Pune</a> | <a href="#">Raipur</a> | <a href="#">Surat</a></li>
+                        <li><a href="#">Vadodara</a> | <a href="#">Vijayawada</a> | <a href="#">Visakhapatnam</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item">
+                    <h4 class="footer-title">Shop Bestsellers By Cities</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Bangalore Mattress</a> | <a href="#">Sofa</a></li>
+                        <li><a href="#">Hyderabad Mattress</a> | <a href="#">Sofa</a></li>
+                        <li><a href="#">Chennai Mattress</a></li>
+                        <li><a href="#">Gurugram Mattress</a></li>
+                        <li><a href="#">Kolkata Mattress</a></li>
+                        <li><a href="#">Mumbai Mattress</a></li>
+                        <li><a href="#">Pune Mattress</a></li>
+                    </ul>
+
+                    <h4 class="footer-title footer-design-heading">Design & Science</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Mattress</a> | <a href="#">Bed</a> | <a href="#">Sofa Set</a> | <a
+                                href="#">Sleeping Pillow</a></li>
+                        <li><a href="#">Wardrobe</a> | <a href="#">TV Unit</a> | <a href="#">Study Table</a></li>
+                        <li><a href="#">Science of Sleep</a> | <a href="#">Science of Ergonomics</a></li>
+                        <li><a href="#">Buy Bed Online</a></li>
+                        <li><a href="#">Sheesham Wood Online Bed Benefits</a></li>
+                        <li><a href="#">Mattress Comparison Buying Guide</a> | <a href="#">Guides</a></li>
+                        <li><a href="#">Table Decor Items</a> | <a href="#">Dining Decor Items</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item">
+                    <h4 class="footer-title">Shop By Popular Categories</h4>
+
+                    <p class="footer-category-title">MATTRESSES</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">Single Bed Mattresses</a> | <a href="#">Double Bed Mattresses</a></li>
+                        <li><a href="#">King Size Mattresses</a> | <a href="#">Queen Size Mattress</a></li>
+                        <li><a href="#">Memory Foam Mattress</a> | <a href="#">Orthopaedic Mattress</a></li>
+                        <li><a href="#">100 Nights Free Trial On Mattress</a></li>
+                    </ul>
+
+                    <p class="footer-category-title">BEDS</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">King Size Beds</a> | <a href="#">Queen Size Beds</a></li>
+                        <li><a href="#">Hydraulic Beds</a> | <a href="#">Storage Beds</a></li>
+                        <li><a href="#">Without Storage Beds</a></li>
+                    </ul>
+
+                    <p class="footer-category-title">ACCESSORIES</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">Bedding</a> | <a href="#">Bedsheets</a> | <a href="#">Decor</a> | <a
+                                href="#">Lights & Lamps</a></li>
+                        <li><a href="#">Floor Furnishing</a> | <a href="#">Decorative Items</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item footer-payment-block">
+                    <h4 class="footer-title">Payment Methods</h4>
+                    <p class="footer-payment-info">EMI & No Cost EMI | Credit Cards | Debit Cards</p>
+                    <div class="footer-logo-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+                            alt="Visa Mastercard Amex">
+                        <img src="https://pngimg.com/d/mastercard_PNG16.png" alt="GPay Paytm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/349/349228.png" alt="GPay Paytm">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/2560px-Google_Pay_Logo.svg.png"
+                            alt="GPay Paytm">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Paytm_Logo.png" alt="GPay Paytm">
+                    </div>
+                </div>
+
+                <div class="footer-column-item ">
+                    <h4 class="footer-title">Trusted Websites</h4>
+                    <p class="footer-trusted-info">SSL Certified | ISO Certified | Data Protection | Website Term Of Use
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-copyright-bar">
+                <p>© 2025 SleepSure. All Rights Reserved </p>
+            </div>
+        </footer>
+    </main>
+
+    <div class="chat-button">
+        <span class="material-icons">chat</span>
+    </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            const openModalBtn = document.getElementById('openModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const dealerForm = document.getElementById('dealerForm');
+
+            // Open modal
+            openModalBtn.addEventListener('click', function () {
+                modalBackdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Close modal
+            closeModalBtn.addEventListener('click', function () {
+                modalBackdrop.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close modal when clicking outside
+            modalBackdrop.addEventListener('click', function (e) {
+                if (e.target === modalBackdrop) {
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Form submission
+            dealerForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Get form data
+                const formData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    mobile: document.getElementById('mobile').value,
+                    city: document.getElementById('city').value,
+                    userType: document.querySelector('input[name="userType"]:checked').value,
+                    notifications: document.getElementById('notifications').checked
+                };
+
+                // Show loading state
+                const submitBtn = dealerForm.querySelector('.submit-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+
+                // Simulate API call
+                setTimeout(() => {
+                    alert('Thank you for your interest! We will contact you soon.');
+                    dealerForm.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }, 2000);
+            });
+
+            // Close with Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modalBackdrop.classList.contains('active')) {
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="assets/js/script.js"></script>
+
+
+
+
+
+
+</body>
+
+</html>

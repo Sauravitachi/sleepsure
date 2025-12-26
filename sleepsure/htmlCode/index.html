@@ -1,0 +1,2439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepSure</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+    <!-- Your HTML content remains exactly the same -->
+    <div class="top-alert-bar">
+        Use code SLEEP (till 1st Oct) to get up to 30% off + Additional 11% off with bank offers.
+    </div>
+
+    <header class="main-header">
+        <div class="header-container">
+
+            <button class="menu-toggle-btn" id="menuToggle" aria-label="Menu">
+                <span class="material-icons">menu</span>
+            </button>
+
+            <div class="brand-logo">
+                <a href="index.html">
+                    <img src="assets/images/logo.png" alt="Home Icon" class="home-icon">
+                </a>
+            </div>
+
+            <div class="search-container">
+                <span class="material-icons search-icon">search</span>
+                <input type="text" placeholder="Search for Mattress" class="search-input">
+            </div>
+
+            <nav class="header-links desktop-only">
+                <a class="become-dealer-btn" id="openModal">
+                    Become Dealer
+                </a>
+
+                <!-- Modal -->
+                <div class="modal-backdrop" id="modalBackdrop">
+                    <div class="dealer-modal">
+                        <div class="modal-header">
+                            <h2>Become a SleepSure Dealer</h2>
+                            <button class="close-btn" id="closeModal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="dealerForm">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="fullName">Full Name</label>
+                                            <input type="text" id="fullName" placeholder="Enter your full name"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="city">City</label>
+                                            <input type="text" id="city" placeholder="Enter your city" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email">Email Address</label>
+                                            <input type="email" id="email" placeholder="Enter your email address"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="mobile">Mobile Number</label>
+                                            <input type="tel" id="mobile" placeholder="Enter your mobile number"
+                                                required>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+                                <div class="user-type-group">
+                                    <label class="user-type-label">I am a</label>
+                                    <div class="radio-options">
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="landlord" required>
+                                            Landlord
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="userType" value="dealer" required>
+                                            Dealer
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="notifications">
+                                    <label for="notifications">Send me notifications</label>
+                                </div>
+
+                                <button type="submit" class="submit-btn">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="stores.html">Stores</a>
+                <a href="bulk-order.html">Bulk Orders</a>
+            </nav>
+
+
+
+
+
+            <div class="header-icons">
+                <span class="material-icons desktop-only">phone</span>
+                <a href="wishlist.html">
+                    <span class="material-icons desktop-only">favorite_border</span>
+                </a>
+                <a href="cart.html">
+                    <span class="material-icons">shopping_cart</span>
+                </a>
+                <div class="account-icon">
+                    <a href="login.html">
+                        <span class="material-icons">account_circle</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="category-nav desktop-only">
+        <div class="container nav-container">
+            <ul class="nav-list-items">
+                <li class="nav-item">Home</li>
+
+                <li class="nav-item nav-item-mat">
+                    <a href="#" class="nav-link-mat">Mattress</a>
+
+                    <div class="mat-dropdown-container">
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">ShapeSense Orthopedic Classic Memory Foam Mattress</a></li>
+                                <li><a href="#">Dual Comfort Mattress</a></li>
+                                <li><a href="#">ErgoTech EcoLatex Mattress</a></li>
+                                <li><a href="#">Elevate Pocket Spring</a></li>
+                                <li><a href="#">XpertGRID Mattress</a></li>
+                                <li><a href="#">DreamPod Mattress</a></li>
+                                <li><a href="#">Flexagon Trifold Mattress</a></li>
+                                <li><a href="#">Rollup Mattress</a></li>
+                                <li><a href="#">Baby Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Plus Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Plus Mattress</a></li>
+                                <li><a href="#">Duo Plus Rebonded Mattress</a></li>
+                                <li><a href="#">EcoLatex Plus Mattress</a></li>
+                                <li><a href="#">Latex Hybrid Spring Mattress</a></li>
+                                <li><a href="#">XpertGRID Plus Mattress</a></li>
+                                <li><a href="#">XpertGRID Hybrid Spring Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col">
+                            <h4 class="col-title">Sleepsure Infiniti Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">Ortho Infiniti Mattress</a></li>
+                            </ul>
+                            <br>
+                            <h4 class="col-title">Mattress By Size</h4>
+                            <ul class="col-links">
+                                <li><a href="#">King Size</a></li>
+                                <li><a href="#">Queen Size</a></li>
+                                <li><a href="#">Single Bed</a></li>
+                                <li><a href="#">Diwan Size</a></li>
+                                <li><a href="#">Kids Mattress</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown-col last-col">
+                            <h4 class="col-title">Sleepsure PureSleep Mattress</h4>
+                            <ul class="col-links">
+                                <li><a href="#">PostureFlex PureSleep Mattress</a></li>
+                                <li><a href="#">DualSwitch PureSleep Mattress</a></li>
+                                <li><a href="#">Natura PureSleep Latex Mattress</a></li>
+                                <li><a href="#">Ortho Plus ActiveCool Mattress</a></li>
+                                <li><a href="#">Spinecore Firm Plus Activecool Mattress</a></li>
+                                <li><a href="#">Optima Plus Active Cool Pocket Spring Mattress</a></li>
+                                <li><a href="#">IcyBreeze ActiveCool HR Foam Mattress</a></li>
+                                <li><a href="#">BlissMax Mattress</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">Pillow</li>
+                <li class="nav-item">Comforter</li>
+                <li class="nav-item">Protector</li>
+
+            </ul>
+        </div>
+    </nav>
+
+    
+
+
+    <aside class="mobile-sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-account-header">
+                <span class="material-icons">account_circle</span>
+                <a href="login.html">
+                    <div class="account-info">
+                        My Account
+                        <strong>Log in</strong>
+                    </div>
+                </a>
+                <div class="pincode-entry">
+                    <span class="material-icons location-icon">location_on</span>
+                    Enter <strong>Pincode</strong> <span class="material-icons edit-icon">edit</span>
+                </div>
+            </div>
+
+            <div class="sidebar-utility-buttons">
+                <a href="cart.html" class="utility-btn">
+
+                    <span class="material-icons">shopping_cart</span> My Cart
+
+                </a>
+                <a href="orders.html" class="utility-btn">
+                    <span class="material-icons">assignment</span> My Orders
+                </a>
+            </div>
+
+            <nav class="sidebar-menu-links">
+                <a href="category.html"><span class="material-icons">apps</span> <strong>Browse Categories</strong></a>
+                <a href="offer.html"><span class="material-icons">local_offer</span> <strong>Offers</strong></a>
+                <a href="blog.html"><span class="material-icons">article</span> <strong>Blog</strong></a>
+                <a href="contact.html"><span class="material-icons">call</span> <strong>Contact Us</strong></a>
+                <a href="faq.html"><span class="material-icons">help_outline</span> <strong>FAQ</strong></a>
+            </nav>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main-content">
+        <section class="hero-section">
+
+            <div id="carouselExampleIndicators" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                        class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                        aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="assets/images/banner2.png" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="assets/images/bg.png" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="assets/images/banner3.png" class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </section>
+        <section class="mobile-section">
+
+            <div id="carouselExampleIndicators" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                        class="active" aria-current="true" aria-label="Slide 1"></button>
+
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="assets/images/mobile-bg.png" class="d-block w-100" alt="...">
+                    </div>
+
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- <section class="mobile-section">
+            <div class="hero-image-placeholder">
+                <img src="assets/images/mobile-bg.png" alt="Sleepsure Sale Banner" width="100%">
+            </div>
+        </section> -->
+
+        <section class="category-slider-section">
+            <div class="section-header">
+                <h2>Explore Our Range</h2>
+                <a href="category.html" class="view-all">View All</a>
+            </div>
+
+            <div class="category-slider-wrapper">
+                <div class="category-slider">
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://kurlon.com/cdn/shop/files/MG_4430.jpg?v=1752566633"
+                                alt="Mattress Category">
+                        </div>
+                        <h3>Mattress</h3>
+                        <p>30 Items</p>
+                    </div>
+
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://www.sleepspa.in/wp-content/uploads/2019/10/HTB1_TEFgMaTBuNjSszfq6xgfpXas-600x604.jpg"
+                                alt="Pillow Category">
+                        </div>
+                        <h3>Pillow</h3>
+                        <p>25 Items</p>
+                    </div>
+
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://cdn.shopify.com/s/files/1/0026/5178/3237/files/SQCSC.png?v=1689611357"
+                                alt="Comforter Category">
+                        </div>
+                        <h3>Comforter</h3>
+                        <p>15 Items</p>
+                    </div>
+
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://m.media-amazon.com/images/I/81pncjYjN4L.jpg" alt="Protector Category">
+                        </div>
+                        <h3>Protector</h3>
+                        <p>05 Items</p>
+                    </div>
+
+                    <!-- Repeat -->
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://kurlon.com/cdn/shop/files/MG_4430.jpg?v=1752566633"
+                                alt="Mattress Category">
+                        </div>
+                        <h3>Mattress</h3>
+                        <p>30 Items</p>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://www.sleepspa.in/wp-content/uploads/2019/10/HTB1_TEFgMaTBuNjSszfq6xgfpXas-600x604.jpg"
+                                alt="Pillow Category">
+                        </div>
+                        <h3>Pillow</h3>
+                        <p>25 Items</p>
+                    </div>
+
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://cdn.shopify.com/s/files/1/0026/5178/3237/files/SQCSC.png?v=1689611357"
+                                alt="Comforter Category">
+                        </div>
+                        <h3>Comforter</h3>
+                        <p>15 Items</p>
+                    </div>
+
+                    <div class="category-item">
+                        <div class="category-image">
+                            <img src="https://m.media-amazon.com/images/I/81pncjYjN4L.jpg" alt="Protector Category">
+                        </div>
+                        <h3>Protector</h3>
+                        <p>05 Items</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <section class="commitment-section">
+
+            <div class="commitment-section-header">
+                <h2>Our Commitment & Values</h2>
+                <p>Your quality sleep is our absolute mission. Discover why we're the right choice for your home.</p>
+            </div>
+
+            <div class="modern-two-col-card">
+
+                <div class="card-column why-choose-us-content">
+                    <h3>Why Choose Us?</h3>
+
+                    <div class="feature-item-modern">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <h4>100% Quality Assurance</h4>
+                            <p>Only certified, non-toxic materials are used, ensuring a safe and healthy sleep
+                                environment.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item-modern">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <h4>10-Year Warranty</h4>
+                            <p>Confidence in our durability, backed by a comprehensive decade-long guarantee.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item-modern">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <h4>Free Delivery & Setup</h4>
+                            <p>Enjoy hassle-free service with doorstep delivery and professional setup.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-column mission-vision-content">
+                    <h3>Our Mission & Vision</h3>
+
+                    <div class="mv-item-modern">
+                        <div class="mv-heading-modern">
+                            <i class="fa-solid fa-rocket"></i> Mission
+                        </div>
+                        <p>To deliver **superior sleep solutions** through innovative, orthopedic, and sustainable
+                            mattress technology.</p>
+                    </div>
+
+                    <div class="mv-item-modern">
+                        <div class="mv-heading-modern">
+                            <i class="fa-solid fa-eye"></i> Vision
+                        </div>
+                        <p>To be the **leading trusted name** in the sleep industry, recognized for product excellence
+                            and health dedication.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+
+        <section class="featured-products">
+            <div class="section-header">
+                <h2>Featured Products</h2>
+                <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="slider-container">
+
+
+
+                <!-- CARD 1 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/4.jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/13.jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/Thrill\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/Pride\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 5 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/Prestige\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section class="complain">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="assets/images/frame.png" alt="" width="100%">
+                    </div>
+                    <div class="col-md-6 text-col">
+                        <h2>Does your Parents keep complaining about their back?</h2>
+                        <p>As a parent, you’re worried about how that impacts their physical health and quality of sleep
+                            — both of which are vital to their development.</p>
+                        <button class="shop-button">Find out more →</button>
+                    </div>
+                </div>
+                <div class="row main-col">
+                    <div class="col-md-4 text-col-2">
+                        <div class="card-1">
+                            <img src="assets/images/image 6 (1).png" alt="" width="100%">
+                            <p>Traditional mattresses and beds aren't conducive to how today's kids spend their time.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-col-2">
+                        <div class="card-2">
+                            <img src="assets/images/image 7.png" alt="" width="100%">
+                            <p>Beds and mattresses that lie flat don't promote proper posture.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-col-2">
+                        <div class="card-3">
+                            <img src="assets/images/image 8.png" alt="" width="100%">
+                            <p>Your child complains of an aching neck, shoulders and back.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+
+        <section class="featured-products">
+            <div class="section-header">
+                <h2>Best Seller</h2>
+                <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="slider-container">
+
+
+
+                <!-- CARD 1 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top"
+                                style="background-image:url('assets/images/Ortho\ Memory\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/13.jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/Thrill\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/Pride\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 5 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/product1.jpeg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+
+        <section class="stores-section">
+            <div class="stores-container">
+                <!-- Left Side: Stores Cards -->
+                <div class="stores-box">
+                    <h2 class="stores-heading">Explore Our Stores</h2>
+
+                    <div class="stores-grid">
+                        <!-- Card 1 -->
+                        <div class="store-card">
+                            <div class="store-icon">
+                                <i class="fa-solid fa-landmark"></i>
+                            </div>
+                            <h3>Delhi</h3>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="store-card">
+                            <div class="store-icon">
+                                <i class="fa-solid fa-archway"></i>
+                            </div>
+                            <h3>Mumbai</h3>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="store-card">
+                            <div class="store-icon">
+                                <i class="fa-solid fa-city"></i>
+                            </div>
+                            <h3>Bangalore</h3>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="store-card">
+                            <div class="store-icon">
+                                <i class="fa-solid fa-bridge"></i>
+                            </div>
+                            <h3>Kolkata</h3>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="store-card">
+                            <div class="store-icon">
+                                <i class="fa-solid fa-mosque"></i>
+                            </div>
+                            <h3>Hyderabad</h3>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div class="store-card">
+                            <div class="store-icon">
+                                <i class="fa-solid fa-torii-gate"></i>
+                            </div>
+                            <h3>Jaipur</h3>
+                        </div>
+                    </div>
+
+                    <a href="#" class="view-stores-link">View 50+ Stores</a>
+                </div>
+
+                <!-- Right Side: Image -->
+                <div class="image-box">
+                    <img src="https://adyourdream.com/images/portfolio/relaxon%20banner.webp" alt="Stores Showcase">
+                </div>
+            </div>
+        </section>
+
+
+        <!-- bank offer -->
+        <div class="offers-section">
+
+
+            <div class="filter-buttons">
+                <button class="active" data-type="cards">Cards</button>
+                <button data-type="emi">EMI</button>
+                <button data-type="upi">UPI</button>
+                <button data-type="cashback">Cashback</button>
+                <button data-type="gst">GST</button>
+                <button data-type="rewards">Rewards</button>
+            </div>
+
+            <div class="offers-cards">
+                <div class="offer-card" data-type="cards">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/ICICI_Bank_Logo.svg/1200px-ICICI_Bank_Logo.svg.png"
+                        alt="ICICI Bank">
+                    <p>Flat 11% Off</p>
+                </div>
+                <div class="offer-card" data-type="cards">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/64/YESBANKLOGO.png/1200px-YESBANKLOGO.png"
+                        alt="Yes Bank">
+                    <p>Flat 1% Off</p>
+                </div>
+
+                <div class="offer-card" data-type="emi">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/ICICI_Bank_Logo.svg" alt="ICICI EMI">
+                    <p>No Cost EMI Available</p>
+                </div>
+
+                <div class="offer-card" data-type="upi">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Yes_Bank_logo.svg" alt="Yes Bank UPI">
+                    <p>5% Cashback on UPI</p>
+                </div>
+
+                <div class="offer-card" data-type="cashback">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/ICICI_Bank_Logo.svg"
+                        alt="ICICI Cashback">
+                    <p>Get ₹500 Cashback</p>
+                </div>
+
+                <div class="offer-card" data-type="gst">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/16/Yes_Bank_logo.svg" alt="GST">
+                    <p>GST Benefits</p>
+                </div>
+
+                <div class="offer-card" data-type="rewards">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/ICICI_Bank_Logo.svg" alt="Rewards">
+                    <p>Earn 200 Reward Points</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="find-mattress-banner">
+            <div class="content">
+                <h2 class="headline">Tired of Sleepless Nights? Stop Guessing!</h2>
+                <p class="subtext">The mattress market is overwhelming. <strong>Don't settle for average sleep!</strong>
+                    Take our quick, personalized quiz and instantly find the perfect mattress tailored to your unique
+                    sleeping style, body type, and comfort preferences.</p>
+
+                <button id="openMattressQuiz" class="cta-button">
+                    FIND MY MATTRESS <span class="arrow">→</span>
+                </button>
+            </div>
+            <div class="mattress-image-placeholder">
+                <img src="assets/images/sleepless.jpg" alt="Breathable mattress layers showing comfort and support"
+                    width="100%">
+            </div>
+        </section>
+
+        <div id="mattressQuizModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Find My Mattress</h3>
+                    <span id="closeMattressQuiz" class="close-button">&times;</span>
+                </div>
+
+                <form class="quiz-form">
+                    <fieldset class="question-group">
+                        <legend>1. What disrupts your sleep, in your opinion?</legend>
+                        <label><input type="radio" name="disruption" value="sweat"> Night Sweat</label>
+                        <label><input type="radio" name="disruption" value="backpain"> Backpain</label>
+                        <label><input type="radio" name="disruption" value="restless"> Restless Sleep</label>
+                        <label><input type="radio" name="disruption" value="other"> Something Else</label>
+                    </fieldset>
+
+                    <fieldset class="question-group">
+                        <legend>2. What is your preferred sleeping position?</legend>
+                        <label><input type="radio" name="position" value="left"> On Left Side</label>
+                        <label><input type="radio" name="position" value="right"> On Right Side</label>
+                        <label><input type="radio" name="position" value="back"> On Back</label>
+                        <label><input type="radio" name="position" value="tummy"> On Tummy</label>
+                        <label><input type="radio" name="position" value="turning"> Keep on turning</label>
+                    </fieldset>
+
+                    <fieldset class="question-group">
+                        <legend>3. What would you describe as your ideal mattress?</legend>
+                        <label><input type="radio" name="ideal" value="extra-soft"> Extra Soft Mattress</label>
+                        <label><input type="radio" name="ideal" value="plushy"> Plushy Mattress</label>
+                        <label><input type="radio" name="ideal" value="bouncy"> Bouncy Mattress</label>
+                        <label><input type="radio" name="ideal" value="firm"> Firm Mattress</label>
+                        <label><input type="radio" name="ideal" value="supportive"> Comfortable and Supportive</label>
+                    </fieldset>
+
+                    <button type="submit" class="submit-button">Submit</button>
+                </form>
+            </div>
+        </div>
+
+
+        <section class="new-shop-by-size-section">
+
+            <div class="new-section-header">
+                <h2>Shop by Mattress Size</h2>
+            </div>
+
+            <div class="size-category-grid">
+
+                <a href="#" class="size-category-card"
+                    style="background-image: url('https://m.media-amazon.com/images/I/71rNXU5sXKL._UF894,1000_QL80_.jpg');">
+                    <div class="card-content">
+                        <h3>Single Bed</h3>
+                        <p>Perfect for solo sleepers or small rooms.</p>
+                        <span class="shop-now-btn">Shop Now <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="#" class="size-category-card"
+                    style="background-image: url('https://m.media-amazon.com/images/I/91uOk4qaYVL._UF894,1000_QL80_.jpg');">
+                    <div class="card-content">
+                        <h3>Double Bed</h3>
+                        <p>Ideal for teenagers or budget couples.</p>
+                        <span class="shop-now-btn">Shop Now <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="#" class="size-category-card recommended-card"
+                    style="background-image: url('https://www.nismaayadecor.in/cdn/shop/collections/nismaaya-engla-king-size-bed-rattan_1.webp?v=1715083470');">
+                    <div class="card-content">
+                        <span class="badge">Most Popular</span>
+                        <h3>Queen Bed</h3>
+                        <p>Spacious comfort for most couples.</p>
+                        <span class="shop-now-btn">Shop Now <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="#" class="size-category-card"
+                    style="background-image: url('https://sonaarts.in/wp-content/uploads/2024/12/81bFcMiU33L._SL1500_.jpg');">
+                    <div class="card-content">
+                        <h3>King Bed</h3>
+                        <p>Maximum space for luxury and family sleepers.</p>
+                        <span class="shop-now-btn">Shop Now <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+
+
+
+
+        <section class="layer">
+            <div class="mattress-features-container">
+
+                <header class="features-header">
+                    <div class="feature-point" data-number="1">
+                        <span class="green-dot"></span>
+                        <h2>Cover</h2>
+                        <p>The cover's blend of fabrics and fibers adjusts to your body temperature and pulls moisture
+                            away.
+                        </p>
+                    </div>
+                    <div class="feature-point" data-number="2">
+                        <span class="green-dot"></span>
+                        <h2>Layers</h2>
+                        <p>This mattress is designed to fit your body and eliminate unwanted temperature changes
+                            enabling
+                            you to sleep comfortably.</p>
+                    </div>
+                    <div class="feature-point" data-number="3">
+                        <span class="green-dot"></span>
+                        <h2>Foam Layers</h2>
+                        <p>The mattress is equipped with layers of softness to mold to your body so you can wake up
+                            feeling
+                            refreshed without that achy feeling. There is an added layer of exceptional-quality foam for
+                            constant support while sleeping.</p>
+                    </div>
+                </header>
+
+                <div class="mattress-diagram-section-image">
+                    <img src="assets/images/layer.png" alt="Mattress Layers Diagram" class="mattress-image">
+                </div>
+
+                <div class="features-footer">
+                    <div class="feature-point" data-number="4">
+                        <span class="green-dot"></span>
+                        <h2>Additional support layer</h2>
+                        <p>Unlike most mattresses where deep dips in the foam eventually occur, this mattress has
+                            built-in
+                            springs to prevent causing motion upon movement. It stays the same, including support for
+                            the
+                            bed edges and comfortable temperature adjustments.</p>
+                    </div>
+                    <div class="feature-point" data-number="5">
+                        <span class="green-dot"></span>
+                        <h2>Foam base</h2>
+                        <p>The high quality of the foam base improves its strength, contour ability, and support for all
+                            body types. Softness/Hardness – Medium to medium-firm comfort</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+
+
+        <section class="money-back-guarantee-section">
+            <div class="content-container">
+                <p class="tagline">ZERO RISK | ZERO OBLIGATION</p>
+                <h1>Love Sleepsure or Your Money Back</h1>
+                <p class="subtitle">If Your Child Doesn't Love Their Sleepsure Bed After 100 Nights, Return It For Free.
+                </p>
+
+                <div class="feature-grid new-feature-grid">
+
+                    <div class="feature-item">
+                        <div class="icon-wrapper icon-wrapper-1">
+                            <img src="assets/images/icon/i1.png" alt="100-Night Home Trial Icon">
+                        </div>
+                        <h3>100-Night Home Trial</h3>
+                        <p>Try the Sleepsure at home for 100 nights and if you're not satisfied, return it for free.</p>
+
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon-wrapper icon-wrapper-2">
+                            <img src="assets/images/icon/i2.png" alt="Delivery & Setup Icon">
+                        </div>
+                        <h3>Delivery & Setup</h3>
+                        <p>We deliver and install your Sleepsure bed at no extra charge.</p>
+
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon-wrapper icon-wrapper-3">
+                            <img src="assets/images/icon/i3.png" alt="Free Shipping Icon">
+                        </div>
+                        <h3>Free Shipping</h3>
+                        <p>Shipping is free - even if you decide to return your Sleepsure bed during the 100-night
+                            trial.
+                        </p>
+
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="icon-wrapper icon-wrapper-4">
+                            <img src="assets/images/icon/i4.png" alt="Financing Available Icon">
+                        </div>
+                        <h3>Financing Available</h3>
+                        <p>Make monthly payments with 0% interest when you pay with a credit card.</p>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+        <section class="deal-section">
+            <div class="ghost-text">DEAL</div>
+            <div class="content-container">
+                <div class="text-content">
+                    <p class="deal-tag">LIMITED TIME OFFER</p>
+                    <h1>The Ultimate Comfort Mattress Deal</h1>
+                    <p class="description">Stop losing sleep over low-quality bedding. Upgrade to our award-winning
+                        mattress—engineered with cooling technology and tailored support to deliver your best night's
+                        rest yet.</p>
+                </div>
+
+                <div class="countdown-timer">
+                    <div class="timer-box">
+                        <span id="days">90</span>
+                        <span class="label">DAYS</span>
+                    </div>
+                    <div class="timer-box">
+                        <span id="hours">13</span>
+                        <span class="label">HOURS</span>
+                    </div>
+                    <div class="timer-box">
+                        <span id="minutes">33</span>
+                        <span class="label">MINUTES</span>
+                    </div>
+                    <div class="timer-box">
+                        <span id="seconds">49</span>
+                        <span class="label">SECONDS</span>
+                    </div>
+                </div>
+
+                <button class="shop-button">Shop Now &rarr;</button>
+            </div>
+
+            <div class="image-container">
+                <img src="https://static.vecteezy.com/system/resources/previews/065/587/966/non_2x/comfortable-mattresses-stacked-on-a-transparent-background-ideal-for-rest-and-relaxation-mattresses-isolated-on-background-free-png.png"
+                    alt="Bright Green Sofa" width="100%">
+                <div class="discount-badge">
+                    <span class="percent">45%</span>
+                    <span class="off">OFF</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="featured-products">
+            <div class="section-header">
+                <h2>Top Rated</h2>
+                <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="slider-container">
+
+
+
+                <!-- CARD 1 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top"
+                                style="background-image:url('assets/images/Ortho\ Memory\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/13.jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/Thrill\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/Pride\ Mattress\ .jpg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 5 -->
+                <div class="wrapper">
+                    <div class="container">
+                        <a href="product-detail.html">
+                            <div class="top" style="background-image:url('assets/images/product1.jpeg')">
+                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
+                                <button class="wishlist-icon"><span>♡</span></button>
+                            </div>
+                        </a>
+                        <div class="bottom">
+                            <div class="left">
+                                <div class="details">
+                                    <h1>Ortho Memory</h1>
+                                    <p>(72X60X6 Inch)</p>
+                                    <p>(1829X1524X153 mm)</p>
+                                    <div class="price-group">
+                                        <span class="price">₹5,249</span>
+                                        <span class="discount">58% off</span>
+                                    </div>
+                                </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            </div>
+                            <div class="right">
+                                <div class="done"><i class="material-icons">done</i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>Ortho Memory</p>
+                                </div>
+                                <div class="remove"><i class="material-icons">clear</i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inside">
+                        <div class="icon"><i class="material-icons">info_outline</i></div>
+                        <div class="contents">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                </tr>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>Orthopedic</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Thickness</th>
+                                </tr>
+                                <tr>
+                                    <td>72x60 Inch</td>
+                                    <td>6 Inch</td>
+                                </tr>
+                                <tr>
+                                    <th>Warranty</th>
+                                    <th>Material</th>
+                                </tr>
+                                <tr>
+                                    <td>5 Years</td>
+                                    <td>Memory Foam</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- <section class="banner-new">
+            <img src="assets/images/bg3.jpg" alt="" width="100%">
+        </section> -->
+
+
+        <section class="reviews-section">
+            <div class="reviews-header">
+                <p class="section-tag">
+                    <span class="tag-line"></span>
+                    REVIEWS
+                </p>
+                <h2>These Families are Raving About Sleepsure</h2>
+            </div>
+
+            <div class="testimonials-container scroll-snap-slider">
+
+                <div class="testimonial-card">
+                    <span class="quote-icon">"</span>
+                    <p class="review-text">I bought the bed and enjoy it every night and throughout the day! An
+                        excellent</p>
+                    <h3 class="reviewer-name">Scott Blackwell</h3>
+                    <p class="reviewer-location">LAUDERDALE, FLORIDA</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <span class="quote-icon">"</span>
+                    <p class="review-text">Our son loves his new bed. The linen box is spacious and there's plenty of
+                        room for the bedding and his video games. We've recommended it to all our friends.</p>
+                    <h3 class="reviewer-name">Alexandra Callegary</h3>
+                    <p class="reviewer-location">TAMPA, FLORIDA</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <span class="quote-icon">"</span>
+                    <p class="review-text">Highly recommend. Our teenage daughter was in desperate need of an adjustable
+                        bed and this was the perfect option. Thank you!</p>
+                    <h3 class="reviewer-name">Jessica Douglas</h3>
+                    <p class="reviewer-location">HAMILTON, NEW JERSEY</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <span class="quote-icon">"</span>
+                    <p class="review-text">The adjustable base has made a huge difference for my back. The quality is
+                        top-notch and it looks fantastic in the room.</p>
+                    <h3 class="reviewer-name">Marcus Chen</h3>
+                    <p class="reviewer-location">AUSTIN, TEXAS</p>
+                </div>
+                <div class="testimonial-card">
+                    <span class="quote-icon">"</span>
+                    <p class="review-text">Absolutely worth the investment. It was easy to set up and the whole family
+                        loves hanging out on it!</p>
+                    <h3 class="reviewer-name">Sophia Rodriguez</h3>
+                    <p class="reviewer-location">SAN DIEGO, CALIFORNIA</p>
+                </div>
+                <div class="testimonial-card">
+                    <span class="quote-icon">"</span>
+                    <p class="review-text">The linen box is a lifesaver for small apartments. Great design and very
+                        comfortable mattress. Five stars!</p>
+                    <h3 class="reviewer-name">Ben Thompson</h3>
+                    <p class="reviewer-location">CHICAGO, ILLINOIS</p>
+                </div>
+
+
+            </div>
+        </section>
+
+
+
+
+        <section class="faq-section">
+            <h1 class="faq-title">Frequently Asked Questions</h1>
+
+            <div class="accordion" id="faqAccordion">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Why choosing Sleepsure?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            By our worldview, we believe that our children deserve the best. Therefore, when we decided
+                            to create a dedicated bed for children and young adults, we made it our goal to develop the
+                            best bed in the works for them. Sleepsure is a bed with a character and soul, created after
+                            years of research and development, in full compliance with the highest habits standards.
+                            Every seam, every textile layer, and padding has been assigned to perfection to give
+                            customers the best bed they've ever experienced.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            What are the bed's dimensions?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for What are the bed's dimensions?]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            What is included in the box?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for What is included in the box?]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            What is the Sleepsure firmness rating?
+                        </button>
+                    </h2>
+                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for What is the Sleepsure firmness rating?]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSix">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                            How do I keep my mattress clean?
+                        </button>
+                    </h2>
+                    <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for How do I keep my mattress clean?]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSeven">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                            What does our protection plan include?
+                        </button>
+                    </h2>
+                    <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for What does our protection plan include?]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingEight">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                            Will the Sleepsure work with my existing base or foundation?
+                        </button>
+                    </h2>
+                    <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for Will the Sleepsure work with my existing base or foundation?]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingNine">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                            Do I need bedding with Sleepsure?
+                        </button>
+                    </h2>
+                    <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for Do I need bedding with Sleepsure?]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTen">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                            What is your return policy?
+                        </button>
+                    </h2>
+                    <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen"
+                        data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            [Answer for What is your return policy?]
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="award-section">
+            <h2>Our Recognitions and Awards</h2>
+
+            <div class="award-slider-container">
+
+                <div class="award-item">
+                    <img src="assets/images/awards/1.png" alt="Best of Year Award" class="award-image">
+                    <p class="award-title">Best Bed of the Year (2024)</p>
+                    <p class="award-source">Sleep Magazine</p>
+                </div>
+
+                <div class="award-item">
+                    <img src="assets/images/awards/1.png" alt="Top Comfort Award" class="award-image">
+                    <p class="award-title">Top Comfort Award (2023)</p>
+                    <p class="award-source">Family Health Guide</p>
+                </div>
+
+                <div class="award-item">
+                    <img src="assets/images/awards/1.png" alt="Editor's Choice Award" class="award-image">
+                    <p class="award-title">Editor's Choice Pick</p>
+                    <p class="award-source">Design Home</p>
+                </div>
+
+                <div class="award-item">
+                    <img src="assets/images/awards/1.png" alt="Innovation Award" class="award-image">
+                    <p class="award-title">Product Innovation Award</p>
+                    <p class="award-source">Tech Comfort Review</p>
+                </div>
+
+                <div class="award-item">
+                    <img src="assets/images/awards/1.png" alt="Customer Favorite Award" class="award-image">
+                    <p class="award-title">Customer Favorite (2022)</p>
+                    <p class="award-source">E-Commerce Weekly</p>
+                </div>
+
+            </div>
+        </section>
+
+
+
+        <section class="find-mattress-banner">
+            <div class="content">
+                <h2 class="headline">SleepSure Bulk Bedding</h2>
+                <p class="subtext">Hotels . Serviced Apartments . Hospitals . Employee Housing</p>
+                <button class="cta-button">
+                    Inquire About Bulk Pricing <span class="arrow">→</span>
+                </button>
+            </div>
+            <div class="mattress-image-placeholder">
+                <img src="assets/images/bg2.png" alt="" width="100%">
+            </div>
+        </section>
+
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-column footer-brand">
+                    <h3 class="footer-logo">SleepSure</h3>
+                    <p class="footer-mission">
+                        Dedicated to providing the highest quality sleep products for a better tomorrow.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="category.html">Shop All Mattresses</a></li>
+                        <li><a href="category.html">Pillows & Comfort</a></li>
+                        <li><a href="bulk-order.html">Bulk Orders (B2B)</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="faq.html">FAQs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About SleepSure</a></li>
+                        <li><a href="career.html">Careers</a></li>
+                        <li><a href="Our-Guarantees.html">Our Guarantees</a></li>
+                        <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column footer-contact">
+                    <h4 class="footer-heading">Get in Touch</h4>
+                    <p>Email: <a href="mailto:sleepsureonline@gmail.com">sleepsureonline@gmail.com
+                        </a></p>
+                    <p>Phone: <a href="tel:+919822016710">+91 98220 16710</a></p>
+                    <p>Address: <a>Plot No. C-76, Add.- jejuri Industrial Area (MIDC) Near Henkal Godown, Tal. Purandar,
+                            Dist- Pune, Pin - 412303(Maharashtra)</a></p>
+                </div>
+            </div>
+        </footer>
+
+        <footer class="sleepsure-main-footer">
+            <div class="footer-grid-container">
+                <div class="footer-column-item">
+                    <h4 class="footer-title">DIY Guides & Home Decor ideas</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Mattress Size Guide</a></li>
+                        <li><a href="#">Bed Size Guide</a></li>
+                        <li><a href="#">Bed Assembly Guide</a></li>
+                        <li><a href="#">Bedroom Decor Ideas</a></li>
+                        <li><a href="#">Living Room Decor Ideas</a></li>
+                    </ul>
+
+                    <h4 class="footer-title footer-retail-heading">Retail Stores</h4>
+                    <ul class="footer-nav-list footer-city-links">
+                        <li><a href="#">Ahmedabad</a> | <a href="#">Bengaluru</a> | <a href="#">Chennai</a> | <a
+                                href="#">Coimbatore</a></li>
+                        <li><a href="#">Delhi</a> | <a href="#">Faridabad</a> | <a href="#">Ghaziabad</a> | <a
+                                href="#">Goa</a> | <a href="#">Greater Noida</a></li>
+                        <li><a href="#">Gurugram</a> | <a href="#">Hyderabad</a> | <a href="#">Indore</a> | <a
+                                href="#">Jaipur</a> | <a href="#">Kochi</a></li>
+                        <li><a href="#">Kolkata</a> | <a href="#">Lucknow</a> | <a href="#">Mumbai</a> | <a
+                                href="#">Mysore</a> | <a href="#">Nagpur</a></li>
+                        <li><a href="#">Nellore</a> | <a href="#">Noida</a> | <a href="#">Patna</a> | <a
+                                href="#">Pune</a> | <a href="#">Raipur</a> | <a href="#">Surat</a></li>
+                        <li><a href="#">Vadodara</a> | <a href="#">Vijayawada</a> | <a href="#">Visakhapatnam</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item">
+                    <h4 class="footer-title">Shop Bestsellers By Cities</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Bangalore Mattress</a> | <a href="#">Sofa</a></li>
+                        <li><a href="#">Hyderabad Mattress</a> | <a href="#">Sofa</a></li>
+                        <li><a href="#">Chennai Mattress</a></li>
+                        <li><a href="#">Gurugram Mattress</a></li>
+                        <li><a href="#">Kolkata Mattress</a></li>
+                        <li><a href="#">Mumbai Mattress</a></li>
+                        <li><a href="#">Pune Mattress</a></li>
+                    </ul>
+
+                    <h4 class="footer-title footer-design-heading">Design & Science</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="#">Mattress</a> | <a href="#">Bed</a> | <a href="#">Sofa Set</a> | <a
+                                href="#">Sleeping Pillow</a></li>
+                        <li><a href="#">Wardrobe</a> | <a href="#">TV Unit</a> | <a href="#">Study Table</a></li>
+                        <li><a href="#">Science of Sleep</a> | <a href="#">Science of Ergonomics</a></li>
+                        <li><a href="#">Buy Bed Online</a></li>
+                        <li><a href="#">Sheesham Wood Online Bed Benefits</a></li>
+                        <li><a href="#">Mattress Comparison Buying Guide</a> | <a href="#">Guides</a></li>
+                        <li><a href="#">Table Decor Items</a> | <a href="#">Dining Decor Items</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item">
+                    <h4 class="footer-title">Shop By Popular Categories</h4>
+
+                    <p class="footer-category-title">MATTRESSES</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">Single Bed Mattresses</a> | <a href="#">Double Bed Mattresses</a></li>
+                        <li><a href="#">King Size Mattresses</a> | <a href="#">Queen Size Mattress</a></li>
+                        <li><a href="#">Memory Foam Mattress</a> | <a href="#">Orthopaedic Mattress</a></li>
+                        <li><a href="#">100 Nights Free Trial On Mattress</a></li>
+                    </ul>
+
+                    <p class="footer-category-title">BEDS</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">King Size Beds</a> | <a href="#">Queen Size Beds</a></li>
+                        <li><a href="#">Hydraulic Beds</a> | <a href="#">Storage Beds</a></li>
+                        <li><a href="#">Without Storage Beds</a></li>
+                    </ul>
+
+                    <p class="footer-category-title">ACCESSORIES</p>
+                    <ul class="footer-nav-list footer-category-list">
+                        <li><a href="#">Bedding</a> | <a href="#">Bedsheets</a> | <a href="#">Decor</a> | <a
+                                href="#">Lights & Lamps</a></li>
+                        <li><a href="#">Floor Furnishing</a> | <a href="#">Decorative Items</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column-item footer-payment-block">
+                    <h4 class="footer-title">Payment Methods</h4>
+                    <p class="footer-payment-info">EMI & No Cost EMI | Credit Cards | Debit Cards</p>
+                    <div class="footer-logo-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+                            alt="Visa Mastercard Amex">
+                        <img src="https://pngimg.com/d/mastercard_PNG16.png" alt="GPay Paytm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/349/349228.png" alt="GPay Paytm">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/2560px-Google_Pay_Logo.svg.png"
+                            alt="GPay Paytm">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Paytm_Logo.png" alt="GPay Paytm">
+                    </div>
+                </div>
+
+                <div class="footer-column-item ">
+                    <h4 class="footer-title">Trusted Websites</h4>
+                    <p class="footer-trusted-info">SSL Certified | ISO Certified | Data Protection | Website Term Of Use
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-copyright-bar">
+                <p>© 2025 SleepSure. All Rights Reserved </p>
+            </div>
+        </footer>
+    </main>
+
+    <div class="chat-button">
+        <span class="material-icons">chat</span>
+    </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            const openModalBtn = document.getElementById('openModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const dealerForm = document.getElementById('dealerForm');
+
+            // Open modal
+            openModalBtn.addEventListener('click', function () {
+                modalBackdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Close modal
+            closeModalBtn.addEventListener('click', function () {
+                modalBackdrop.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close modal when clicking outside
+            modalBackdrop.addEventListener('click', function (e) {
+                if (e.target === modalBackdrop) {
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Form submission
+            dealerForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Get form data
+                const formData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    mobile: document.getElementById('mobile').value,
+                    city: document.getElementById('city').value,
+                    userType: document.querySelector('input[name="userType"]:checked').value,
+                    notifications: document.getElementById('notifications').checked
+                };
+
+                // Show loading state
+                const submitBtn = dealerForm.querySelector('.submit-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+
+                // Simulate API call
+                setTimeout(() => {
+                    alert('Thank you for your interest! We will contact you soon.');
+                    dealerForm.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }, 2000);
+            });
+
+            // Close with Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modalBackdrop.classList.contains('active')) {
+                    modalBackdrop.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="assets/js/script.js"></script>
+
+
+
+
+
+
+</body>
+
+</html>
