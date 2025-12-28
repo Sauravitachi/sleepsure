@@ -42,9 +42,9 @@
                     </div>
                     @endif
                     <div class="price-figures">
-                        <span class="current-price">₹{{ number_format($product->price ?? 0) }}</span>
+                        <span class="current-price" id="mainProductPrice">{{ $product->price ?? 0 }}</span>
                         @if($product->onsale && $product->onsale_price)
-                            <span class="old-price">₹{{ number_format($product->price) }}</span>
+                            <span class="old-price" id="mainOldPrice">{{ $product->price }}</span>
                             <span class="discount-percent">
                                 @if($product->original_price > 0)
                                     {{ round((($product->original_price - $product->discount_price) / $product->original_price) * 100) }}%
@@ -53,17 +53,21 @@
                                 @endif
                             </span>
                         @endif
+                       
                     </div>
                     <div class="tax-info">Incl. of all taxes</div>
                 </div>
 
                 <div class="delivery-and-size">
                     <div class="check-delivery">
+
+                           
                         <label>Check Delivery</label>
                         <div class="pincode-input">
-                            <input type="text" placeholder="Enter pincode">
-                            <button>CHECK</button>
+                            <input type="text" id="deliveryPincode" placeholder="Enter pincode" maxlength="6">
+                            <button type="button" id="checkDeliveryBtn">CHECK</button>
                         </div>
+                        <div id="deliveryResult" style="margin-top:8px;font-size:14px;"></div>
                     </div>
                     <div class="choose-size-container">
                         <label>Choose Size</label>
@@ -86,7 +90,7 @@
                     <input type="hidden" name="variant_id" id="variant_id" value="{{ $product->default_variant_id ?? '' }}">
                     <input type="hidden" name="thickness_id" id="thickness_id" value="{{ $product->default_thickness_id ?? '' }}">
                     <input type="hidden" name="quantity" value="1">
-                    <input type="hidden" name="price" value="{{ $product->price }}">
+                    <input type="hidden" name="price" id="hiddenProductPrice" value="{{ $product->price }}">
 
                     <button type="submit" class="add-to-cart-btn">
                         Add to Cart
@@ -363,30 +367,71 @@
 
         <section class="reviews-section">
             <h2 class="section-title">Customer Reviews</h2>
-            <div class="overall-rating-summary">
-                <div class="overall-rating">{{ $product->review }}</div>
-                <p class="rating-info">Based on {{ $product->total_reviewers }} ratings</p>
-                <div class="platform-ratings">
-                    <div class="platform-rating">
-                        <div class="rating-stars">Add Review</div>
+            <div class="review-summary-panel">
+                <div class="summary-left">
+                    <div class="overall-rating">
+                        @php
+                            $avgReview = is_numeric($product->review) ? (float)$product->review : 0.0;
+                        @endphp
+                        {{ number_format($avgReview, 1) }}
                     </div>
+                    <div class="star-row">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <i class="fa fa-star{{ $i <= round($avgReview) ? '' : '-o' }}" style="color: #ffc107;"></i>
+                        @endfor
+                    </div>
+                    <div class="rating-info">Based on {{ $product->total_reviewers }} reviews</div>
+                </div>
+                <div class="summary-right">
+                    @php
+                        $total = max(1, $product->total_reviewers);
+                        $breakdown = [5=>0,4=>0,3=>0,2=>0,1=>0];
+                        foreach($productModel->reviews as $r) { $breakdown[$r->rate] = ($breakdown[$r->rate] ?? 0) + 1; }
+                    @endphp
+                    @foreach([5,4,3,2,1] as $star)
+                        <div class="rating-breakdown-row">
+                            <span class="star-label">{{ $star }} <i class="fa fa-star" style="color:#ffc107;"></i></span>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width:{{ ($breakdown[$star] ?? 0) / $total * 100 }}%"></div>
+                            </div>
+                            <span class="count">{{ $breakdown[$star] ?? 0 }}</span>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
             <h3 class="customer-media-title">Customer Photos</h3>
             <div class="customer-media-carousel">
+                <!-- TODO: Dynamically load customer images from reviews with media -->
                 <img src="assets/images/4.jpg" alt="Customer photo">
                 <img src="assets/images/13.jpg" alt="Customer photo">
                 <img src="assets/images/Comfy Mattress .jpg" alt="Customer photo">
             </div>
 
-            <div class="single-review-card">
-                <div class="review-rating-stars">5 ★</div>
-                <p class="review-text">Very comfortable and satisfaction guaranteed</p>
-                <p class="review-comment">Superb product. Very happy with the purchase. Excellent support for back pain.
-                    Delivery was prompt and the mattress expanded perfectly within 24 hours.</p>
-                <div class="reviewer-info">Amit Sharma • Verified Buyer • 2 weeks ago</div>
-            </div>
+            <!-- Review Submission Form (to be enhanced in next step) -->
+            @php
+                $user = auth()->user();
+                $alreadyReviewed = false;
+                if ($user) {
+                    $alreadyReviewed = $productModel->reviews->where('reviewer_id', $user->id)->count() > 0;
+                }
+            @endphp
+            @if(!$user)
+                <div class="review-form-container" style="margin: 30px 0;">
+                    <div style="color: #d9534f; font-weight: 500;">Please <a href="{{ route('login') }}">sign in</a> to submit a review.</div>
+                </div>
+            @elseif($alreadyReviewed)
+                <div class="review-form-container" style="margin: 30px 0;">
+                    <div style="color: #28a745; font-weight: 500;">You have already submitted a review for this product. Thank you!</div>
+                </div>
+            @else
+                <div class="review-form-container" style="margin: 30px 0;">
+                    @include('frontend.partials.review_form', ['product' => $product])
+                </div>
+            @endif
+
+            <!-- Display Product Reviews -->
+            @include('frontend.partials.product_reviews', ['productModel' => $productModel])
         </section>
     </div>
 
@@ -401,7 +446,7 @@
                     alt="{{ $product->product_name }}" class="modal-thumbnail">
                 <div>
                     <div class="modal-product-name">{{ $product->product_name }}</div>
-                    <div class="current-price">₹{{ number_format($product->price ?? 0) }}</div>
+                    <div class="current-price">{{ $product->price ?? 0 }}</div>
                 </div>
             </div>
 
@@ -436,22 +481,25 @@
             <div class="size-selection-group">
                 <h3>Dimensions</h3>
                 <div class="dimension-options" id="dimensionOptions">
-                    <button class="dimension-btn active">72 x 36 </button>
-                    <button class="dimension-btn">75 x 36</button>
-                    <button class="dimension-btn">72 x 48 </button>
-                    <button class="dimension-btn">78 x 48 </button>
-                    <button class="dimension-btn">78 x 60 </button>
-                    <button class="dimension-btn">78 x 72 </button>
+                 @foreach($dimensionVariants as $i => $dim)
+    <button class="dimension-btn{{ $i === 0 ? ' active' : '' }}" data-variant-id="{{ $dim->variant_id }}">
+        {{ $dim->variant_name }}
+    </button>
+@endforeach
                 </div>
             </div>
 
             <div class="size-selection-group">
                 <h3>Thickness</h3>
                 <div class="dimension-options">
-                    <button class="dimension-btn active">5</button>
-                    <button class="dimension-btn">6</button>
-                    <button class="dimension-btn">8</button>
-                    <button class="dimension-btn">10</button>
+               @foreach($thicknessVariants as $i => $thick)
+                    <button
+                        class="dimension-btn {{ $i === 0 ? 'active' : '' }}"
+                        data-thickness-id="{{ $thick->id }}"
+                    >
+                        {{ $thick->thick }}{{ $thick->map ? ' ' . $thick->map : '' }}
+                    </button>
+                    @endforeach
 
                 </div>
             </div>
@@ -470,6 +518,40 @@
     document.addEventListener('DOMContentLoaded', function() {
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
+
+        // Check Delivery AJAX
+        const checkBtn = document.getElementById('checkDeliveryBtn');
+        const pincodeInput = document.getElementById('deliveryPincode');
+        const deliveryResult = document.getElementById('deliveryResult');
+        if (checkBtn && pincodeInput && deliveryResult) {
+            checkBtn.addEventListener('click', function() {
+                const pincode = pincodeInput.value.trim();
+                if (!/^[0-9]{6}$/.test(pincode)) {
+                    deliveryResult.textContent = 'Please enter a valid 6-digit pincode.';
+                    deliveryResult.style.color = 'red';
+                    return;
+                }
+                deliveryResult.textContent = 'Checking...';
+                deliveryResult.style.color = '#333';
+                fetch("{{ route('product.checkDelivery') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({ pincode })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    deliveryResult.textContent = data.message;
+                    deliveryResult.style.color = data.success ? 'green' : 'red';
+                })
+                .catch(() => {
+                    deliveryResult.textContent = 'Error checking delivery.';
+                    deliveryResult.style.color = 'red';
+                });
+            });
+        }
 
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -542,6 +624,8 @@
         const confirmVariantBtn = document.querySelector('.confirm-variant-btn');
         // const variantModal = document.getElementById('variantModal');
 
+
+
         confirmVariantBtn.addEventListener('click', function () {
             const sizeBtn = document.querySelector('.size-group-btn.active');
             const isCustom = sizeBtn && sizeBtn.textContent.trim() === 'Custom';
@@ -565,12 +649,10 @@
                 return;
             }
             // Normal variant selection
-            const dimensionBtn = document
-                .querySelectorAll('.dimension-options')[0]
-                .querySelector('.dimension-btn.active');
-            const thicknessBtn = document
-                .querySelectorAll('.dimension-options')[1]
-                .querySelector('.dimension-btn.active');
+            const dimensionBtns = document.querySelectorAll('.dimension-options')[0].querySelectorAll('.dimension-btn');
+            const thicknessBtns = document.querySelectorAll('.dimension-options')[1].querySelectorAll('.dimension-btn');
+            const dimensionBtn = Array.from(dimensionBtns).find(b => b.classList.contains('active'));
+            const thicknessBtn = Array.from(thicknessBtns).find(b => b.classList.contains('active'));
             if (!sizeBtn || !dimensionBtn || !thicknessBtn) {
                 alert('Please select size and thickness');
                 return;
@@ -578,8 +660,12 @@
             const selectedSize = sizeBtn.textContent.trim();
             const selectedDimension = dimensionBtn.textContent.trim();
             const selectedThickness = thicknessBtn.textContent.trim();
-            document.getElementById('variant_id').value = selectedDimension;
-            document.getElementById('thickness_id').value = selectedThickness;
+            // Use index as ID for demo/fix (should be replaced with real IDs from backend)
+            const variantId = dimensionBtn ? dimensionBtn.dataset.variantId : '';
+            const thicknessId = thicknessBtn.dataset.thicknessId;
+
+            document.getElementById('variant_id').value = variantId;
+            document.getElementById('thickness_id').value = thicknessId;
             document.getElementById('hiddenCustomLength').value = '';
             document.getElementById('hiddenCustomBreadth').value = '';
             // Update Choose Size display
@@ -588,8 +674,11 @@
                 selectedSizeDisplay.textContent = `${selectedSize} | ${selectedDimension} x ${selectedThickness} `;
             }
             variantModal.classList.remove('active');
-        });
 
+            // --- Call price update here with correct IDs ---
+            const productId = '{{ $product->product_id }}';
+            updateProductPrice(variantId, thicknessId, productId);
+        });
 
         // Thumbnail gallery functionality
         const thumbnails = document.querySelectorAll('.thumbnails img');
@@ -647,5 +736,40 @@
             }
         });
     });
+function updateProductPrice(variantId, thicknessId, productId) {
+
+    console.log('Sending:', variantId, thicknessId, productId);
+
+    fetch("{{ route('product.variantPrice') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({
+            variant_id: variantId,
+            thickness_id: thicknessId,
+            product_id: productId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.success) {
+            document.getElementById('mainProductPrice').textContent = data.price;
+            document.getElementById('hiddenProductPrice').value = data.price;
+        } else {
+            document.getElementById('mainProductPrice').textContent = 'N/A';
+            alert(data.message);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Error fetching price');
+    });
+}
+
+
+
 </script>
 @endpush

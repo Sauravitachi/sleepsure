@@ -318,20 +318,29 @@
                         </div>
                     </a>
                     <div class="bottom">
-                        <div class="left">
-                            <div class="details">
-                                <h1>{{ $product['product_name'] ?? 'N/A' }}</h1>
-                                <p>({{ $product['size']}})</p>
-                                <p>({{ $product['size_cm']}})</p>
-                                <div class="price-group">
-                                    <span class="price">
-                                        ₹{{ number_format($product['variant_price'] ?? 0) }}
-                                    </span>
+                            <div class="left">
+                                <div class="details">
+                                    <h1>{{ $product['product_name'] ?? 'N/A' }}</h1>
+                                    <p>({{ $product['size'] }})</p>
+                                    <p>({{ $product['size_cm'] }})</p>
+                                    <div class="price-group">
+                                        <span class="price">{{ $product['price'] ?? 0 }}</span>
+                                        @if($product['discount_percent'] > 0)
+                                        <span class="discount">{{ $product['discount_percent'] }}% off</span>
+                                        @endif
+                                    </div>
                                 </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
                             </div>
-                            <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            <div class="right">
+                                <div class="done"><i class="fa-solid fa-check"></i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>{{ $product['product_name'] ?? 'N/A' }}</p>
+                                </div>
+                                <div class="remove"><i class="fa-solid fa-xmark"></i></div>
+                            </div>
                         </div>
-                    </div>
                 </div>
                 <div class="inside">
                     <div class="icon"><i class="fa-solid fa-info"></i></div>
@@ -446,20 +455,29 @@
                         </div>
                     </a>
                     <div class="bottom">
-                        <div class="left">
-                            <div class="details">
-                                <h1>{{ $product['product_name'] ?? 'N/A' }}</h1>
-                                <p>({{ $product['size']}})</p>
-                                <p>({{ $product['size_cm']}})</p>
-                                <div class="price-group">
-                                    <span class="price">
-                                        ₹{{ number_format($product['variant_price'] ?? 0) }}
-                                    </span>
+                            <div class="left">
+                                <div class="details">
+                                    <h1>{{ $product['product_name'] ?? 'N/A' }}</h1>
+                                    <p>({{ $product['size'] }})</p>
+                                    <p>({{ $product['size_cm'] }})</p>
+                                    <div class="price-group">
+                                        <span class="price">{{ $product['price'] ?? 0 }}</span>
+                                        @if($product['discount_percent'] > 0)
+                                        <span class="discount">{{ $product['discount_percent'] }}% off</span>
+                                        @endif
+                                    </div>
                                 </div>
+                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
                             </div>
-                            <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
+                            <div class="right">
+                                <div class="done"><i class="fa-solid fa-check"></i></div>
+                                <div class="details">
+                                    <h1>Added to cart</h1>
+                                    <p>{{ $product['product_name'] ?? 'N/A' }}</p>
+                                </div>
+                                <div class="remove"><i class="fa-solid fa-xmark"></i></div>
+                            </div>
                         </div>
-                    </div>
                 </div>
                 <div class="inside">
                     <div class="icon"><i class="fa-solid fa-info"></i></div>
@@ -840,9 +858,8 @@
                                     <p>({{ $product['size_cm']}})</p>
 
                                     <div class="price-group">
-                                        <span class="price">
-                                            ₹{{ number_format($product['variant_price'] ?? 0) }}
-                                        </span>
+                                                                               <span class="price">{{ $product['price'] ?? 0 }}</span>
+
                                     </div>
                                 </div>
                                 <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>

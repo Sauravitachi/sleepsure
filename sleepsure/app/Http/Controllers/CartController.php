@@ -23,15 +23,29 @@ class CartController extends Controller
         'payload' => $request->all(),
     ]);
 
-    $validated = $request->validate([
+    // Sanitize price: remove currency symbols and commas
+    $input = $request->all();
+    if (isset($input['price'])) {
+        $input['price'] = preg_replace('/[^0-9.]/', '', $input['price']);
+    }
+
+    $validated = \Validator::make($input, [
         'product_id' => 'required',
-        'variant_id' => 'nullable',
-        'thickness_id' => 'nullable',
+        'variant_id' => 'required',
+        'thickness_id' => 'required',
         'quantity' => 'required|integer|min:1',
         'price' => 'required|numeric|min:0',
         'custom_length' => 'nullable|integer|min:1',
         'custom_breadth' => 'nullable|integer|min:1',
-    ]);
+    ])->validate();
+
+    // --- Extra validation: If not custom size, variant_id and thickness_id must not be null ---
+    $isCustom = !empty($validated['custom_length']) && !empty($validated['custom_breadth']);
+    if (!$isCustom) {
+        if (empty($validated['variant_id']) || empty($validated['thickness_id'])) {
+            return back()->withErrors(['variant_id' => 'Please select a valid size and thickness.'])->withInput();
+        }
+    }
 
     // -----------------------------
     // Decide cart owner
@@ -41,14 +55,21 @@ class CartController extends Controller
         Log::info('👤 Logged-in user cart detected', [
             'user_id' => Auth::id(),
         ]);
+            // Sanitize price: remove currency symbols and commas
+            $input = $request->all();
+            if (isset($input['price'])) {
+                $input['price'] = preg_replace('/[^0-9.]/', '', $input['price']);
+            }
 
-        $cart = Cart::firstOrCreate(
-            [
-                'customer_id' => Auth::id(),
-                'status' => 'active',
-            ]
-        );
-
+            $validated = $request->validate([
+                'product_id' => 'required',
+                'variant_id' => 'required',
+                'thickness_id' => 'required',
+                'quantity' => 'required|integer|min:1',
+                'price' => 'required|numeric|min:0',
+                'custom_length' => 'nullable|integer|min:1',
+                'custom_breadth' => 'nullable|integer|min:1',
+            ]);
     } else {
 
         Log::info('👥 Guest cart detected', [

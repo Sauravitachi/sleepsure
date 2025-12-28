@@ -186,7 +186,8 @@
 										<p>({{ $product['size'] }})</p>
 										<p>({{ $product['size_cm'] }})</p>
 										<div class="price-group">
-											<span class="price">₹{{ number_format($product['variant_price'] ?? 0) }}</span>
+											                                         <span class="price">{{ $product['price'] ?? 0 }}</span>
+
 											@if($product['discount_percent'] > 0)
 											<span class="discount">{{ $product['discount_percent'] }}% off</span>
 											@endif

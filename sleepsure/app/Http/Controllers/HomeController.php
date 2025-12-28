@@ -83,6 +83,9 @@ class HomeController extends Controller
         });
     }
 
+
+
+
     // function for all categories page
     public function allCategories(Request $request)
     {
@@ -110,9 +113,8 @@ class HomeController extends Controller
         }
         
         // Apply price filter
-        $priceMax = $request->input('price_max', 100000);
-        if ($priceMax) {
-            // Join with product_variants to filter by price
+        $priceMax = $request->input('price_max');
+        if ($priceMax !== null && $priceMax < 100000) {
             $productsQuery->leftJoin('product_variants', 'product_information.product_id', '=', 'product_variants.product_id')
                 ->where('product_variants.price', '<=', $priceMax)
                 ->select('product_information.*');
@@ -193,21 +195,24 @@ class HomeController extends Controller
             'reviews'
         ])->where('status', 1);
 
+        // If no type, show all products
         if ($type === 'featured') {
             $productsQuery->where('is_featured', 1);
             $title = 'All Featured Products';
-        } elseif ($type === 'best_seller') {
+        } elseif ($type === 'best_seller' || $type === 'best_sale') {
             $productsQuery->where('best_sale', 1);
             $title = 'All Best Seller Products';
-        }elseif($type === 'top_rated') {
+        } elseif ($type === 'top_rated') {
             $productsQuery->where('top_rated', 1);
             $title = 'All Top Rated Products';
+        } else {
+            $title = 'All Products';
         }
 
         // Price filter
-        $priceMax = $request->input('price_max', 100000);
+        $priceMax = $request->input('price_max');
         $joinedVariants = false;
-        if ($priceMax) {
+        if ($priceMax !== null && $priceMax < 100000) {
             $productsQuery->leftJoin('product_variants', 'product_information.product_id', '=', 'product_variants.product_id')
                 ->where('product_variants.price', '<=', $priceMax)
                 ->select('product_information.*');
@@ -307,7 +312,8 @@ class HomeController extends Controller
             ])
             ->where('status', 1)
             ->where($filterField, 1)
-            ->limit($limit)
+                ->inRandomOrder() // Randomize the order
+                ->limit($limit)
             ->get()
             ->map(function ($product) use ($global) {
                 $this->applyImageAndWarranty($product, $global);
@@ -352,67 +358,99 @@ class HomeController extends Controller
         return $fallback;
     }
 
-   private function getVariantDetails($productId)
-{
-    return DB::selectOne("
-        SELECT 
-            pv.product_id, 
-            pv.var_size_id, 
-            pv.var_thickness_id, 
-            pv.price, 
-            t.thick, 
-            t.map, 
-            v.variant_name, 
-            v.variant_cat,
+    private function getVariantDetails($productId)
+    {
+        $variant = DB::selectOne("
+            SELECT 
+                pv.product_id, 
+                pv.var_size_id, 
+                pv.var_thickness_id, 
+                pv.price, 
+                t.thick, 
+                t.map, 
+                v.variant_name, 
+                v.variant_cat,
 
-            -- Default Rate fallback (ANY thickness)
-            COALESCE(
+                COALESCE(
+                    po.default_rate,
+                    (
+                        SELECT por.default_rate
+                        FROM product_oddsizerate por
+                        WHERE por.product_id = pv.product_id
+                        ORDER BY por.var_thickness_id DESC
+                        LIMIT 1
+                    )
+                ) AS default_rate,
+
+                COALESCE(
+                    po.oddsize_rate,
+                    (
+                        SELECT por.oddsize_rate
+                        FROM product_oddsizerate por
+                        WHERE por.product_id = pv.product_id
+                        ORDER BY por.var_thickness_id DESC
+                        LIMIT 1
+                    )
+                ) AS oddsize_rate
+
+            FROM product_variants pv
+            LEFT JOIN thickness t ON t.id = pv.var_thickness_id 
+            LEFT JOIN variant v ON v.variant_id = pv.var_size_id
+            LEFT JOIN product_oddsizerate po 
+                ON po.product_id = pv.product_id 
+                AND po.var_thickness_id = pv.var_thickness_id
+            WHERE pv.product_id = :product_id
+            AND v.status = 1
+            ORDER BY pv.var_thickness_id DESC
+            LIMIT 1
+        ", ['product_id' => $productId]);
+
+        if ($variant) {
+            return $variant;
+        }
+
+        //Fallback → thickness + default size
+        return DB::selectOne("
+            SELECT 
+                pi.product_id,
+
+                -- Size from default_variant
+                v.variant_id   AS var_size_id,
+                v.variant_name,
+                v.variant_cat,
+
+                -- Thickness
+                t.id AS var_thickness_id,
+                t.thick,
+                t.map,
+
+                -- Rates
                 po.default_rate,
-                (
-                    SELECT por.default_rate
-                    FROM product_oddsizerate por
-                    WHERE por.product_id = pv.product_id
-                    ORDER BY por.var_thickness_id DESC
-                    LIMIT 1
-                )
-            ) AS default_rate,
-
-            -- Odd Size Rate fallback (ANY thickness)
-            COALESCE(
                 po.oddsize_rate,
-                (
-                    SELECT por.oddsize_rate
-                    FROM product_oddsizerate por
-                    WHERE por.product_id = pv.product_id
-                    ORDER BY por.var_thickness_id DESC
-                    LIMIT 1
-                )
-            ) AS oddsize_rate
 
-        FROM product_variants pv
-        LEFT JOIN thickness t 
-            ON t.id = pv.var_thickness_id 
-        LEFT JOIN variant v 
-            ON v.variant_id = pv.var_size_id
-        LEFT JOIN product_oddsizerate po 
-            ON po.product_id = pv.product_id 
-           AND po.var_thickness_id = pv.var_thickness_id
+                NULL AS price
 
-        WHERE pv.product_id = :product_id
-          AND v.status = 1
-        ORDER BY pv.var_thickness_id DESC
-        LIMIT 1
-    ", ['product_id' => $productId]);
-}
+            FROM product_information pi
+            LEFT JOIN variant v
+                ON v.variant_id = pi.default_variant
+                AND v.status = 1
+            LEFT JOIN product_oddsizerate po
+                ON po.product_id = pi.product_id
+            LEFT JOIN thickness t
+                ON t.id = po.var_thickness_id
+            WHERE pi.product_id = :product_id
+            ORDER BY po.var_thickness_id DESC
+            LIMIT 1
+        ", ['product_id' => $productId]);
 
 
+
+    }
     public function transformProduct($product)
     {
         $variant = $this->getVariantDetails($product->product_id);
         $sizeValue  = $variant->variant_name ?? '';
         $thickValue = $variant->thick ?? '';
-        $sizeNum  = (float) preg_replace('/[^0-9.]/', '', $sizeValue);
-        $thickNum = (float) preg_replace('/[^0-9.]/', '', $thickValue);
 
         $dimensions = $this->extractDimensions($sizeValue);
         $dim1 = $dimensions['dim1'] ?? 0;
@@ -441,9 +479,12 @@ class HomeController extends Controller
             ($thickness_display ? ' x ' . $thickness_display : '')
         );
 
-        $dim1_cm = $dim1 > 0 ? round($dim1 * 2.54, 1) : 0;
-        $dim2_cm = $dim2 > 0 ? round($dim2 * 2.54, 1) : 0;
-        $sqft = ($dim1 > 0 && $dim2 > 0) ? ($dim1 * $dim2) / 144 : 0;
+        // Calculate SQFT
+        $sqft = $this->calculateSqft($dim1, $dim2);
+        // Convert inches to cm
+        $dim1_cm = $this->inchToCm($dim1);
+        $dim2_cm = $this->inchToCm($dim2);
+        $thickNum = (float) preg_replace('/[^0-9.]/', '', $thickValue);
 
         // If both oddsize_rate and default_rate are NULL, fetch via fallback query
         $default_rate = $variant->default_rate ?? null;
@@ -474,25 +515,7 @@ class HomeController extends Controller
         }
 
         // Calculate price using oddsize_rate and SQFT as per business logic
-        $price = 0;
-        if ($variant_found) {
-            if ($oddsize_rate && $sqft > 0) {
-                $price = round($oddsize_rate * $sqft, 2);
-            } else if ($default_rate && $sqft > 0) {
-                $price = round($default_rate * $sqft, 2);
-            } else if ($variant->price) {
-                $price = $variant->price;
-            }
-        } else {
-            // No variant found, use fallback rates
-            if ($oddsize_rate) {
-                $price = $oddsize_rate;
-            } else if ($default_rate) {
-                $price = $default_rate;
-            } else {
-                $price = 0; // Explicitly set to 0 if no rates found
-            }
-        }
+        $price = $this->calculatePrice($sqft, $default_rate, $oddsize_rate, $variant);
 
         $default_price_calculated = $default_rate ?? 0;
         $oddsize_price_calculated = $oddsize_rate ?? 0;
@@ -511,7 +534,7 @@ class HomeController extends Controller
             'description' => $product->description ?? '',
             'onsale' => $product->onsale ?? false,
             'onsale_price' => $product->onsale_price ?? null,
-            'price' => $price,
+            'price' => $this->formatRupee($price),
             'specification' => $product->specification ?? '',
             'category_id' => $product->categoryDetails->category_id ?? 'N/A',
             'category_name' =>
@@ -526,7 +549,7 @@ class HomeController extends Controller
 
             // Variant details
             'variant_name' => $variant->variant_name ?? 'N/A',
-            'variant_price' => $variant->price ?? ($oddsize_rate ?? 0),
+            'variant_price' => $this->formatRupee($variant->price ?? ($oddsize_rate ?? 0)),
             'default_rate' => $default_rate,
             'oddsize_rate' => $oddsize_rate,
             'variant_thickness' => $variant->thick ?? ($fallback_thickness ?? ($variant_thickness_id ?? '')),
@@ -546,8 +569,8 @@ class HomeController extends Controller
             'dim2' => $dim2,
             'default_price_calculated' => $default_price_calculated,
             'oddsize_price_calculated' => $oddsize_price_calculated,
-            'discount_price' => $variant->price ?? ($oddsize_rate ?? 0),
-            'original_price' => $variant->default_rate ?? ($default_rate ?? 0),
+            'discount_price' => $this->formatRupee($variant->price ?? ($oddsize_rate ?? 0)),
+            'original_price' => $this->formatRupee($variant->default_rate ?? ($default_rate ?? 0)),
             'discount_percent' => ($variant && $variant->default_rate > 0 && $variant->price > 0)
                 ? round((($variant->default_rate - $variant->price) / $variant->default_rate) * 100)
                 : 0,
@@ -563,7 +586,70 @@ class HomeController extends Controller
             'variant_full_display' => $variant_full_display,
             'default_variant' => $default_variant,
         ];
-}
+
+    }
+
+    /**
+     * Format a number as Indian Rupee with 2 decimals and comma grouping
+     */
+    private function formatRupee($amount)
+    {
+        if (!is_numeric($amount)) return '';
+        $formatted = number_format((float)$amount, 2, '.', ',');
+        return '₹ ' . $formatted;
+    }
+
+    /**
+     * Calculate SQFT from inches
+     * @param float $lengthInch
+     * @param float $widthInch
+     * @return float
+     */
+    private function calculateSqft($lengthInch, $widthInch)
+    {
+        if ($lengthInch > 0 && $widthInch > 0) {
+            return round(($lengthInch * $widthInch) / 144, 2);
+        }
+        return 0;
+    }
+
+    /**
+     * Convert inches to centimeters
+     * @param float $inch
+     * @return float
+     */
+    private function inchToCm($inch)
+    {
+        return $inch > 0 ? round($inch * 2.54, 1) : 0;
+    }
+
+    /**
+     * Calculate price based on SQFT and rates
+     * @param float $sqft
+     * @param float|null $default_rate
+     * @param float|null $oddsize_rate
+     * @param object|null $variant
+     * @return float
+     */
+    private function calculatePrice($sqft, $default_rate, $oddsize_rate, $variant)
+    {
+        if ($variant) {
+            if ($oddsize_rate && $sqft > 0) {
+                return round($oddsize_rate * $sqft, 2);
+            } elseif ($default_rate && $sqft > 0) {
+                return round($default_rate * $sqft, 2);
+            } elseif (isset($variant->price)) {
+                return $variant->price;
+            }
+        } else {
+            if ($oddsize_rate) {
+                return $oddsize_rate;
+            } elseif ($default_rate) {
+                return $default_rate;
+            }
+        }
+        return 0;
+    }
 private function formatWarranty($months)
 {
     if (!$months || $months <= 0) {
