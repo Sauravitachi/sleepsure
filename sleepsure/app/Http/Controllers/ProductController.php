@@ -78,75 +78,95 @@ class ProductController extends Controller
             : response()->json(['success' => false, 'message' => 'Delivery not available']);
     }
 
-   public function getVariantPrice(Request $request)
+    public function getVariantPrice(Request $request)
 {
-    $variantId   = $request->variant_id;
-    $thicknessId = $request->thickness_id;
-    $productId   = $request->product_id;
+    \Log::info('Variant price request', $request->all());
 
-    $variant = Variant::where('variant_id', $variantId)->first();
-    if (!$variant) {
-        return response()->json(['success' => false, 'message' => 'Invalid size']);
+    $productId      = $request->product_id;
+    $variantId      = $request->variant_id;
+    $thicknessId    = $request->thickness_id;
+    $customLength   = (float) $request->custom_length;
+    $customBreadth  = (float) $request->custom_breadth;
+
+    $home = app(\App\Http\Controllers\HomeController::class);
+
+    $baseVariant = $home->getVariantDetails($productId);
+
+    $sizeVariant = Variant::where('variant_id', $variantId)->first();
+
+    if (!$sizeVariant) {
+        \Log::warning('Size variant not found', compact('variantId'));
+        return response()->json([
+            'success' => true,
+            'price'   => $home->formatRupee(0)
+        ]);
     }
 
-    preg_match('/(\d+)\s*[xX]\s*(\d+)/', $variant->variant_name, $m);
-    $dim1 = (float) ($m[1] ?? 0);
-    $dim2 = (float) ($m[2] ?? 0);
-
-    if ($dim1 <= 0 || $dim2 <= 0) {
-        return response()->json(['success' => false, 'message' => 'Invalid dimension format']);
+    if ($customLength > 0 && $customBreadth > 0) {
+        $sqft = round(($customLength * $customBreadth) / 144, 2);
+        $isCustom = true;
+    } else {
+        $dimensions = $home->extractDimensions($sizeVariant->variant_name);
+        $sqft = $home->calculateSqft(
+            $dimensions['dim1'] ?? 0,
+            $dimensions['dim2'] ?? 0
+        );
+        $isCustom = false;
     }
 
-    $sqft = round(($dim1 * $dim2) / 144, 2);
+    \Log::info('SQFT calculated', compact('sqft', 'isCustom'));
 
-    $row = DB::selectOne("
-        SELECT default_rate, oddsize_rate
-        FROM product_oddsizerate
-        WHERE product_id = ?
-        AND var_thickness_id = ?
-        LIMIT 1
-    ", [$productId, $thicknessId]);
+    if (!$isCustom) {
+        $fixedPrice = DB::table('product_variants')
+            ->where('product_id', $productId)
+            ->where('var_size_id', $variantId)
+            ->where('var_thickness_id', $thicknessId)
+            ->value('price');
 
-    if (!$row) {
-        $row = DB::selectOne("
-            SELECT default_rate, oddsize_rate
-            FROM product_oddsizerate
-            WHERE product_id = ?
-            LIMIT 1
-        ", [$productId]);
+        if (!is_null($fixedPrice)) {
+            return response()->json([
+                'success' => true,
+                'sqft'    => $sqft,
+                'price'   => $home->formatRupee($fixedPrice),
+                'type'    => 'fixed'
+            ]);
+        }
     }
 
-    if (!$row) {
-        return response()->json(['success' => false, 'message' => 'Rate configuration missing']);
-    }
+    $default_rate = $baseVariant->default_rate ?? 0;
+    $oddsize_rate = $baseVariant->oddsize_rate ?? 0;
 
-    $standardVariant = DB::table('product_variants')
-        ->where('product_id', $productId)
-        ->where('var_size_id', $variantId)
-        ->where('var_thickness_id', $thicknessId)
-        ->whereNotNull('price')
-        ->first();
+    $price = $home->calculatePrice(
+        $sqft,
+        $default_rate,
+        $oddsize_rate,
+        $baseVariant
+    );
 
-    $isOddSize = !$standardVariant;
-
-    $rate = $isOddSize
-        ? ($row->oddsize_rate ?? $row->default_rate)
-        : $row->default_rate;
-
-    if (!$rate) {
-        return response()->json(['success' => false, 'message' => 'Rate not available']);
-    }
-
-    $price = round($sqft * $rate, 2);
+    \Log::info('Final price', [
+        'sqft' => $sqft,
+        'default_rate' => $default_rate,
+        'oddsize_rate' => $oddsize_rate,
+        'price' => $price
+    ]);
 
     return response()->json([
         'success' => true,
         'sqft'    => $sqft,
-        'rate'    => $rate,
-        'price'   => '₹ ' . number_format($price, 2),
-        'type'    => $isOddSize ? 'odd' : 'default'
+        'rate'    => $isCustom
+            ? ($oddsize_rate ?: $default_rate)
+            : $default_rate,
+        'price'   => $home->formatRupee($price),
+        'type'    => $isCustom ? 'custom-rate' : 'default-rate'
     ]);
 }
 
+
+public function formatRupee($amount)
+{
+    if (!is_numeric($amount)) return '';
+    $formatted = number_format((float)$amount, 2, '.', ',');
+    return '₹ ' . $formatted;
+}
 
 }

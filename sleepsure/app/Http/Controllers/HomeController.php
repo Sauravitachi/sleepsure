@@ -358,7 +358,7 @@ class HomeController extends Controller
         return $fallback;
     }
 
-    private function getVariantDetails($productId)
+    public function getVariantDetails($productId)
     {
         $variant = DB::selectOne("
             SELECT 
@@ -592,7 +592,7 @@ class HomeController extends Controller
     /**
      * Format a number as Indian Rupee with 2 decimals and comma grouping
      */
-    private function formatRupee($amount)
+    public function formatRupee($amount)
     {
         if (!is_numeric($amount)) return '';
         $formatted = number_format((float)$amount, 2, '.', ',');
@@ -605,7 +605,7 @@ class HomeController extends Controller
      * @param float $widthInch
      * @return float
      */
-    private function calculateSqft($lengthInch, $widthInch)
+    public function calculateSqft($lengthInch, $widthInch)
     {
         if ($lengthInch > 0 && $widthInch > 0) {
             return round(($lengthInch * $widthInch) / 144, 2);
@@ -618,7 +618,7 @@ class HomeController extends Controller
      * @param float $inch
      * @return float
      */
-    private function inchToCm($inch)
+    public function inchToCm($inch)
     {
         return $inch > 0 ? round($inch * 2.54, 1) : 0;
     }
@@ -631,7 +631,7 @@ class HomeController extends Controller
      * @param object|null $variant
      * @return float
      */
-    private function calculatePrice($sqft, $default_rate, $oddsize_rate, $variant)
+    public function calculatePrice($sqft, $default_rate, $oddsize_rate, $variant)
     {
         if ($variant) {
             if ($oddsize_rate && $sqft > 0) {
@@ -671,7 +671,7 @@ private function formatWarranty($months)
     return $months . ' Month' . ($months > 1 ? 's' : '');
 }
 
-private function extractDimensions($variantName)
+public function extractDimensions($variantName)
 {
     preg_match('/(\d+(?:\.\d+)?)\s*[xX×]\s*(\d+(?:\.\d+)?)/', $variantName, $matches);
     return [

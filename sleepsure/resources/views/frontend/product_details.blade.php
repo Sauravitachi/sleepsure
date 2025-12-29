@@ -19,9 +19,9 @@
             <div class="product-details">
                 <h1 class="product-name">{{ $product->product_name ?? 'Product' }}</h1>
                 <p class="product-variant-info">
-                   <p class="product-variant-info">
+                    <span id="selectedSizeDisplayTop">
                         {{ $product->variant_full_display.'  Warranty' }}
-                   </p>
+                    </span>
                 </p>
                 
                 {{-- @if($product?->description)
@@ -72,7 +72,7 @@
                     <div class="choose-size-container">
                         <label>Choose Size</label>
                         <div class="size-dropdown" id="openVariantModal">
-                            <span id="selectedSizeDisplay">
+                            <span id="selectedSizeDisplayDropdown">
                                 @if(!empty($product->default_variant) && $product->default_variant !== 'N/A')
                                     {{ $product->default_variant }}
                                 @else
@@ -220,6 +220,7 @@
                         </div>
                     </div>
                     <div class="detail-item">
+   
                         <div class="icon-box"><i class="fas fa-atom"></i></div>
                         <div class="text-content">
                             <h3>Material Technology</h3>
@@ -441,14 +442,14 @@
             <button class="modal-close-btn" id="closeVariantModal">&times;</button>
             <h2 class="modal-title">Choose Your Size</h2>
 
-            <div class="modal-product-header">
-                <img src="{{ $product->image_url }}"
-                    alt="{{ $product->product_name }}" class="modal-thumbnail">
-                <div>
-                    <div class="modal-product-name">{{ $product->product_name }}</div>
-                    <div class="current-price">{{ $product->price ?? 0 }}</div>
+                <div class="modal-product-header">
+                    <img src="{{ $product->image_url }}"
+                        alt="{{ $product->product_name }}" class="modal-thumbnail">
+                    <div>
+                        <div class="modal-product-name">{{ $product->product_name }}</div>
+                        <div class="current-price" id="modalProductPrice">{{ $product->price ?? 0 }}</div>
+                    </div>
                 </div>
-            </div>
 
             <div class="learn-measure-banner">
                 <i class="fas fa-ruler-combined"></i> Not sure about size? Learn how to measure
@@ -457,7 +458,7 @@
             <div class="size-selection-group">
                 <h3>Size Group</h3>
                 <div class="size-group-options">
-                    <button class="size-group-btn active">Single</button>
+                    <button class="size-group-btn">Single</button>
                     <button class="size-group-btn">Double</button>
                     <button class="size-group-btn">Queen</button>
                     <button class="size-group-btn">King</button>
@@ -514,12 +515,44 @@
 
 @push('scripts')
 <script>
-    // Product Details Tabs
+
+    function triggerCustomPriceUpdate() {
+        const customLength = document.getElementById('customLength')?.value;
+        const customBreadth = document.getElementById('customBreadth')?.value;
+
+        let thicknessBtn = null;
+        const thicknessGroups = document.querySelectorAll('.dimension-options');
+        if (thicknessGroups.length > 1) {
+            thicknessBtn = Array.from(thicknessGroups[1].querySelectorAll('.dimension-btn')).find(btn => btn.classList.contains('active'));
+        }
+
+        if (!customLength || !customBreadth || !thicknessBtn) return;
+
+        const thicknessId = thicknessBtn.dataset.thicknessId;
+        const productId = '{{ $product->product_id }}';
+
+        // Set hidden fields for custom size
+        document.getElementById('hiddenCustomLength').value = customLength;
+        document.getElementById('hiddenCustomBreadth').value = customBreadth;
+
+        updateProductPrice('', thicknessId, productId);
+    }
+
+['input', 'change'].forEach(evt => {
+    document.getElementById('customLength')?.addEventListener(evt, triggerCustomPriceUpdate);
+    document.getElementById('customBreadth')?.addEventListener(evt, triggerCustomPriceUpdate);
+});
+
+document.querySelectorAll('.dimension-options:nth-of-type(2) .dimension-btn')
+    .forEach(btn => {
+        btn.addEventListener('click', triggerCustomPriceUpdate);
+    });
+    
     document.addEventListener('DOMContentLoaded', function() {
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        // Check Delivery AJAX
+        
         const checkBtn = document.getElementById('checkDeliveryBtn');
         const pincodeInput = document.getElementById('deliveryPincode');
         const deliveryResult = document.getElementById('deliveryResult');
@@ -557,17 +590,14 @@
             button.addEventListener('click', function() {
                 const targetTab = this.getAttribute('data-tab');
 
-                // Remove active class from all buttons and contents
-                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabButtons.forEach(btn => btn.classList.remove('active'));                
                 tabContents.forEach(content => content.classList.remove('active'));
 
-                // Add active class to clicked button and corresponding content
                 this.classList.add('active');
                 document.getElementById(targetTab).classList.add('active');
             });
         });
 
-        // Variant Modal functionality
         const openVariantModal = document.getElementById('openVariantModal');
         const variantModal = document.getElementById('variantModal');
         const closeVariantModal = document.getElementById('closeVariantModal');
@@ -582,8 +612,7 @@
             closeVariantModal.addEventListener('click', function() {
                 variantModal.classList.remove('active');
             });
-
-            // Close modal when clicking outside
+            
             variantModal.addEventListener('click', function(e) {
                 if (e.target === variantModal) {
                     variantModal.classList.remove('active');
@@ -591,7 +620,6 @@
             });
         }
 
-        // Size Group Selection
         const sizeGroupBtns = document.querySelectorAll('.size-group-btn');
         const customBtn = document.getElementById('customSizeBtn');
         const customInputs = document.getElementById('customSizeInputs');
@@ -606,23 +634,58 @@
                 } else {
                     customInputs.style.display = 'none';
                     if (dimensionOptions) dimensionOptions.style.display = '';
+                 
+                    const dimensionBtnsArr = Array.from(dimensionBtns);
+                    const thicknessBtnsArr = Array.from(thicknessBtns);
+                    if (!dimensionBtnsArr.some(b => b.classList.contains('active')) && dimensionBtnsArr.length > 0) {
+                        dimensionBtnsArr.forEach(b => b.classList.remove('active'));
+                        dimensionBtnsArr[0].classList.add('active');
+                    }
+                    if (!thicknessBtnsArr.some(b => b.classList.contains('active')) && thicknessBtnsArr.length > 0) {
+                        thicknessBtnsArr.forEach(b => b.classList.remove('active'));
+                        thicknessBtnsArr[0].classList.add('active');
+                    }
+                    triggerRealtimePriceUpdate();
                 }
             });
         });
 
-        // Dimensions Selection
-        const dimensionBtns = document.querySelectorAll('.dimension-options .dimension-btn');
+        const dimensionBtns = document.querySelectorAll('.dimension-options')[0].querySelectorAll('.dimension-btn');
+        const thicknessBtns = document.querySelectorAll('.dimension-options')[1].querySelectorAll('.dimension-btn');
+
+        function getSelectedVariantAndThickness() {
+            const dimensionBtn = Array.from(dimensionBtns).find(b => b.classList.contains('active'));
+            const thicknessBtn = Array.from(thicknessBtns).find(b => b.classList.contains('active'));
+            return {
+                variantId: dimensionBtn ? dimensionBtn.dataset.variantId : '',
+                thicknessId: thicknessBtn ? thicknessBtn.dataset.thicknessId : ''
+            };
+        }
+
+        function triggerRealtimePriceUpdate() {
+            const ids = getSelectedVariantAndThickness();
+            if (ids.variantId && ids.thicknessId) {
+                updateProductPrice(ids.variantId, ids.thicknessId, '{{ $product->product_id }}');
+            }
+        }
+
         dimensionBtns.forEach(btn => {
             btn.addEventListener('click', function() {
-                // Only toggle within the same dimension group
                 this.parentElement.querySelectorAll('.dimension-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
+                triggerRealtimePriceUpdate();
+            });
+        });
+        thicknessBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.querySelectorAll('.dimension-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                triggerRealtimePriceUpdate();
             });
         });
 
-        // Confirm Variant Selection
+
         const confirmVariantBtn = document.querySelector('.confirm-variant-btn');
-        // const variantModal = document.getElementById('variantModal');
 
 
 
@@ -640,15 +703,16 @@
                 document.getElementById('thickness_id').value = '';
                 document.getElementById('hiddenCustomLength').value = customLength;
                 document.getElementById('hiddenCustomBreadth').value = customBreadth;
-                // Update Choose Size display
-                const selectedSizeDisplay = document.getElementById('selectedSizeDisplay');
-                if(selectedSizeDisplay) {
-                    selectedSizeDisplay.textContent = `Custom: ${customLength} x ${customBreadth} `;
-                }
+                // Update both display locations
+                const customText = `Custom: ${customLength} x ${customBreadth}`;
+                const displayDropdown = document.getElementById('selectedSizeDisplayDropdown');
+                const displayTop = document.getElementById('selectedSizeDisplayTop');
+                if(displayDropdown) displayDropdown.textContent = customText;
+                if(displayTop) displayTop.textContent = customText;
                 variantModal.classList.remove('active');
                 return;
             }
-            // Normal variant selection
+            
             const dimensionBtns = document.querySelectorAll('.dimension-options')[0].querySelectorAll('.dimension-btn');
             const thicknessBtns = document.querySelectorAll('.dimension-options')[1].querySelectorAll('.dimension-btn');
             const dimensionBtn = Array.from(dimensionBtns).find(b => b.classList.contains('active'));
@@ -660,7 +724,7 @@
             const selectedSize = sizeBtn.textContent.trim();
             const selectedDimension = dimensionBtn.textContent.trim();
             const selectedThickness = thicknessBtn.textContent.trim();
-            // Use index as ID for demo/fix (should be replaced with real IDs from backend)
+            
             const variantId = dimensionBtn ? dimensionBtn.dataset.variantId : '';
             const thicknessId = thicknessBtn.dataset.thicknessId;
 
@@ -668,19 +732,19 @@
             document.getElementById('thickness_id').value = thicknessId;
             document.getElementById('hiddenCustomLength').value = '';
             document.getElementById('hiddenCustomBreadth').value = '';
-            // Update Choose Size display
-            const selectedSizeDisplay = document.getElementById('selectedSizeDisplay');
-            if(selectedSizeDisplay) {
-                selectedSizeDisplay.textContent = `${selectedSize} | ${selectedDimension} x ${selectedThickness} `;
-            }
+            // Update both display locations
+            const displayDropdown = document.getElementById('selectedSizeDisplayDropdown');
+            const displayTop = document.getElementById('selectedSizeDisplayTop');
+            const displayText = `${selectedSize} | ${selectedDimension} x ${selectedThickness}`;
+            if(displayDropdown) displayDropdown.textContent = displayText;
+            if(displayTop) displayTop.textContent = displayText;
             variantModal.classList.remove('active');
 
-            // --- Call price update here with correct IDs ---
             const productId = '{{ $product->product_id }}';
             updateProductPrice(variantId, thicknessId, productId);
         });
 
-        // Thumbnail gallery functionality
+        
         const thumbnails = document.querySelectorAll('.thumbnails img');
         const mainImage = document.getElementById('mainImage');
 
@@ -704,21 +768,21 @@
         const defaultVariantId = '{{ $product->default_variant_id ?? '' }}';
         const defaultThicknessId = '{{ $product->default_thickness_id ?? '' }}';
 
-        const sizeGroupBtns = document.querySelectorAll('.size-group-btn');
-        sizeGroupBtns.forEach(btn => {
-            if (btn.textContent.trim() === 'Single' && defaultVariantId === '72 x 36 ') {
-                btn.classList.add('active');
-            } else if (btn.textContent.trim() === 'Double' && defaultVariantId === '75 x 36 ') {
-                btn.classList.add('active');
-            } else if (btn.textContent.trim() === 'Queen' && defaultVariantId === '78 x 60 ') {
-                btn.classList.add('active');
-            } else if (btn.textContent.trim() === 'King' && defaultVariantId === '78 x 72 ') {
-                btn.classList.add('active');
-            } else if (btn.textContent.trim() === 'Custom') {
-                btn.classList.add('active');
-                if (customInputs) customInputs.style.display = 'block';
-            }
-        });
+        // const sizeGroupBtns = document.querySelectorAll('.size-group-btn');
+        // sizeGroupBtns.forEach(btn => {
+        //     if (btn.textContent.trim() === 'Single' && defaultVariantId === '72 x 36 ') {
+        //         btn.classList.add('active');
+        //     } else if (btn.textContent.trim() === 'Double' && defaultVariantId === '75 x 36 ') {
+        //         btn.classList.add('active');
+        //     } else if (btn.textContent.trim() === 'Queen' && defaultVariantId === '78 x 60 ') {
+        //         btn.classList.add('active');
+        //     } else if (btn.textContent.trim() === 'King' && defaultVariantId === '78 x 72 ') {
+        //         btn.classList.add('active');
+        //     } else if (btn.textContent.trim() === 'Custom') {
+        //         btn.classList.add('active');
+        //         if (customInputs) customInputs.style.display = 'block';
+        //     }
+        // });
 
         // Activate the corresponding dimension button
         const dimensionBtns = document.querySelectorAll('.dimension-options .dimension-btn');
@@ -737,9 +801,9 @@
         });
     });
 function updateProductPrice(variantId, thicknessId, productId) {
-
-    console.log('Sending:', variantId, thicknessId, productId);
-
+    // Get custom size values if present
+    const customLength = document.getElementById('hiddenCustomLength')?.value || '';
+    const customBreadth = document.getElementById('hiddenCustomBreadth')?.value || '';
     fetch("{{ route('product.variantPrice') }}", {
         method: "POST",
         headers: {
@@ -749,17 +813,23 @@ function updateProductPrice(variantId, thicknessId, productId) {
         body: JSON.stringify({
             variant_id: variantId,
             thickness_id: thicknessId,
-            product_id: productId
+            product_id: productId,
+            custom_length: customLength,
+            custom_breadth: customBreadth
         })
     })
     .then(res => res.json())
     .then(data => {
-
         if (data.success) {
+            // Update both main and modal price
             document.getElementById('mainProductPrice').textContent = data.price;
             document.getElementById('hiddenProductPrice').value = data.price;
+            var modalPrice = document.getElementById('modalProductPrice');
+            if (modalPrice) modalPrice.textContent = data.price;
         } else {
             document.getElementById('mainProductPrice').textContent = 'N/A';
+            var modalPrice = document.getElementById('modalProductPrice');
+            if (modalPrice) modalPrice.textContent = 'N/A';
             alert(data.message);
         }
     })
