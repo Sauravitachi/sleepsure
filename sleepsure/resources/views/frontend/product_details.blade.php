@@ -46,8 +46,8 @@
                         @if($product->onsale && $product->onsale_price)
                             <span class="old-price" id="mainOldPrice">{{ $product->price }}</span>
                             <span class="discount-percent">
-                                @if($product->original_price > 0)
-                                    {{ round((($product->original_price - $product->discount_price) / $product->original_price) * 100) }}%
+                                @if((float)$product->original_price > 0)
+                                    {{ round(((float)$product->original_price - (float)$product->discount_price) / (float)$product->original_price * 100) }}%
                                 @else
                                     0%
                                 @endif
