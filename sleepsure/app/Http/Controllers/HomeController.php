@@ -322,7 +322,7 @@ class HomeController extends Controller
             });
     }
 
-    private function applyImageAndWarranty($product, $global)
+    public function applyImageAndWarranty($product, $global)
     {
         $image = $product->image_thumb ?: $product->image_large_details;
 
@@ -337,7 +337,7 @@ class HomeController extends Controller
         $product->warranty_text = $this->formatWarranty($months);
     }
 
-    private function calculateReview($product)
+    public function calculateReview($product)
     {
         $totalRates = $product->reviews->sum('rate');
         $totalReviewers = $product->reviews->count();
@@ -349,7 +349,7 @@ class HomeController extends Controller
         $product->total_reviewers = $totalReviewers;
     }
 
-    private function setImageOrPlaceholder($path, $baseUrl, $fallback)
+    public function setImageOrPlaceholder($path, $baseUrl, $fallback)
     {
         if (!empty($path)) {
             return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');

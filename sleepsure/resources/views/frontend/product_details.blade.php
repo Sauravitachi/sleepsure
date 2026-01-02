@@ -457,11 +457,10 @@
 
             <div class="size-selection-group">
                 <h3>Size Group</h3>
-                <div class="size-group-options">
-                    <button class="size-group-btn">Single</button>
-                    <button class="size-group-btn">Double</button>
-                    <button class="size-group-btn">Queen</button>
-                    <button class="size-group-btn">King</button>
+                <div class="size-group-options">                    
+                    @foreach ($variantCat as $item)
+                        <button class="size-group-btn">{{ $item->variant_cat }}</button>
+                    @endforeach
                     <button class="size-group-btn" id="customSizeBtn">Custom</button>
                 </div>
                 <!-- Custom size input fields, hidden by default -->
@@ -634,7 +633,6 @@ document.querySelectorAll('.dimension-options:nth-of-type(2) .dimension-btn')
                 } else {
                     customInputs.style.display = 'none';
                     if (dimensionOptions) dimensionOptions.style.display = '';
-                 
                     const dimensionBtnsArr = Array.from(dimensionBtns);
                     const thicknessBtnsArr = Array.from(thicknessBtns);
                     if (!dimensionBtnsArr.some(b => b.classList.contains('active')) && dimensionBtnsArr.length > 0) {
@@ -656,14 +654,17 @@ document.querySelectorAll('.dimension-options:nth-of-type(2) .dimension-btn')
         function getSelectedVariantAndThickness() {
             const dimensionBtn = Array.from(dimensionBtns).find(b => b.classList.contains('active'));
             const thicknessBtn = Array.from(thicknessBtns).find(b => b.classList.contains('active'));
+            const sizeGroupBtn = Array.from(sizeGroupBtns).find(b => b.classList.contains('active'));
             return {
                 variantId: dimensionBtn ? dimensionBtn.dataset.variantId : '',
-                thicknessId: thicknessBtn ? thicknessBtn.dataset.thicknessId : ''
+                thicknessId: thicknessBtn ? thicknessBtn.dataset.thicknessId : '',
+                sizeGroup: sizeGroupBtn ? sizeGroupBtn.textContent.trim() : ''
             };
         }
 
         function triggerRealtimePriceUpdate() {
             const ids = getSelectedVariantAndThickness();
+            // Always update price if dimension or thickness or size group changes
             if (ids.variantId && ids.thicknessId) {
                 updateProductPrice(ids.variantId, ids.thicknessId, '{{ $product->product_id }}');
             }

@@ -283,7 +283,7 @@
             </div>
 
             <!-- Pagination -->
-            @if($paginatedProducts->hasPages())
+            @if(isset($paginatedProducts) && $paginatedProducts->hasPages())
             <div class="pagination">
                 {{-- Previous Page Link --}}
                 @if ($paginatedProducts->onFirstPage())

@@ -33,11 +33,10 @@ class AuthController extends Controller
 
         if (isset($data['success']) && $data['success'] == "true") {
             session(['otp_phone' => $mobile]);
-            // Return OTP in response for alert (for testing only)
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent successfully',
-                'otp' => $data['otp'] ?? null // Show OTP in alert
+                'otp' => $data['otp'] ?? null
             ]);
         } else {
             return response()->json(['success' => false, 'message' => 'Failed to send OTP'], 500);

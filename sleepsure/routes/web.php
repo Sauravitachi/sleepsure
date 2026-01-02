@@ -90,3 +90,6 @@ Route::prefix('cart')->group(function () {
 });
 Route::get('/view-products', [HomeController::class, 'viewProducts'])->name('view.products');
 
+Route::get('/products/category/{categoryId}', 
+    [PageController::class, 'category']
+)->name('products.categories');

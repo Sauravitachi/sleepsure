@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faq;
+use App\Models\ProductCategory;
+use App\Models\ProductInformation;
 use App\Models\Reward;
 use App\Models\RewardType;
+use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -63,4 +66,45 @@ class PageController extends Controller
         
         return view('frontend.offer', array_merge($global, compact('rewards', 'rewardTypes')));
     }
+
+   public function category($categoryId)
+{
+    $global = globalData();
+    $categories = $global['categories'];
+
+    $category = ProductCategory::where('category_id', $categoryId)
+        ->where('status', 1)
+        ->firstOrFail();
+
+    $categoryIds = $this->getCategoryTreeIds($category);
+
+    $paginatedProducts = ProductInformation::whereIn('category_id', $categoryIds)
+        ->where('status', 1)
+        ->paginate(12);
+
+
+    $products = $paginatedProducts->map(function ($product) use ($global) {
+        $homeController = app(HomeController::class);
+        $homeController->applyImageAndWarranty($product, $global);
+        $homeController->calculateReview($product);
+        return $homeController->transformProduct($product);
+    });
+
+    return view('frontend.categories', compact('products', 'paginatedProducts', 'categories', 'category'));
+}
+private function getCategoryTreeIds($category)
+{
+    $ids = [$category->category_id];
+
+    foreach ($category->subcategories as $sub) {
+        $ids[] = $sub->category_id;
+
+        foreach ($sub->models as $model) {
+            $ids[] = $model->category_id;
+        }
+    }
+
+    return $ids;
+}
+
 }

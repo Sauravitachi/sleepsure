@@ -67,37 +67,31 @@
 
             @foreach($categories->take(5) as $main)
                 <li class="nav-item nav-item-mat">
-
-                    <a href="#" class="nav-link-mat">{{ $main->category_name }}</a>
-
+                    <a href="{{ route('products.categories', $main->category_id) }}" class="nav-link-mat">{{ $main->category_name }}</a>
                     @if($main->subcategories->count() > 0)
                         <div class="mat-dropdown-container mt-2">
-
                             @foreach($main->subcategories as $sub)
                                 <div class="dropdown-col">
-
                                     {{-- Subcategory Title --}}
-                                     <div class="col-title text-muted fw-semibold small-xs mb-0">
-                                        {{ Str::title($sub->category_name) }}
+                                    <div class="col-title text-muted fw-semibold small-xs mb-0">
+                                        <a href="{{ route('products.categories', $sub->category_id) }}" style="color:inherit;text-decoration:none;">
+                                            {{ Str::title($sub->category_name) }}
+                                        </a>
                                     </div>
-
                                     {{-- Third-level Models --}}
                                     @if($sub->models->count() > 0)
                                         <ul class="col-links">
                                             @foreach($sub->models as $model)
                                                 <li>
-                                                    <a href="#">{{ Str::title($model->category_name) }}</a>
+                                                    <a href="{{ route('products.categories', $model->category_id) }}">{{ Str::title($model->category_name) }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
                                     @endif
-
                                 </div>
                             @endforeach
-
                         </div>
                     @endif
-
                 </li>
             @endforeach
 
