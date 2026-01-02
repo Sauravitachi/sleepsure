@@ -1008,9 +1008,9 @@
         <div class="content">
             <h2 class="headline">SleepSure Bulk Bedding</h2>
             <p class="subtext">Hotels . Serviced Apartments . Hospitals . Employee Housing</p>
-            <button class="cta-button">
+            <a href="{{ route('bulk-orders.index') }}" class="cta-button">
                 Inquire About Bulk Pricing <span class="arrow">→</span>
-            </button>
+            </a>
         </div>
         <div class="mattress-image-placeholder">
             <img src="assets/images/bg2.png" alt="" width="100%">
