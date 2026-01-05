@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\{WebSetting,Slider,ProductInformation,ProductCategory,StoreSet,
-    ProductReview,Thickness,ProductVariant,ProductOddSizeRate,Award,Faq,Reward,RewardType};
+    ProductReview,Thickness,ProductVariant,ProductOddSizeRate,Award,Faq,Reward,RewardType, Variant};
 use DB;
 use Illuminate\Http\Request;
 
@@ -88,6 +88,8 @@ class HomeController extends Controller
 
     // function for all categories page
     public function allCategories(Request $request)
+            // Material filter
+           
     {
         $global = globalData();
         
@@ -122,6 +124,47 @@ class HomeController extends Controller
         }
         
         // Apply sorting
+        // Size filter (normalize to match variantCat in view)
+        $sizes = $request->input('sizes', []);
+        if (!empty($sizes)) {
+            $normalizedSizes = collect($sizes)->map(function($size) {
+                return strtolower(str_replace(' ', '', $size));
+            })->toArray();
+
+            // Get all variant_ids for the selected sizes (MySQL: use LOWER instead of lcfirst)
+            $variantIds = Variant::whereIn(DB::raw('LOWER(REPLACE(variant_cat, " ", ""))'), $normalizedSizes)
+                ->pluck('variant_id')->toArray();
+
+            $productsQuery->where(function($q) use ($normalizedSizes, $variantIds) {
+                foreach ($normalizedSizes as $size) {
+                    $q->orWhereRaw('LOWER(REPLACE(product_information.product_name, " ", "")) LIKE ?', ["%$size%"])
+                      ->orWhereRaw('LOWER(REPLACE(product_information.tag, " ", "")) LIKE ?', ["%$size%"]);
+                }
+                // Also match products whose variants column contains a matching variant_id
+                if (!empty($variantIds)) {
+                    foreach ($variantIds as $variantId) {
+                        $q->orWhereRaw('FIND_IN_SET(?, product_information.variants)', [$variantId]);
+                    }
+                }
+            });
+        }
+        $allMaterials = ProductInformation::where('status', 1)
+            ->pluck('tag')
+            ->flatMap(function ($tags) {
+                return array_map('trim', explode(',', $tags));
+            })
+            ->unique()
+            ->filter()
+            ->values();
+        $selectedMaterials = $request->input('materials', []);
+            if (!empty($selectedMaterials)) {
+                $productsQuery->where(function($q) use ($selectedMaterials) {
+                    foreach ($selectedMaterials as $mat) {
+                        $q->orWhereRaw('FIND_IN_SET(?, product_information.tag)', [$mat]);
+                    }
+                });
+            }
+
         $sortBy = $request->input('sort', 'featured');
         switch ($sortBy) {
             case 'price_low':
@@ -160,11 +203,26 @@ class HomeController extends Controller
             $this->calculateReview($product);
             return $this->transformProduct($product);
         });
-
+     
+      $variantCat = Variant::query()
+            ->where('status', 1)
+            ->whereNotNull('variant_cat')
+            ->where('variant_cat', '!=', '')
+            ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
+            ->groupBy(DB::raw('LOWER(variant_cat)'))
+            ->orderBy('variant_cat', 'asc')
+            ->get()
+            ->map(function($item) {
+                $item->variant_cat = strtolower(str_replace(' ', '', $item->variant_cat));
+                return $item;
+            });
         return view('frontend.categories', compact(
             'categories',
             'products',
-            'paginatedProducts'
+            'paginatedProducts',
+            'variantCat',
+            'selectedMaterials',
+            'allMaterials'
         ));
     }
 
@@ -209,9 +267,15 @@ class HomeController extends Controller
             $title = 'All Products';
         }
 
-        // Price filter
+
+        // Apply category filter
+        $selectedCategories = $request->input('categories', []);
+        if (!empty($selectedCategories)) {
+            $productsQuery->whereIn('product_information.category_id', $selectedCategories);
+        }
+
+        // Apply price filter
         $priceMax = $request->input('price_max');
-        $joinedVariants = false;
         if ($priceMax !== null && $priceMax < 100000) {
             $productsQuery->leftJoin('product_variants', 'product_information.product_id', '=', 'product_variants.product_id')
                 ->where('product_variants.price', '<=', $priceMax)
@@ -219,32 +283,28 @@ class HomeController extends Controller
             $joinedVariants = true;
         }
 
-        // Size filter
         $sizes = $request->input('sizes', []);
         if (!empty($sizes)) {
-            $productsQuery->where(function($q) use ($sizes) {
-                foreach ($sizes as $size) {
-                    $q->orWhere('product_information.size', 'like', "%$size%")
-                      ->orWhere('product_information.product_name', 'like', "%$size%")
-                      ->orWhere('product_information.tag', 'like', "%$size%")
-                      ;
+            $normalizedSizes = collect($sizes)->map(function($size) {
+                return strtolower(str_replace(' ', '', $size));
+            })->toArray();
+
+            $variantIds = Variant::whereIn(DB::raw('LOWER(REPLACE(variant_cat, " ", ""))'), $normalizedSizes)
+                ->pluck('variant_id')->toArray();
+
+            $productsQuery->where(function($q) use ($normalizedSizes, $variantIds) {
+                foreach ($normalizedSizes as $size) {
+                    $q->orWhereRaw('LOWER(REPLACE(product_information.product_name, " ", "")) LIKE ?', ["%$size%"])
+                      ->orWhereRaw('LOWER(REPLACE(product_information.tag, " ", "")) LIKE ?', ["%$size%"]);
+                }
+                if (!empty($variantIds)) {
+                    foreach ($variantIds as $variantId) {
+                        $q->orWhereRaw('FIND_IN_SET(?, product_information.variants)', [$variantId]);
+                    }
                 }
             });
         }
 
-        // Firmness filter
-        $firmness = $request->input('firmness', []);
-        if (!empty($firmness)) {
-            $productsQuery->where(function($q) use ($firmness) {
-                foreach ($firmness as $firm) {
-                    $q->orWhere('product_information.tag', 'like', "%$firm%")
-                      ->orWhere('product_information.product_name', 'like', "%$firm%")
-                      ;
-                }
-            });
-        }
-
-        // Sorting
         $sortBy = $request->input('sort', 'featured');
         switch ($sortBy) {
             case 'price_low':
@@ -264,7 +324,6 @@ class HomeController extends Controller
                 $productsQuery->orderBy('product_variants.price', 'desc');
                 break;
             case 'rating':
-                // Sorting by rating would require aggregate function
                 break;
             case 'newest':
                 $productsQuery->orderBy('product_information.created_at', 'desc');
@@ -275,7 +334,6 @@ class HomeController extends Controller
                 break;
         }
 
-        // Paginate products - 12 per page
         $paginatedProducts = $productsQuery->distinct()->paginate(12);
         $products = $paginatedProducts->map(function ($product) use ($global) {
             $this->applyImageAndWarranty($product, $global);
@@ -283,8 +341,21 @@ class HomeController extends Controller
             return $this->transformProduct($product);
         });
 
-        return view('frontend.viewproducts', compact('products', 'title', 'paginatedProducts','categories'));
-    }
+        $variantCat = Variant::query()
+            ->where('status', 1)
+            ->whereNotNull('variant_cat')
+            ->where('variant_cat', '!=', '')
+            ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
+            ->groupBy(DB::raw('LOWER(variant_cat)'))
+            ->orderBy('variant_cat', 'asc')
+            ->get()
+            ->map(function($item) {
+                $item->variant_cat = strtolower(str_replace(' ', '', $item->variant_cat));
+                return $item;
+            });
+           
+        return view('frontend.viewproducts', compact('products', 'title', 'paginatedProducts', 'categories', 'variantCat'));   
+ }
 
 
     private function getSliders($global)

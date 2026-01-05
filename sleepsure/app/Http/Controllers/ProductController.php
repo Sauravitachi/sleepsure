@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProductInformation;
 use Illuminate\Http\Request;
 use App\Models\Variant;
+use App\Http\Controllers\HomeController;
 use App\Models\Thickness;
 use Illuminate\Support\Facades\DB;
 
@@ -21,42 +22,118 @@ class ProductController extends Controller
             'categoryDetails.parentCategoryDetails'
         ])->where('product_id', $id)->firstOrFail();
 
-        $homeController = app(\App\Http\Controllers\HomeController::class);
+        $homeController = app(HomeController::class);
         $transformed = $homeController->transformProduct($product);
         $productObj = (object) $transformed;
 
         $this->applyImageAndWarranty($productObj, $global);
 
-$dimensionVariants = Variant::query()
-    ->where('variant_type', 'size')
-    ->where('status', 1)
-    ->orderBy('variant_name', 'asc')
-    ->get(['variant_id', 'variant_name']);
+        $dimensionVariants = Variant::query()
+            ->where('variant_type', 'size')
+            ->where('status', 1)
+            ->orderBy('variant_name', 'asc')
+            ->get(['variant_id', 'variant_name']);
 
+        $thicknessIds = [];
+        if ($product && $product->thicknesses) {
+            $thicknessIds = explode(',', $product->thicknesses);
+        }
+        $thicknessVariants = Thickness::whereIn('id', $thicknessIds)
+            ->orderBy('thick', 'asc')
+            ->get(['id', 'thick', 'map']);
+            
+        $variantCat = Variant::query()
+            ->where('status', 1)
+            ->whereNotNull('variant_cat')
+            ->where('variant_cat', '!=', '')
+            ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
+            ->groupBy(DB::raw('LOWER(variant_cat)'))
+            ->orderBy('variant_cat', 'asc')
+            ->get()
+            ->map(function($item) {
+                $item->variant_cat = lcfirst(str_replace(' ', '', ucwords(strtolower($item->variant_cat))));
+                return $item;
+            });
+    
 
-$thicknessVariants = Thickness::query()
-    ->orderBy('thick', 'asc')
-    ->get(['id', 'thick', 'map']);
-$variantCat = Variant::query()
-    ->where('status', 1)
-    ->whereNotNull('variant_cat')
-    ->where('variant_cat', '!=', '')
-    ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
-    ->groupBy(DB::raw('LOWER(variant_cat)'))
-    ->orderBy('variant_cat', 'asc')
-    ->get()
-    ->map(function($item) {
-        $item->variant_cat = lcfirst(str_replace(' ', '', ucwords(strtolower($item->variant_cat))));
-        return $item;
-    });
+        $productVariants = $product->productVariants()->get();
+        $variantIds = $productVariants->pluck('var_size_id')->unique()->toArray();
+        $thicknessIds = $productVariants->pluck('var_thickness_id')->unique()->toArray();
 
+        $grouped = [];
+        if ($productVariants->count() > 0) {
+            $variants = Variant::whereIn('variant_id', $variantIds)->get();
+            $thicknesses = Thickness::whereIn('id', $thicknessIds)->get();
+            foreach ($productVariants as $pv) {
+                $variant = $variants->firstWhere('variant_id', $pv->var_size_id);
+                $thickness = $thicknesses->firstWhere('id', $pv->var_thickness_id);
+                if (!$variant || !$thickness) {
+                    continue;
+                }
+                $cat = $variant->variant_cat ? strtolower(str_replace(' ', '', $variant->variant_cat)) : 'other';
+                if (!isset($grouped[$cat])) {
+                    $grouped[$cat] = [];
+                }
+                $dimName = $variant->variant_name;
+                if (!isset($grouped[$cat][$dimName])) {
+                    $grouped[$cat][$dimName] = [];
+                }
+                $grouped[$cat][$dimName][$thickness->id] = [
+                    'id' => $thickness->id,
+                    'thick' => $thickness->thick,
+                    'map' => $thickness->map,
+                    'variant_id' => $variant->variant_id
+                ];
+            }
+        } else {
+            $fallbackVariantIds = [];
+            $fallbackThicknessIds = [];
+            if (!empty($product->variants)) {
+                $fallbackVariantIds = explode(',', $product->variants);
+            } elseif (!empty($product->default_variant)) {
+                $fallbackVariantIds = explode(',', $product->default_variant);
+            }
+            if (!empty($product->thicknesses)) {
+                $fallbackThicknessIds = explode(',', $product->thicknesses);
+            }
+            $variants = Variant::whereIn('variant_id', $fallbackVariantIds)->get();
+            $thicknesses = Thickness::whereIn('id', $fallbackThicknessIds)->get();
+            foreach ($variants as $variant) {
+                $cat = $variant->variant_cat ? strtolower(str_replace(' ', '', $variant->variant_cat)) : 'other';
+                if (!isset($grouped[$cat])) {
+                    $grouped[$cat] = [];
+                }
+                $dimName = $variant->variant_name;
+                if (!isset($grouped[$cat][$dimName])) {
+                    $grouped[$cat][$dimName] = [];
+                }
+                foreach ($thicknesses as $thickness) {
+                    $grouped[$cat][$dimName][$thickness->id] = [
+                        'id' => $thickness->id,
+                        'thick' => $thickness->thick,
+                        'map' => $thickness->map,
+                        'variant_id' => $variant->variant_id
+                    ];
+                }
+            }
+        }
+        $displayGrouped = [];
+        foreach ($grouped as $key => $val) {
+            $displayKey = ($key === 'other') ? 'Other' : $key;
+            $displayGrouped[$displayKey] = $val;
+        }
+        $sizeGroups = array_keys($displayGrouped);
+        $dimensionsByGroup = $displayGrouped;
+        
         return view('frontend.product_details', [
             'product'            => $productObj,
             'variantName'        => $transformed['variant_name'] ?? null,
             'productModel'       => $product,
+            'sizeGroups'         => $sizeGroups,
+            'dimensionsByGroup'  => $dimensionsByGroup,
+            'variantCat'         => $variantCat,
             'dimensionVariants'  => $dimensionVariants,
             'thicknessVariants'  => $thicknessVariants,
-            'variantCat'         => $variantCat,
         ]);
     }
 
@@ -93,14 +170,7 @@ $variantCat = Variant::query()
     }
 
     public function getVariantPrice(Request $request)
-    {
-        \Log::info('Variant price request', [
-            'request_all' => $request->all(),
-            'user_id' => auth()->id(),
-            'ip' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-        ]);
-
+    {       
         $productId      = $request->product_id;
         $variantId      = $request->variant_id;
         $thicknessId    = $request->thickness_id;
@@ -108,16 +178,13 @@ $variantCat = Variant::query()
         $customBreadth  = (float) $request->custom_breadth;
         \Log::info('Parsed input', compact('productId', 'variantId', 'thicknessId', 'customLength', 'customBreadth'));
 
-        $home = app(\App\Http\Controllers\HomeController::class);
+        $home = app(HomeController::class);
 
         $baseVariant = $home->getVariantDetails($productId);
-        \Log::info('Base variant details', ['baseVariant' => $baseVariant]);
 
         $sizeVariant = Variant::where('variant_id', $variantId)->first();
-        \Log::info('Size variant details', ['sizeVariant' => $sizeVariant]);
 
         if (!$sizeVariant) {
-            \Log::warning('Size variant not found', compact('variantId'));
             return response()->json([
                 'success' => true,
                 'price'   => $home->formatRupee(0)
@@ -129,7 +196,6 @@ $variantCat = Variant::query()
             $isCustom = true;
         } else {
             $dimensions = $home->extractDimensions($sizeVariant->variant_name);
-            \Log::info('Extracted dimensions', ['dimensions' => $dimensions]);
             $sqft = $home->calculateSqft(
                 $dimensions['dim1'] ?? 0,
                 $dimensions['dim2'] ?? 0
@@ -137,20 +203,13 @@ $variantCat = Variant::query()
             $isCustom = false;
         }
 
-        \Log::info('SQFT calculated', compact('sqft', 'isCustom'));
 
         if (!$isCustom && $variantId && $thicknessId) {
             $fixedPrice = \DB::table('product_variants')
                 ->where('product_id', $productId)
                 ->where('var_size_id', $variantId)
                 ->where('var_thickness_id', $thicknessId)
-                ->value('price');
-            \Log::info('Fixed price lookup', [
-                'product_id' => $productId,
-                'variant_id' => $variantId,
-                'thickness_id' => $thicknessId,
-                'fixedPrice' => $fixedPrice
-            ]);
+                ->value('price');            
             if (!is_null($fixedPrice)) {
                 return response()->json([
                     'success' => true,
@@ -166,11 +225,7 @@ $variantCat = Variant::query()
                 ->where('product_id', $productId)
                 ->where('var_size_id', $variantId)
                 ->min('price');
-            \Log::info('Min price lookup', [
-                'product_id' => $productId,
-                'variant_id' => $variantId,
-                'minPrice' => $minPrice
-            ]);
+            
             if (!is_null($minPrice)) {
                 return response()->json([
                     'success' => true,
@@ -193,11 +248,7 @@ $variantCat = Variant::query()
                 $default_rate = $rateRow->default_rate ?? $default_rate;
                 $oddsize_rate = $rateRow->oddsize_rate ?? $oddsize_rate;
             }
-            \Log::info('Thickness-specific rates', [
-                'thicknessId' => $thicknessId,
-                'default_rate' => $default_rate,
-                'oddsize_rate' => $oddsize_rate
-            ]);
+            
         } else {
             \Log::info('Rates for fallback', compact('default_rate', 'oddsize_rate'));
         }
@@ -209,21 +260,7 @@ $variantCat = Variant::query()
             $baseVariant
         );
 
-        \Log::info('Final price', [
-            'sqft' => $sqft,
-            'default_rate' => $default_rate,
-            'oddsize_rate' => $oddsize_rate,
-            'price' => $price,
-            'baseVariant' => $baseVariant,
-            'input' => [
-                'productId' => $productId,
-                'variantId' => $variantId,
-                'thicknessId' => $thicknessId,
-                'customLength' => $customLength,
-                'customBreadth' => $customBreadth,
-            ]
-        ]);
-
+       
         return response()->json([
             'success' => true,
             'sqft'    => $sqft,

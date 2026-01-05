@@ -73,4 +73,9 @@ class ProductInformation extends Model
     {
         return $this->hasMany(ProductVariant::class, 'product_id', 'product_id');
     }
+
+    public function ticknesses()
+    {
+        return $this->hasMany(Thickness::class, 'id', 'thicknesses');
+    }
 }

@@ -75,11 +75,7 @@
         }
     }
 
-    /* Center empty state message */
-    .products-grid {
-        min-height: 400px;
-    }
-
+   
     .empty-state {
         display: flex;
         align-items: center;
@@ -112,15 +108,18 @@
                 <div class="filter-group">
                     <h3>Categories</h3>
                     <div class="filter-options">
-                        @foreach($categories->take(5) as $category)
-                        <div class="filter-option">
-                            <input type="checkbox" 
-                                   name="categories[]" 
-                                   id="category-{{ $category->category_id }}" 
-                                   value="{{ $category->category_id }}"
-                                   {{ in_array($category->category_id, (array)request('categories', [])) ? 'checked' : '' }}>
-                            <label for="category-{{ $category->category_id }}">{{ $category->category_name }}</label>
-                        </div>
+                        @php
+                            $selectedCategories = request('categories', []);
+                        @endphp
+                        @foreach($categories as $category)
+                            <div class="filter-option">
+                                <input type="checkbox"
+                                    name="categories[]"
+                                    id="category-{{ $category['category_id'] ?? $category->category_id }}"
+                                    value="{{ $category['category_id'] ?? $category->category_id }}"
+                                    {{ in_array($category['category_id'] ?? $category->category_id, (array)$selectedCategories) ? 'checked' : '' }}>
+                                <label for="category-{{ $category['category_id'] ?? $category->category_id }}">{{ $category['category_name'] ?? $category->category_name }}</label>
+                            </div>
                         @endforeach
                     </div>
                 </div>
@@ -143,42 +142,79 @@
                     <h3>Size</h3>
                     <div class="filter-options">
                         @php
-                        $sizes = ['Single', 'Twin', 'Full', 'Queen', 'King', 'California King'];
+                            if (!isset($variantCat)) { $variantCat = collect(); }
+                            $selectedSizes = request('sizes', []);
                         @endphp
-                        @foreach($sizes as $size)
-                        <div class="filter-option">
-                            <input type="checkbox" 
-                                   name="sizes[]" 
-                                   id="size-{{ $loop->index }}" 
-                                   value="{{ $size }}"
-                                   {{ in_array($size, (array)request('sizes', [])) ? 'checked' : '' }}>
-                            <label for="size-{{ $loop->index }}">{{ $size }}</label>
-                        </div>
+                        @foreach($variantCat as $size)
+                            @php
+                                // Normalize value for filter logic (lcfirst, no spaces)
+                                $filterValue = lcfirst(str_replace(' ', '', ucwords(strtolower($size->variant_cat))));
+                                // User-friendly label (capitalize, add spaces)
+                                $label = ucwords(str_replace(['-', '_'], ' ', $size->variant_cat));
+                            @endphp
+                            <div class="filter-option">
+                                <input type="checkbox"
+                                    name="sizes[]"
+                                    id="size-{{ $loop->index }}"
+                                    value="{{ $filterValue }}"
+                                    {{ in_array($filterValue, (array)$selectedSizes) ? 'checked' : '' }}>
+                                <label for="size-{{ $loop->index }}">{{ $label }}</label>
+                            </div>
                         @endforeach
                     </div>
                 </div>
+            <div class="filter-group">
+    <h3>Material</h3>
+    <div class="filter-options">
+        @foreach($allMaterials as $material)
+            <div class="filter-option">
+                <input type="checkbox"
+                    name="materials[]"
+                    id="material-{{ $loop->index }}"
+                    value="{{ $material }}"
+                    {{ in_array($material, (array)$selectedMaterials) ? 'checked' : '' }}>
+                <label for="material-{{ $loop->index }}">{{ $material }}</label>
+            </div>
+        @endforeach
+    </div>
+</div>
 
-                <div class="filter-group">
-                    <h3>Firmness</h3>
-                    <div class="filter-options">
-                        @php
-                        $firmness = ['Soft', 'Medium', 'Firm'];
-                        @endphp
-                        @foreach($firmness as $firm)
-                        <div class="filter-option">
-                            <input type="checkbox" 
-                                   name="firmness[]" 
-                                   id="firmness-{{ $loop->index }}" 
-                                   value="{{ $firm }}"
-                                   {{ in_array($firm, (array)request('firmness', [])) ? 'checked' : '' }}>
-                            <label for="firmness-{{ $loop->index }}">{{ $firm }}</label>
-                        </div>
-                        @endforeach
-                    </div>
+                <div style="display: flex; gap: 10px; flex-direction:column">
+                    <button type="submit" class="apply-filters">Apply Filters</button>                    
+                    <a href="{{ route('categories.index') }}" class="btn btn-secondary" style="background: #eee; color: #333; border: 1px solid #ccc; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">Clear Filters</a>
                 </div>
-
-                <button type="submit" class="apply-filters">Apply Filters</button>
-                <!-- Hidden sort input to preserve sort parameter -->
+                    <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
+                </form>
+            </aside>
+        
+            <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Auto-submit on filter change (checkboxes, price range)
+                const filterForm = document.getElementById('filterForm');
+                if (filterForm) {
+                    // For checkboxes
+                    filterForm.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+                        cb.addEventListener('change', function() {
+                            filterForm.submit();
+                        });
+                    });
+                    // For price range
+                    const priceSlider = document.getElementById('myRange');
+                    if (priceSlider) {
+                        priceSlider.addEventListener('change', function() {
+                            filterForm.submit();
+                        });
+                    }
+                    // For sort dropdown
+                    const sortSelect = document.getElementById('sort');
+                    if (sortSelect) {
+                        sortSelect.addEventListener('change', function() {
+                            filterForm.submit();
+                        });
+                    }
+                }
+            });
+            </script>
                 <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
             </form>
         </aside>
@@ -190,7 +226,7 @@
                 <div class="sort-bar">
                     <div class="sort-options">
                         <label for="sort" style="font-size: 12px;">Sort by:</label>
-                        <select id="sort" name="sort" onchange="this.form.submit()">
+                        <select id="sort" name="sort">
                             <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
                             <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
@@ -206,10 +242,10 @@
 
             <div class="products-grid">
                 @forelse($products as $product)
-                <!-- Product {{ $loop->iteration }} -->
+             
                 <div class="wrapper">
-                    <div class="container">
-                         <a href="{{ route('product.details', ['id' => $product['product_id']]) }}">
+                <div class="container">
+                    <a href="{{ route('product.details', ['id' => $product['product_id']]) }}">
                         <div class="top"
                             style="background-image:url('{{ $product['image_url'] ?? asset('assets/images/noimage.png') }}')">
                             <div class="rating-badge">
@@ -218,7 +254,7 @@
                             <button class="wishlist-icon"><span>♡</span></button>
                         </div>
                     </a>
-                        <div class="bottom">
+                    <div class="bottom">
                             <div class="left">
                                 <div class="details">
                                     <h1>{{ $product['product_name'] ?? 'N/A' }}</h1>
@@ -242,8 +278,8 @@
                                 <div class="remove"><i class="fa-solid fa-xmark"></i></div>
                             </div>
                         </div>
-                    </div>
-              <div class="inside">
+                </div>
+                <div class="inside">
                     <div class="icon"><i class="fa-solid fa-info"></i></div>
                     <div class="contents">
                         <table>
@@ -274,7 +310,7 @@
                         </table>
                     </div>
                 </div>
-                </div>
+            </div>
                 @empty
                 <div class="empty-state">
                     <p>No products found matching your criteria.</p>
@@ -284,7 +320,7 @@
 
             <!-- Pagination -->
             @if(isset($paginatedProducts) && $paginatedProducts->hasPages())
-            <div class="pagination">
+            <div class="pagination mb-4">
                 {{-- Previous Page Link --}}
                 @if ($paginatedProducts->onFirstPage())
                     <span class="disabled">← Previous</span>

@@ -457,9 +457,9 @@
 
             <div class="size-selection-group">
                 <h3>Size Group</h3>
-                <div class="size-group-options">                    
-                    @foreach ($variantCat as $item)
-                        <button class="size-group-btn">{{ $item->variant_cat }}</button>
+                <div class="size-group-options">
+                    @foreach ($sizeGroups as $group)
+                        <button class="size-group-btn" data-group="{{ $group }}">{{ ucfirst($group) }}</button>
                     @endforeach
                     <button class="size-group-btn" id="customSizeBtn">Custom</button>
                 </div>
@@ -481,26 +481,31 @@
             <div class="size-selection-group">
                 <h3>Dimensions</h3>
                 <div class="dimension-options" id="dimensionOptions">
-                 @foreach($dimensionVariants as $i => $dim)
-    <button class="dimension-btn{{ $i === 0 ? ' active' : '' }}" data-variant-id="{{ $dim->variant_id }}">
-        {{ $dim->variant_name }}
-    </button>
-@endforeach
+                    @php
+                        $firstGroup = $sizeGroups[0] ?? null;
+                        $dimensions = $firstGroup ? ($dimensionsByGroup[$firstGroup] ?? []) : [];
+                        // Find the correct variant_id for each dimension
+                        $variantIdsByDimension = [];
+                        if(isset($dimensionsByGroup[$firstGroup])) {
+                            foreach($dimensionsByGroup[$firstGroup] as $dimensionName => $thicknesses) {
+                               
+                                $firstThickness = reset($thicknesses);
+                                $variantIdsByDimension[$dimensionName] = $firstThickness['variant_id'] ?? null;
+                            }
+                        }
+                    @endphp
+                    @foreach($dimensions as $dimensionName => $thicknesses)
+                        <button type="button" class="dimension-btn" data-variant-id="{{ $variantIdsByDimension[$dimensionName] ?? '' }}" data-dimension="{{ $dimensionName }}">{{ $dimensionName }}</button>
+                    @endforeach
                 </div>
             </div>
 
             <div class="size-selection-group">
                 <h3>Thickness</h3>
-                <div class="dimension-options">
-               @foreach($thicknessVariants as $i => $thick)
-                    <button
-                        class="dimension-btn {{ $i === 0 ? 'active' : '' }}"
-                        data-thickness-id="{{ $thick->id }}"
-                    >
-                        {{ $thick->thick }}{{ $thick->map ? ' ' . $thick->map : '' }}
-                    </button>
+                <div class="dimension-options" id="thicknessOptions">
+                    @foreach($thicknessVariants as $thickness)
+                        <button type="button" class="dimension-btn" data-thickness-id="{{ $thickness->id }}">{{ $thickness->thick }}</button>
                     @endforeach
-
                 </div>
             </div>
 
@@ -511,7 +516,6 @@
     </div>
 
 @endsection
-
 @push('scripts')
 <script>
 

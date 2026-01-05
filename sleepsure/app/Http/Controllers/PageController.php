@@ -57,17 +57,15 @@ class PageController extends Controller
     public function offer()
     {
         $global = globalData();
-        
-        // Fetch all reward categories with their reward types
+                
         $rewards = Reward::with('rewardTypes')->get();
         
-        // Fetch all reward types for the offer cards
         $rewardTypes = RewardType::with('reward')->get();
         
         return view('frontend.offer', array_merge($global, compact('rewards', 'rewardTypes')));
     }
 
-   public function category($categoryId)
+public function category($categoryId)
 {
     $global = globalData();
     $categories = $global['categories'];
@@ -82,7 +80,6 @@ class PageController extends Controller
         ->where('status', 1)
         ->paginate(12);
 
-
     $products = $paginatedProducts->map(function ($product) use ($global) {
         $homeController = app(HomeController::class);
         $homeController->applyImageAndWarranty($product, $global);
@@ -90,7 +87,40 @@ class PageController extends Controller
         return $homeController->transformProduct($product);
     });
 
-    return view('frontend.categories', compact('products', 'paginatedProducts', 'categories', 'category'));
+    $variantCat = \App\Models\Variant::query()
+        ->where('status', 1)
+        ->whereNotNull('variant_cat')
+        ->where('variant_cat', '!=', '')
+        ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
+        ->groupBy(\DB::raw('LOWER(variant_cat)'))
+        ->orderBy('variant_cat', 'asc')
+        ->get()
+        ->map(function($item) {
+            $item->variant_cat = strtolower(str_replace(' ', '', $item->variant_cat));
+            return $item;
+        });
+
+    $allMaterials = ProductInformation::where('status', 1)
+        ->pluck('tag')
+        ->flatMap(function ($tags) {
+            return array_map('trim', explode(',', $tags));
+        })
+        ->unique()
+        ->filter()
+        ->values();
+
+    // Optionally, get selectedMaterials from request if you use it in the view
+    $selectedMaterials = request()->input('materials', []);
+
+    return view('frontend.categories', compact(
+        'products',
+        'paginatedProducts',
+        'categories',
+        'category',
+        'variantCat',
+        'allMaterials',
+        'selectedMaterials'
+    ));
 }
 private function getCategoryTreeIds($category)
 {

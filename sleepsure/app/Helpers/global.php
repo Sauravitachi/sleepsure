@@ -7,7 +7,6 @@ function globalData()
     // $base_url = "http://127.0.0.1:8000/";
     $base_url = "https://sleepauth.kodesoft.store/";
 
-    // fixed fallback URL
     $fallback_logo = "https://sleepsure-new.netlify.app/assets/images/logo.png";
     $fallback_slider = "https://sleepsure-new.netlify.app/assets/images/banner2.png";
 
@@ -27,7 +26,6 @@ function globalData()
 });
 
 
-    // Product Categories (3 level dynamic)
     $categories = ProductCategory::where(function($q) {
             $q->whereNull('parent_category_id')
             ->orWhere('parent_category_id', '');
@@ -36,29 +34,37 @@ function globalData()
         ->where('status', 1)
         ->orderBy('menu_pos', 'asc')
         ->get()
-        ->map(function ($main) {
-            // Sub Categories
+        ->map(function ($main) use ($base_url, $fallback_logo) {            
+            $main->image_url = !empty($main->cat_image)
+                ? rtrim($base_url, '/') . '/' . ltrim($main->cat_image, '/')
+                : $fallback_logo;
+
             $main->subcategories = ProductCategory::where('parent_category_id', $main->category_id)
                 ->where('cat_type', 2)
                 ->where('top_menu', 0)
                 ->where('status', 1)
                 ->orderBy('menu_pos', 'asc')
                 ->get()
-                ->map(function ($sub) {
-                    // Third Level Category (Model)
+                ->map(function ($sub) use ($base_url, $fallback_logo) {                    
+                    $sub->image_url = !empty($sub->cat_image)
+                        ? rtrim($base_url, '/') . '/' . ltrim($sub->cat_image, '/')
+                        : $fallback_logo;
                     $sub->models = ProductCategory::where('parent_category_id', $sub->category_id)
                         ->where('cat_type', 2)
                         ->where('top_menu', 0)
                         ->where('status', 1)
                         ->orderBy('menu_pos', 'asc')
-                        ->get();
-
+                        ->get()
+                        ->map(function ($model) use ($base_url, $fallback_logo) {
+                            $model->image_url = !empty($model->cat_image)
+                                ? rtrim($base_url, '/') . '/' . ltrim($model->cat_image, '/')
+                                : $fallback_logo;
+                            return $model;
+                        });
                     return $sub;
                 });
-
             return $main;
         });
-
 
     return [
         'web_setting' => $web_setting,

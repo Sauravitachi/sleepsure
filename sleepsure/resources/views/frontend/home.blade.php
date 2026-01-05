@@ -216,7 +216,7 @@
             @foreach($categories as $main)
                 <div class="category-item">
                     <div class="category-image">
-                        <img src="{{ $main->image }}" alt="{{ $main->category_name }}">
+                        <img src="{{ $main->image_url }}" alt="{{ $main->category_name }}">
                     </div>
                     <h3>{{ Str::title($main->category_name) }}</h3>
                     <p>{{ $main->subcategories->count() }} Items</p>

@@ -100,9 +100,8 @@
 	<div style="display: flex;">
 		<!-- Filter Sidebar -->
 		<aside class="filter-sidebar">
-			<form method="GET" action="{{ route('view.products') }}">
+			<form id="filterForm" method="GET" action="{{ route('view.products') }}">
 				<input type="hidden" name="type" value="{{ request('type') }}">
-                <form id="filterForm" method="GET" action="{{ route('categories.index') }}">
                 <div class="filter-group">
                     <h3>Categories</h3>
                     <div class="filter-options">
@@ -128,29 +127,72 @@
 				<div class="filter-group">
 					<h3>Size</h3>
 					<div class="filter-options">
-						@php $sizes = ['Single', 'Twin', 'Full', 'Queen', 'King', 'California King']; @endphp
-						@foreach($sizes as $size)
-						<div class="filter-option">
-							<input type="checkbox" name="sizes[]" id="size-{{ $loop->index }}" value="{{ $size }}" {{ in_array($size, (array)request('sizes', [])) ? 'checked' : '' }}>
-							<label for="size-{{ $loop->index }}">{{ $size }}</label>
-						</div>
+                        @php
+                            if (!isset($variantCat)) { $variantCat = collect(); }
+                            $selectedSizes = request('sizes', []);
+                        @endphp
+						@foreach($variantCat as $size)
+							@php
+								$filterValue = lcfirst(str_replace(' ', '', ucwords(strtolower($size->variant_cat))));
+								$label = ucwords(str_replace(['-', '_'], ' ', $size->variant_cat));
+							@endphp
+							<div class="filter-option">
+								<input type="checkbox"
+									name="sizes[]"
+									id="size-{{ $loop->index }}"
+									value="{{ $filterValue }}"
+									{{ in_array($filterValue, (array)$selectedSizes) ? 'checked' : '' }}>
+								<label for="size-{{ $loop->index }}">{{ $label }}</label>
+							</div>
 						@endforeach
-					</div>
+                    </div>
 				</div>
-				<div class="filter-group">
-					<h3>Firmness</h3>
-					<div class="filter-options">
-						@php $firmness = ['Soft', 'Medium', 'Firm']; @endphp
-						@foreach($firmness as $firm)
-						<div class="filter-option">
-							<input type="checkbox" name="firmness[]" id="firmness-{{ $loop->index }}" value="{{ $firm }}" {{ in_array($firm, (array)request('firmness', [])) ? 'checked' : '' }}>
-							<label for="firmness-{{ $loop->index }}">{{ $firm }}</label>
-						</div>
-						@endforeach
-					</div>
-				</div>
-				<button type="submit" class="apply-filters">Apply Filters</button>
-				<input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
+				
+		<div style="display: flex; gap: 10px; flex-direction:column">
+					<button type="submit" class="apply-filters">Apply Filters</button>
+					@php
+						$clearParams = [];
+						if (request()->has('type')) {
+							$clearParams['type'] = request('type');
+						}
+					@endphp
+					<a href="{{ route('view.products', $clearParams) }}" class="btn btn-secondary" style="background: #eee; color: #333; border: 1px solid #ccc; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">Clear Filters</a>
+                </div>
+                    <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
+                </form>
+            </aside>
+        
+			<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				// Auto-submit on filter change (checkboxes, price range)
+				const filterForm = document.getElementById('filterForm');
+				if (filterForm) {
+					// For checkboxes (auto-submit on change)
+					filterForm.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+						cb.addEventListener('change', function() {
+							filterForm.submit();
+						});
+					});
+					// For price range
+					const priceSlider = document.getElementById('myRange');
+					if (priceSlider) {
+						priceSlider.addEventListener('change', function() {
+							filterForm.submit();
+						});
+					}
+					// For sort dropdown
+					const sortSelect = document.getElementById('sort');
+					if (sortSelect) {
+						sortSelect.addEventListener('change', function() {
+							filterForm.submit();
+						});
+					}
+				}
+			});
+			</script>
+                <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
+            </form>
+        </aside>
 			</form>
 		</aside>
 		<!-- Products Grid -->
@@ -245,7 +287,7 @@
 			</div>
 			<!-- Pagination -->
 			@if($paginatedProducts->hasPages())
-			<div class="pagination">
+			<div class="pagination mb-4">
 				{{-- Previous Page Link --}}
 				@if ($paginatedProducts->onFirstPage())
 					<span class="disabled">← Previous</span>
