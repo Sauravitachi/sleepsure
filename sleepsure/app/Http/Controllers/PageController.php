@@ -109,7 +109,7 @@ public function category($categoryId)
         ->filter()
         ->values();
 
-    // Optionally, get selectedMaterials from request if you use it in the view
+    
     $selectedMaterials = request()->input('materials', []);
 
     return view('frontend.categories', compact(
