@@ -26,45 +26,58 @@ function globalData()
 });
 
 
-    $categories = ProductCategory::where(function($q) {
-            $q->whereNull('parent_category_id')
-            ->orWhere('parent_category_id', '');
-        })
-        ->where('cat_type', 1)
-        ->where('status', 1)
-        ->orderBy('menu_pos', 'asc')
-        ->get()
-        ->map(function ($main) use ($base_url, $fallback_logo) {            
-            $main->image_url = !empty($main->cat_image)
-                ? rtrim($base_url, '/') . '/' . ltrim($main->cat_image, '/')
-                : $fallback_logo;
 
-            $main->subcategories = ProductCategory::where('parent_category_id', $main->category_id)
-                ->where('cat_type', 2)
-                ->where('top_menu', 0)
-                ->where('status', 1)
-                ->orderBy('menu_pos', 'asc')
-                ->get()
-                ->map(function ($sub) use ($base_url, $fallback_logo) {                    
-                    $sub->image_url = !empty($sub->cat_image)
-                        ? rtrim($base_url, '/') . '/' . ltrim($sub->cat_image, '/')
-                        : $fallback_logo;
-                    $sub->models = ProductCategory::where('parent_category_id', $sub->category_id)
-                        ->where('cat_type', 2)
-                        ->where('top_menu', 0)
-                        ->where('status', 1)
-                        ->orderBy('menu_pos', 'asc')
-                        ->get()
-                        ->map(function ($model) use ($base_url, $fallback_logo) {
-                            $model->image_url = !empty($model->cat_image)
-                                ? rtrim($base_url, '/') . '/' . ltrim($model->cat_image, '/')
-                                : $fallback_logo;
-                            return $model;
-                        });
-                    return $sub;
-                });
-            return $main;
-        });
+    $categories = ProductCategory::where(function($q) {
+        $q->whereNull('parent_category_id')
+          ->orWhere('parent_category_id', '');
+    })
+    ->where('cat_type', 1)
+    ->where('status', 1)
+    ->orderBy('menu_pos', 'asc')
+    ->get()
+    ->map(function ($main) use ($base_url, $fallback_logo) {
+        $main->image_url = !empty($main->cat_image)
+            ? rtrim($base_url, '/') . '/' . ltrim($main->cat_image, '/')
+            : $fallback_logo;
+
+        $main->subcategories = ProductCategory::where('parent_category_id', $main->category_id)
+            ->where('cat_type', 2)
+            ->where('top_menu', 0)
+            ->where('status', 1)
+            ->orderBy('menu_pos', 'asc')
+            ->get()
+            ->map(function ($sub) use ($base_url, $fallback_logo) {
+                $sub->image_url = !empty($sub->cat_image)
+                    ? rtrim($base_url, '/') . '/' . ltrim($sub->cat_image, '/')
+                    : $fallback_logo;
+                $sub->models = ProductCategory::where('parent_category_id', $sub->category_id)
+                    ->where('cat_type', 2)
+                    ->where('top_menu', 0)
+                    ->where('status', 1)
+                    ->orderBy('menu_pos', 'asc')
+                    ->get()
+                    ->map(function ($model) use ($base_url, $fallback_logo) {
+                        $model->image_url = !empty($model->cat_image)
+                            ? rtrim($base_url, '/') . '/' . ltrim($model->cat_image, '/')
+                            : $fallback_logo;
+                        $model->parent_category = null;
+                        if (!empty($model->parent_category_id)) {
+                            $model->parent_category = ProductCategory::where('category_id', $model->parent_category_id)->first();
+                        }
+                        return $model;
+                    });
+                $sub->parent_category = null;
+                if (!empty($sub->parent_category_id)) {
+                    $sub->parent_category = ProductCategory::where('category_id', $sub->parent_category_id)->first();
+                }
+                return $sub;
+            });
+        $main->parent_category = null;
+        if (!empty($main->parent_category_id)) {
+            $main->parent_category = ProductCategory::where('category_id', $main->parent_category_id)->first();
+        }
+        return $main;
+    });
 
     return [
         'web_setting' => $web_setting,

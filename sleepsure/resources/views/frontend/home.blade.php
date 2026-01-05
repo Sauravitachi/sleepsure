@@ -215,11 +215,13 @@
         <div class="category-slider">
             @foreach($categories as $main)
                 <div class="category-item">
-                    <div class="category-image">
-                        <img src="{{ $main->image_url }}" alt="{{ $main->category_name }}">
-                    </div>
-                    <h3>{{ Str::title($main->category_name) }}</h3>
-                    <p>{{ $main->subcategories->count() }} Items</p>
+                    <a href="{{ route('products.categories', $main->category_id) }}">
+                        <div class="category-image">
+                            <img src="{{ $main->image_url }}" alt="{{ $main->category_name }}">
+                        </div>
+                        <h3>{{ Str::title($main->category_name) }}</h3>
+                        <p>{{ $main->subcategories->count() }} Items</p>
+                    </a>
                 </div>
             @endforeach
         </div>
