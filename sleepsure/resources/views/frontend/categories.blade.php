@@ -395,14 +395,13 @@
             });
         }
 
-        // Auto-submit sort form
+        // Auto-submit sort with filters
         const sortSelect = document.getElementById('sort');
-        if (sortSelect) {
+        const sortInput = document.getElementById('sortInput');
+        if (sortSelect && sortInput && filterForm) {
             sortSelect.addEventListener('change', function() {
-                // Get current URL params
-                const url = new URL(window.location.href);
-                url.searchParams.set('sort', this.value);
-                window.location.href = url.toString();
+                sortInput.value = this.value;
+                filterForm.submit();
             });
         }
     });
