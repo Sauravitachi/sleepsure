@@ -12,7 +12,7 @@
 
         <div class="search-container">
             <span class="material-icons search-icon">search</span>
-            <input type="text" placeholder="Search for Mattress" class="search-input">
+            <input type="text" placeholder="Search for Mattress, Category, Tag..." class="search-input" id="globalSearchInput" autocomplete="off" readonly style="cursor:pointer;">
         </div>
 
         <nav class="header-links desktop-only">
@@ -67,14 +67,14 @@
 
             @foreach($categories->take(5) as $main)
                 <li class="nav-item nav-item-mat">
-                    <a href="{{ route('products.categories', $main->category_id) }}" class="nav-link-mat">{{ $main->category_name }}</a>
+                    <a href="{{ route('products.categories', $main->category_name) }}" class="nav-link-mat">{{ $main->category_name }}</a>
                     @if($main->subcategories->count() > 0)
                         <div class="mat-dropdown-container mt-2">
                             @foreach($main->subcategories as $sub)
                                 <div class="dropdown-col">
                                     {{-- Subcategory Title --}}
                                     <div class="col-title text-muted fw-semibold small-xs mb-0">
-                                        <a href="{{ route('products.categories', $sub->category_id) }}" style="color:inherit;text-decoration:none;">
+                                        <a href="{{ route('products.categories', $sub->category_name) }}" style="color:inherit;text-decoration:none;">
                                             {{ Str::title($sub->category_name) }}
                                         </a>
                                     </div>
@@ -83,7 +83,7 @@
                                         <ul class="col-links">
                                             @foreach($sub->models as $model)
                                                 <li>
-                                                    <a href="{{ route('products.categories', $model->category_id) }}">{{ Str::title($model->category_name) }}</a>
+                                                    <a href="{{ route('products.categories', $model->category_name) }}">{{ Str::title($model->category_name) }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -222,6 +222,146 @@
 </div>
 
 <script>
+            // Search Modal Logic
+            document.addEventListener('DOMContentLoaded', function () {
+                const searchInput = document.getElementById('globalSearchInput');
+                const searchModal = document.getElementById('searchModal');
+                const closeModalBtn = document.getElementById('closeSearchModal');
+                const modalInput = document.getElementById('modalSearchInput');
+                const modalContent = document.getElementById('searchModalContent');
+
+                if (searchInput) {
+                    searchInput.addEventListener('focus', function () {
+                        searchModal.style.display = 'flex';
+                        setTimeout(() => modalInput.focus(), 100);
+                    });
+                    searchInput.addEventListener('click', function () {
+                        searchModal.style.display = 'flex';
+                        setTimeout(() => modalInput.focus(), 100);
+                    });
+                }
+                if (closeModalBtn) {
+                    closeModalBtn.onclick = function () {
+                        searchModal.style.display = 'none';
+                        modalInput.value = '';
+                        modalContent.innerHTML = '';
+                    };
+                }
+                if (searchModal) {
+                    searchModal.onclick = function (e) {
+                        if (e.target === this) {
+                            searchModal.style.display = 'none';
+                            modalInput.value = '';
+                            modalContent.innerHTML = '';
+                        }
+                    };
+                }
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
+                        searchModal.style.display = 'none';
+                        modalInput.value = '';
+                        modalContent.innerHTML = '';
+                    }
+                });
+                // Live search
+                if (modalInput) {
+                    let debounceTimeout;
+                    modalInput.addEventListener('input', function () {
+                        const q = this.value.trim();
+                        clearTimeout(debounceTimeout);
+                        if (q.length < 2) {
+                            modalContent.innerHTML = `<div style='color:#888;'>Type to search products or categories...</div>`;
+                            return;
+                        }
+                        debounceTimeout = setTimeout(() => {
+                            fetch(`/search/products?q=${encodeURIComponent(q)}`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success && data.results.length > 0) {
+                                        modalContent.innerHTML = data.results.map(item => {
+                                            if (item.search_type === 'category') {
+                                                return `
+                                                    <a href="${item.link}" class="search-result-item" style="background:#f7faff;">
+                                                        <img src="${item.image_url || ''}" alt="" />
+                                                        <div>
+                                                            <div style="font-weight:600;">${item.category_name}</div>
+                                                            <div style="font-size:12px;color:#1b4e9b;">Category</div>
+                                                        </div>
+                                                    </a>
+                                                `;
+                                            } else {
+                                                return `
+                                                    <a href="${item.link}" class="search-result-item">
+                                                        <img src="${item.image_url || ''}" alt="" />
+                                                        <div>
+                                                            <div style="font-weight:600;">${item.product_name}</div>
+                                                            <div style="font-size:12px;color:#888;">${item.categoryDetails?.category_name || ''}</div>
+                                                        </div>
+                                                    </a>
+                                                `;
+                                            }
+                                        }).join('');
+                                    } else {
+                                        modalContent.innerHTML = '<div style="padding:12px;color:#888;">No results found</div>';
+                                    }
+                                })
+                                .catch(() => {
+                                    modalContent.innerHTML = '<div style="padding:12px;color:#888;">Error searching</div>';
+                                });
+                        }, 300);
+                    });
+                }
+            });
+        // Global Product Search (AJAX)
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('globalSearchInput');
+            const resultsBox = document.getElementById('globalSearchResults');
+            let debounceTimeout;
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    const q = this.value.trim();
+                    clearTimeout(debounceTimeout);
+                    if (q.length < 2) {
+                        resultsBox.style.display = 'none';
+                        resultsBox.innerHTML = '';
+                        return;
+                    }
+                    debounceTimeout = setTimeout(() => {
+                        fetch(`/search/products?q=${encodeURIComponent(q)}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success && data.results.length > 0) {
+                                    resultsBox.innerHTML = data.results.map(item => `
+                                        <a href="/product/${item.product_id}" class="search-result-item" style="display:flex;align-items:center;padding:8px 12px;text-decoration:none;color:#222;border-bottom:1px solid #eee;">
+                                            <img src="${item.image_url || ''}" alt="" style="width:36px;height:36px;object-fit:cover;margin-right:10px;border-radius:4px;">
+                                            <div>
+                                                <div style="font-weight:600;">${item.product_name}</div>
+                                                <div style="font-size:12px;color:#888;">${item.categoryDetails?.category_name || ''}</div>
+                                            </div>
+                                        </a>
+                                    `).join('');
+                                    resultsBox.style.display = 'block';
+                                } else {
+                                    resultsBox.innerHTML = '<div style="padding:12px;color:#888;">No results found</div>';
+                                    resultsBox.style.display = 'block';
+                                }
+                            })
+                            .catch(() => {
+                                resultsBox.innerHTML = '<div style="padding:12px;color:#888;">Error searching</div>';
+                                resultsBox.style.display = 'block';
+                            });
+                    }, 300);
+                });
+                // Hide results on blur
+                searchInput.addEventListener('blur', function () {
+                    setTimeout(() => { resultsBox.style.display = 'none'; }, 200);
+                });
+                // Show results on focus if any
+                searchInput.addEventListener('focus', function () {
+                    if (resultsBox.innerHTML.trim()) resultsBox.style.display = 'block';
+                });
+            }
+        });
     document.addEventListener('DOMContentLoaded', function () {
         const modalBackdrop = document.getElementById('modalBackdrop');
         const openModalBtn = document.getElementById('openModal');

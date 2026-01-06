@@ -5,12 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\ProductInformation;
 use Illuminate\Http\Request;
 use App\Models\Variant;
+use App\Services\SearchService;    
 use App\Http\Controllers\HomeController;
 use App\Models\Thickness;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    protected $searchService;
+
+    public function __construct(SearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
     public function productDetails($id)
     {
         $global = globalData();
@@ -137,29 +145,7 @@ class ProductController extends Controller
         ]);
     }
 
-    private function applyImageAndWarranty($product, $global)
-    {
-        $image = $product->image_thumb ?? null;
-
-        $product->image_url = $this->setImageOrPlaceholder(
-            $image,
-            $global['base_url'],
-            $global['fallback_slider']
-        );
-
-        $months = (int) ($product->warrantee ?? 0);
-        $product->warranty_text = $months >= 12
-            ? floor($months / 12) . ' Years'
-            : $months . ' Months';
-    }
-
-    private function setImageOrPlaceholder($path, $baseUrl, $fallback)
-    {
-        if (!empty($path) && file_exists(public_path($path))) {
-            return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
-        }
-        return $fallback;
-    }
+    
 
     public function checkDelivery(Request $request)
     {
@@ -273,10 +259,81 @@ class ProductController extends Controller
     }
 
 
-    public function formatRupee($amount)
+    public function formatRupee($amount): string
     {
         if (!is_numeric($amount)) return '';
         $formatted = number_format((float)$amount, 2, '.', ',');
         return '₹ ' . $formatted;
+    }
+
+
+   
+    public function globalSearch(Request $request)
+    {
+        $query = $request->input('q', '');
+        $limit = (int) $request->input('limit', 20);
+        $results = $this->searchService->searchProducts($query, $limit);
+        $global = globalData();
+        $transformed = $results->map(function ($item) use ($global) {
+            if (isset($item->search_type) && $item->search_type === 'category') {
+                $image = $item->image ?? $global['fallback_slider'] ?? '';
+                return [
+                    'search_type' => 'category',
+                    'category_id' => $item->category_id,
+                    'category_name' => $item->title ?? $item->category_name ?? '',
+                    'image_url' => $image,
+                    'slug' => $item->slug ?? null,
+                    'link' => route('products.categories', ['categoryId' => $item->category_id]),
+                ];
+            } else {
+                $image = $item->image_url ?? $item->image_thumb ?? null;
+                if (!$image || !filter_var($image, FILTER_VALIDATE_URL)) {
+                    $image = $global['fallback_slider'] ?? '';
+                }
+                return [
+                    'search_type' => 'product',
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->product_name,
+                    'image_url' => $image,
+                    'categoryDetails' => $item->categoryDetails ? [
+                        'category_id' => $item->categoryDetails->category_id ?? null,
+                        'category_name' => $item->categoryDetails->category_name ?? null,
+                    ] : null,
+                    'link' => url('/product/' . $item->product_id),
+                ];
+            }
+        });
+        return response()->json([
+            'success' => true,
+            'results' => $transformed,
+        ]);
+    }
+
+    private function applyImageAndWarranty($product, $global)
+    {
+        if (is_iterable($product)) {
+            foreach ($product as $item) {
+                $this->applyImageAndWarranty($item, $global);
+            }
+            return;
+        }
+        $image = $product->image_thumb ?? null;
+        $product->image_url = $this->setImageOrPlaceholder(
+            $image,
+            $global['base_url'],
+            $global['fallback_slider']
+        );
+        $months = (int) ($product->warrantee ?? 0);
+        $product->warranty_text = $months >= 12
+            ? floor($months / 12) . ' Years'
+            : $months . ' Months';
+    }
+
+    private function setImageOrPlaceholder($path, $baseUrl, $fallback)
+    {
+        if (!empty($path) && file_exists(public_path($path))) {
+            return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
+        }
+        return $fallback;
     }
 }

@@ -65,12 +65,12 @@ class PageController extends Controller
         return view('frontend.offer', array_merge($global, compact('rewards', 'rewardTypes')));
     }
 
-public function category($categoryId)
+public function category($categoryName)
 {
     $global = globalData();
     $categories = $global['categories'];
 
-    $category = ProductCategory::where('category_id', $categoryId)
+    $category = ProductCategory::where('category_name', $categoryName)
         ->where('status', 1)
         ->firstOrFail();
 

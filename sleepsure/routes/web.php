@@ -89,7 +89,5 @@ Route::prefix('cart')->group(function () {
     Route::post('/add', [CartController::class, 'add'])->name('cart.add');
 });
 Route::get('/view-products', [HomeController::class, 'viewProducts'])->name('view.products');
-
-Route::get('/products/category/{categoryId}', 
-    [PageController::class, 'category']
-)->name('products.categories');
+Route::get('/products/category/{categoryName}', [PageController::class, 'category'])->name('products.categories');
+Route::get('/search/products', [ProductController::class, 'globalSearch'])->name('products.globalSearch');

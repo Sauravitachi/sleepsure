@@ -43,5 +43,70 @@
     <script src="{{ asset('assets/js/script.js') }}"></script>
     
     @stack('scripts')
+    @include('partials.search_modal')
+        <script>
+    // Open modal from header search
+    document.getElementById('globalSearchInput')?.addEventListener('focus', function() {
+        document.getElementById('searchModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('modalSearchInput').focus(), 100);
+    });
+
+    // Also open on click (for mobile/readonly)
+    document.getElementById('globalSearchInput')?.addEventListener('click', function() {
+        document.getElementById('searchModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('modalSearchInput').focus(), 100);
+    });
+
+    // Close modal
+    document.getElementById('closeSearchModal')?.addEventListener('click', function() {
+        document.getElementById('searchModal').style.display = 'none';
+        document.getElementById('modalSearchInput').value = '';
+        document.getElementById('searchModalContent').innerHTML = '';
+    });
+    document.getElementById('searchModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+            document.getElementById('modalSearchInput').value = '';
+            document.getElementById('searchModalContent').innerHTML = '';
+        }
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.getElementById('searchModal').style.display = 'none';
+            document.getElementById('modalSearchInput').value = '';
+            document.getElementById('searchModalContent').innerHTML = '';
+        }
+    });
+
+    // Live search
+    document.getElementById('modalSearchInput')?.addEventListener('input', function() {
+        const q = this.value.trim();
+        const content = document.getElementById('searchModalContent');
+        if (q.length < 2) {
+            // Show trending/popular here
+            content.innerHTML = `<div>Trending Searches: ...</div>`;
+            return;
+        }
+        fetch(`/search/products?q=${encodeURIComponent(q)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.results.length > 0) {
+                    content.innerHTML = data.results.map(item => `
+                        <a href="/product/${item.product_id}" class="search-result-item">
+                            <img src="${item.image_url || ''}" alt="" style="width:36px;height:36px;object-fit:cover;margin-right:10px;border-radius:4px;">                            
+                            <div>
+
+                                <div style="font-weight:600;">${item.product_name}</div>
+                                <div style="font-size:12px;color:#888;">${item.categoryDetails?.category_name || ''}</div>
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    content.innerHTML = '<div style="padding:12px;color:#888;">No results found</div>';
+                }
+                console.log(data);
+            });
+    });
+    </script>
 </body>
 </html>
