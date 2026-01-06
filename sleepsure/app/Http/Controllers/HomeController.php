@@ -87,10 +87,7 @@ class HomeController extends Controller
 
 
     // function for all categories page
-    public function allCategories(Request $request)
-            // Material filter
-           
-    {
+    public function allCategories(Request $request){
         $global = globalData();
         
         // $categories = ProductCategory::where('parent_category_id', null)
@@ -396,7 +393,6 @@ class HomeController extends Controller
     public function applyImageAndWarranty($product, $global)
     {
         $image = $product->image_thumb ?: $product->image_large_details;
-
         $product->image_url = $this->setImageOrPlaceholder(
             $image,
             $global['base_url'],
@@ -657,6 +653,7 @@ class HomeController extends Controller
             'variant_full_display' => $variant_full_display,
             'default_variant' => $default_variant,
         ];
+        
 
     }
 

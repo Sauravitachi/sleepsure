@@ -29,11 +29,14 @@ class ProductController extends Controller
             'categoryDetails',
             'categoryDetails.parentCategoryDetails'
         ])->where('product_id', $id)->firstOrFail();
-
         $homeController = app(HomeController::class);
         $transformed = $homeController->transformProduct($product);
-        $productObj = (object) $transformed;
-
+        $merged = array_merge($product->toArray(), $transformed);
+        $productObj = (object) $merged;
+        //  dd([
+        //         'image_thumb' => $productObj->image_thumb,
+        //         'image_large_details' => $productObj->image_large_details
+        //     ]);
         $this->applyImageAndWarranty($productObj, $global);
 
         $dimensionVariants = Variant::query()
@@ -317,8 +320,12 @@ class ProductController extends Controller
             }
             return;
         }
-        $image = $product->image_thumb ?? null;
-        $product->image_url = $this->setImageOrPlaceholder(
+        $image = (isset($product->image_thumb) && $product->image_thumb)
+            ? $product->image_thumb
+            : (isset($product->image_large_details) ? $product->image_large_details : null);
+
+          
+         $product->image_url = $this->setImageOrPlaceholder(
             $image,
             $global['base_url'],
             $global['fallback_slider']
@@ -331,7 +338,12 @@ class ProductController extends Controller
 
     private function setImageOrPlaceholder($path, $baseUrl, $fallback)
     {
-        if (!empty($path) && file_exists(public_path($path))) {
+        if (!empty($path)) {
+            // If path is already a full URL, return as is
+            if (filter_var($path, FILTER_VALIDATE_URL)) {
+                return $path;
+            }
+            // Always prepend baseUrl for relative paths
             return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
         }
         return $fallback;

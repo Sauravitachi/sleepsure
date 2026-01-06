@@ -5,8 +5,8 @@
 @section('content')
 
 <div class="product-page-container">
-        <section class="product-view-section">
-            <div class="product-gallery">
+        <section class="product-view-section">           
+             <div class="product-gallery">
                 <div class="thumbnails">
                     <img src="{{ $product->image_url }}" alt="{{ $product->product_name }}" class="active" data-image="{{ $product->image_url }}">
                 </div>
@@ -382,32 +382,16 @@
                         @endfor
                     </div>
                     <div class="rating-info">Based on {{ $product->total_reviewers }} reviews</div>
-                </div>
-                <div class="summary-right">
-                    @php
-                        $total = max(1, $product->total_reviewers);
-                        $breakdown = [5=>0,4=>0,3=>0,2=>0,1=>0];
-                        foreach($productModel->reviews as $r) { $breakdown[$r->rate] = ($breakdown[$r->rate] ?? 0) + 1; }
-                    @endphp
-                    @foreach([5,4,3,2,1] as $star)
-                        <div class="rating-breakdown-row">
-                            <span class="star-label">{{ $star }} <i class="fa fa-star" style="color:#ffc107;"></i></span>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" style="width:{{ ($breakdown[$star] ?? 0) / $total * 100 }}%"></div>
-                            </div>
-                            <span class="count">{{ $breakdown[$star] ?? 0 }}</span>
-                        </div>
-                    @endforeach
-                </div>
+                </div>         
             </div>
 
-            <h3 class="customer-media-title">Customer Photos</h3>
+            {{-- <h3 class="customer-media-title">Customer Photos</h3>
             <div class="customer-media-carousel">
                 <!-- TODO: Dynamically load customer images from reviews with media -->
                 <img src="assets/images/4.jpg" alt="Customer photo">
                 <img src="assets/images/13.jpg" alt="Customer photo">
                 <img src="assets/images/Comfy Mattress .jpg" alt="Customer photo">
-            </div>
+            </div> --}}
 
             <!-- Review Submission Form (to be enhanced in next step) -->
             @php

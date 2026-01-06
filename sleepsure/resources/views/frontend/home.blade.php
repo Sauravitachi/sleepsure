@@ -296,16 +296,12 @@
         <h2>Featured Products</h2>
         <a href="{{ route('view.products', ['type' => 'featured']) }}" class="view-all">View All</a>
     </div>
-
-    <!-- NEW WRAPPER -->
     <div class="slider-wrapper">
 
-        <!-- LEFT BUTTON -->
         <button class="slider-btn left" data-target="featured-slider">
             <i class="fa-solid fa-chevron-left"></i>
         </button>
 
-        <!-- EXISTING SLIDER -->
         <div class="slider-container" id="featured-slider">
             @forelse($featured_products as $product)
             <div class="wrapper">
