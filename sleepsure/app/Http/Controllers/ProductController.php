@@ -283,7 +283,7 @@ class ProductController extends Controller
                     'category_name' => $item->title ?? $item->category_name ?? '',
                     'image_url' => $image,
                     'slug' => $item->slug ?? null,
-                    'link' => route('products.categories', ['categoryId' => $item->category_id]),
+                    'link' => route('products.categories', ['categoryName' => $item->category_name]),
                 ];
             } else {
                 $image = $item->image_url ?? $item->image_thumb ?? null;
