@@ -215,7 +215,7 @@
         <div class="category-slider">
             @foreach($categories as $main)
                 <div class="category-item">
-                    <a href="{{ route('products.categories', $main->category_id) }}">
+                    <a href="{{ route('products.categories', $main->category_name) }}">
                         <div class="category-image">
                             <img src="{{ $main->image_url }}" alt="{{ $main->category_name }}">
                         </div>
