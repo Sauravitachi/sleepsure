@@ -393,6 +393,8 @@
                 <img src="assets/images/Comfy Mattress .jpg" alt="Customer photo">
             </div> --}}
 
+
+            
             <!-- Review Submission Form (to be enhanced in next step) -->
             @php
                 $user = auth()->user();
