@@ -29,7 +29,7 @@
         </button>
 
         <div class="brand-logo">
-            <a href="/">
+            <a href="{{ route('home') }}">
                 <img src="{{ $logo_url }}" alt="SleepSure" class="home-icon">
             </a>
         </div>

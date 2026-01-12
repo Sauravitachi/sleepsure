@@ -200,7 +200,7 @@
                         <span class="amount">₹{{ number_format($subtotal + $tax, 2) }}</span>
                     </div>
                    
-                    <a href="#" class="checkout-btn">
+                    <a href="{{ route('checkout') }}" class="checkout-btn">
                         <i class="fas fa-lock"></i>Proceed to checkout
                     </a>
                     <a href="{{ url('/') }}" class="continue-shopping">

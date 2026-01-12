@@ -393,10 +393,12 @@ public function viewProducts(Request $request)
     public function applyImageAndWarranty($product, $global)
     {
         $image = $product->image_thumb ?: $product->image_large_details;
+        $base_url = $global['base_url'] ?? 'https://sleepauth.kodesoft.store/';
+        $fallback_slider = $global['fallback_slider'] ?? 'https://sleepsure-new.netlify.app/assets/images/banner2.png';
         $product->image_url = $this->setImageOrPlaceholder(
             $image,
-            $global['base_url'],
-            $global['fallback_slider']
+            $base_url,
+            $fallback_slider
         );
 
         // Use the same formatWarranty logic for warranty_text

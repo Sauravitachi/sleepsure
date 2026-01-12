@@ -181,52 +181,53 @@
                 <div class="order-summary">
                     <h2 class="summary-title">Order Summary</h2>
                     <div class="order-items">
-                        <div class="order-item">
-                            <div class="order-item-image">
-                                <img src="assets/images/4.jpg" alt="SleepSure Premium Mattress">
+                        @php
+                            $subtotal = 0;
+                            $totalQuantity = 0;
+                        @endphp
+                        @forelse($cartItems as $item)
+                            @php
+                                $itemTotal = $item->price * $item->quantity;
+                                $subtotal += $itemTotal;
+                                $totalQuantity += $item->quantity;
+                                $img = isset($item->product) && isset($item->product->image_url) ? $item->product->image_url : 'assets/images/default.jpg';
+                                $pname = isset($item->product) && isset($item->product->product_name) ? $item->product->product_name : 'Product';
+                                $size = $item->variant->variant_cat ?? 'N/A';
+                            @endphp
+                            <div class="order-item">
+                                <div class="order-item-image">
+                                    <img src="{{ asset($img) }}" alt="{{ $pname }}">
+                                </div>
+                                <div class="order-item-details">
+                                    <h3 class="order-item-name">{{ $pname }}</h3>
+                                    <p class="order-item-size">Size: {{ $size }}</p>
+                                    <p class="order-item-price">₹{{ number_format($item->price, 2) }} × {{ $item->quantity }}</p>
+                                </div>
                             </div>
-                            <div class="order-item-details">
-                                <h3 class="order-item-name">SleepSure Premium Hybrid Mattress</h3>
-                                <p class="order-item-size">Size: Queen</p>
-                                <p class="order-item-price">₹5,249</p>
+                        @empty
+                            <div class="order-item">
+                                <div class="order-item-details">
+                                    <h3>Your cart is empty.</h3>
+                                </div>
                             </div>
-                        </div>
-                        <div class="order-item">
-                            <div class="order-item-image">
-                                <img src="assets/images/13.jpg" alt="SleepSure Memory Foam Pillow">
-                            </div>
-                            <div class="order-item-details">
-                                <h3 class="order-item-name">SleepSure Memory Foam Pillow</h3>
-                                <p class="order-item-size">Size: Standard</p>
-                                <p class="order-item-price">₹5,249 × 2</p>
-                            </div>
-                        </div>
-                        <div class="order-item">
-                            <div class="order-item-image">
-                                <img src="assets/images/Comfy Mattress .jpg" alt="SleepSure Cooling Mattress Protector">
-                            </div>
-                            <div class="order-item-details">
-                                <h3 class="order-item-name">SleepSure Cooling Mattress Protector</h3>
-                                <p class="order-item-size">Size: Queen</p>
-                                <p class="order-item-price">₹5,249</p>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                     <div class="summary-row">
-                        <span>Subtotal (3 items)</span>
-                        <span>₹21,249</span>
+                        <span>Subtotal ({{ $totalQuantity }} items)</span>
+                        <span>₹{{ number_format($subtotal, 2) }}</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping</span>
                         <span>FREE</span>
                     </div>
+                    @php $tax = $subtotal * 0.03; @endphp
                     <div class="summary-row">
                         <span>Tax</span>
-                        <span>₹500</span>
+                        <span>₹{{ number_format($tax, 2) }}</span>
                     </div>
                     <div class="summary-row summary-total">
                         <span>Total</span>
-                        <span class="amount">₹21,749</span>
+                        <span class="amount">₹{{ number_format($subtotal + $tax, 2) }}</span>
                     </div>
                     <button class="place-order-btn" id="placeOrderBtn">
                         <i class="fas fa-lock"></i> Place Your Order

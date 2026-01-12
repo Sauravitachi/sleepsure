@@ -90,8 +90,9 @@ Route::prefix('cart')->group(function () {
     Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('/count', [CartController::class, 'productsCount'])->name('cart.products.count');
     Route::put('/quantity/{id}', [CartController::class, 'quantityUpdate'])->name('cart.quantityUpdate');
-
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 });
+
 Route::get('/view-products', [HomeController::class, 'viewProducts'])->name('view.products');
 Route::get('/products/category/{categoryName}', [PageController::class, 'category'])->name('products.categories');
 Route::get('/search/products', [ProductController::class, 'globalSearch'])->name('products.globalSearch');
