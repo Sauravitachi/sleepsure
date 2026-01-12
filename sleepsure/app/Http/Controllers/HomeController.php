@@ -238,7 +238,7 @@ class HomeController extends Controller
     //     }
     //     return view('frontend.viewproducts', compact('products', 'title'));
     // }
-     public function viewProducts(Request $request)
+public function viewProducts(Request $request)
     {
         $global = globalData();
         $categories = $global['categories'];
@@ -371,7 +371,7 @@ class HomeController extends Controller
     }
 
 
-    private function getProducts(string $filterField, array $global, int $limit = 10)
+    public function getProducts(string $filterField, array $global, int $limit = 10)
     {
         return ProductInformation::with([
                 'categoryDetails',

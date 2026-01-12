@@ -87,6 +87,10 @@ Route::get('/offer', [PageController::class, 'offer'])
 Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
     Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/count', [CartController::class, 'productsCount'])->name('cart.products.count');
+    Route::put('/quantity/{id}', [CartController::class, 'quantityUpdate'])->name('cart.quantityUpdate');
+
 });
 Route::get('/view-products', [HomeController::class, 'viewProducts'])->name('view.products');
 Route::get('/products/category/{categoryName}', [PageController::class, 'category'])->name('products.categories');

@@ -7,9 +7,15 @@
  <!-- Breadcrumb -->
     <section class="breadcrumb">
         <div class="container breadcrumb-container">
-            <a href="#">Home</a>
+            <a href="{{ url('/') }}">Home</a>
             <span>/</span>
-            <a href="#">Mattresses</a>
+            @php
+                $categoryName = 'Mattresses';
+                if (isset($cartItems) && count($cartItems) > 0 && isset($cartItems[0]->product->category_name)) {
+                    $categoryName = $cartItems[0]->product->category_name;
+                }
+            @endphp
+            <a href="#">{{ $categoryName }}</a>
             <span>/</span>
             <span>Your Cart</span>
         </div>
@@ -24,96 +30,82 @@
 
             <div class="cart-container">
                 <div class="cart-items">
-                    <div class="cart-item">
-                        <div class="item-image">
-                            <img src="assets/images/4.jpg"
-                                alt="SleepSure Premium Mattress">
-                        </div>
-                        <div class="item-details">
-                            <h3 class="item-name">SleepSure Premium Hybrid Mattress</h3>
-                            <p class="item-size">Size: Queen</p>
-                            <p class="item-price">₹5,249</p>
-                            <div class="item-actions">
-                                <div class="quantity-selector">
-                                    <button class="quantity-btn">-</button>
-                                    <input type="text" class="quantity-input" value="1">
-                                    <button class="quantity-btn">+</button>
+                    @php
+                        $subtotal = 0;
+                        $totalQuantity = 0;
+                    @endphp
+                    @forelse($cartItems as $item)
+                        @php
+                            $itemTotal = $item->price * $item->quantity;
+                            $subtotal += $itemTotal;
+                            $totalQuantity += $item->quantity;
+                        @endphp
+                        <div class="cart-item">
+                            <div class="item-image">
+                                @php
+                                    $img = isset($item->product) && isset($item->product->image_url) ? $item->product->image_url : 'assets/images/default.jpg';
+                                    $pname = isset($item->product) && isset($item->product->product_name) ? $item->product->product_name : 'Product';
+                                    @endphp
+                                <img src="{{ asset($img) }}" alt="{{ $pname }}">
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-name">{{ $pname }}</h3>
+                                <p class="item-size">
+                                    Size: {{ $item->variant->variant_cat ?? 'N/A' }}
+                                </p>
+                                <p class="item-price">₹{{ number_format($item->price, 2) }}</p>
+                                <div class="item-actions">
+                                    <form action="{{ route('cart.quantityUpdate', $item->id) }}" method="POST" class="quantity-form" style="display:inline-flex;align-items:center;" onsubmit="return false;">
+                                        @csrf
+                                        <div class="quantity-selector">
+                                            <button type="button" class="quantity-btn minus" @if($item->quantity <= 1) disabled @endif>-</button>
+                                            <input type="number" class="quantity-input" name="quantity" value="{{ $item->quantity }}" min="1" step="1" style="width:60px; text-align:center;" @if($item->quantity <= 1) min="1" @endif>
+                                            <button type="button" class="quantity-btn plus">+</button>
+                                        </div>
+                                    </form>
+                                    <form action="{{ route('cart.remove', $item->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="remove-btn">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    </form>
                                 </div>
-                                <button class="remove-btn">
-                                    <i class="fas fa-trash"></i> Remove
-                                </button>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="cart-item">
-                        <div class="item-image">
-                            <img src="assets/images/13.jpg"
-                                alt="SleepSure Memory Foam Pillow">
-                        </div>
-                        <div class="item-details">
-                            <h3 class="item-name">SleepSure Memory Foam Pillow</h3>
-                            <p class="item-size">Size: Standard</p>
-                            <p class="item-price">₹5,249</p>
-                            <div class="item-actions">
-                                <div class="quantity-selector">
-                                    <button class="quantity-btn">-</button>
-                                    <input type="text" class="quantity-input" value="2">
-                                    <button class="quantity-btn">+</button>
-                                </div>
-                                <button class="remove-btn">
-                                    <i class="fas fa-trash"></i> Remove
-                                </button>
+                    @empty
+                        <div class="cart-item">
+                            <div class="item-details">
+                                <h3>Your cart is empty.</h3>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="cart-item">
-                        <div class="item-image">
-                            <img src="assets/images/Comfy Mattress .jpg"
-                                alt="SleepSure Cooling Mattress Protector">
-                        </div>
-                        <div class="item-details">
-                            <h3 class="item-name">SleepSure Cooling Mattress Protector</h3>
-                            <p class="item-size">Size: Queen</p>
-                            <p class="item-price">₹5,249</p>
-                            <div class="item-actions">
-                                <div class="quantity-selector">
-                                    <button class="quantity-btn">-</button>
-                                    <input type="text" class="quantity-input" value="1">
-                                    <button class="quantity-btn">+</button>
-                                </div>
-                                <button class="remove-btn">
-                                    <i class="fas fa-trash"></i> Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
 
                 <div class="cart-summary">
                     <h2 class="summary-title">Order Summary</h2>
                     <div class="summary-row">
-                        <span>Subtotal (3 items)</span>
-                        <span>₹15,647</span>
+                        <span>Subtotal ({{ $totalQuantity }} items)</span>
+                        <span>₹{{ number_format($subtotal, 2) }}</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping</span>
                         <span>FREE</span>
                     </div>
+                    @php $tax = $subtotal * 0.03; @endphp
                     <div class="summary-row">
                         <span>Tax</span>
-                        <span>₹500</span>
+                        <span>₹{{ number_format($tax, 2) }}</span>
                     </div>
                     <div class="summary-row summary-total">
                         <span>Total</span>
-                        <span class="amount">₹16,247</span>
+                        <span class="amount">₹{{ number_format($subtotal + $tax, 2) }}</span>
                     </div>
                    
-                    <a href="checkout.html" class="checkout-btn">
+                    <a href="#" class="checkout-btn">
                         <i class="fas fa-lock"></i>Proceed to checkout
                     </a>
-                    <a href="index.html" class="continue-shopping">
+                    <a href="{{ url('/') }}" class="continue-shopping">
                         <i class="fas fa-arrow-left"></i> Continue Shopping
                     </a>
                 </div>
@@ -121,337 +113,86 @@
         </div>
     </section>
 
-    <!-- Recently Viewed Section -->
-    <section class="recently-viewed">
-        <div class="container">
+    
+     <div class="container">
             <h2 class="section-title">You Might Also Like</h2>
-            <div class="featured-products">
-                <div class="section-header">
-                    <h2>Featured Products</h2>
-                    <a href="#" class="view-all">View All</a>
-                </div>
-                <div class="slider-container">
+    <div>
+        @include('partials.featured_product',['featured_products' => $featured_products])
 
 
-
-                    <!-- CARD 1 -->
-                    <div class="wrapper">
-                        <div class="container">
-                            <div class="top" style="background-image:url('assets/images/4.jpg')">
-                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
-                                <button class="wishlist-icon"><span>♡</span></button>
-                            </div>
-                            <div class="bottom">
-                                <div class="left">
-                                    <div class="details">
-                                        <h1>Ortho Memory</h1>
-                                        <p>(72X60X6 Inch)</p>
-                                        <p>(1829X1524X153 mm)</p>
-                                        <div class="price-group">
-                                            <span class="price">₹5,249</span>
-                                            <span class="discount">58% off</span>
-                                        </div>
-                                    </div>
-                                    <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
-                                </div>
-                                <div class="right">
-                                    <div class="done"><i class="material-icons">done</i></div>
-                                    <div class="details">
-                                        <h1>Added to cart</h1>
-                                        <p>Ortho Memory</p>
-                                    </div>
-                                    <div class="remove"><i class="material-icons">clear</i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="inside">
-                            <div class="icon"><i class="material-icons">info_outline</i></div>
-                            <div class="contents">
-                                <table>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Mattress</td>
-                                        <td>Orthopedic</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>Thickness</th>
-                                    </tr>
-                                    <tr>
-                                        <td>72x60 Inch</td>
-                                        <td>6 Inch</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Warranty</th>
-                                        <th>Material</th>
-                                    </tr>
-                                    <tr>
-                                        <td>5 Years</td>
-                                        <td>Memory Foam</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 2 -->
-                    <div class="wrapper">
-                        <div class="container">
-                            <div class="top" style="background-image:url('assets/images/13.jpg')">
-                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
-                                <button class="wishlist-icon"><span>♡</span></button>
-                            </div>
-                            <div class="bottom">
-                                <div class="left">
-                                    <div class="details">
-                                        <h1>Ortho Memory</h1>
-                                        <p>(72X60X6 Inch)</p>
-                                        <p>(1829X1524X153 mm)</p>
-                                        <div class="price-group">
-                                            <span class="price">₹5,249</span>
-                                            <span class="discount">58% off</span>
-                                        </div>
-                                    </div>
-                                    <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
-                                </div>
-                                <div class="right">
-                                    <div class="done"><i class="material-icons">done</i></div>
-                                    <div class="details">
-                                        <h1>Added to cart</h1>
-                                        <p>Ortho Memory</p>
-                                    </div>
-                                    <div class="remove"><i class="material-icons">clear</i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="inside">
-                            <div class="icon"><i class="material-icons">info_outline</i></div>
-                            <div class="contents">
-                                <table>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Mattress</td>
-                                        <td>Orthopedic</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>Thickness</th>
-                                    </tr>
-                                    <tr>
-                                        <td>72x60 Inch</td>
-                                        <td>6 Inch</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Warranty</th>
-                                        <th>Material</th>
-                                    </tr>
-                                    <tr>
-                                        <td>5 Years</td>
-                                        <td>Memory Foam</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 3 -->
-                    <div class="wrapper">
-                        <div class="container">
-                            <div class="top" style="background-image:url('assets/images/Thrill\ Mattress\ .jpg')">
-                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
-                                <button class="wishlist-icon"><span>♡</span></button>
-                            </div>
-                            <div class="bottom">
-                                <div class="left">
-                                    <div class="details">
-                                        <h1>Ortho Memory</h1>
-                                        <p>(72X60X6 Inch)</p>
-                                        <p>(1829X1524X153 mm)</p>
-                                        <div class="price-group">
-                                            <span class="price">₹5,249</span>
-                                            <span class="discount">58% off</span>
-                                        </div>
-                                    </div>
-                                    <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
-                                </div>
-                                <div class="right">
-                                    <div class="done"><i class="material-icons">done</i></div>
-                                    <div class="details">
-                                        <h1>Added to cart</h1>
-                                        <p>Ortho Memory</p>
-                                    </div>
-                                    <div class="remove"><i class="material-icons">clear</i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="inside">
-                            <div class="icon"><i class="material-icons">info_outline</i></div>
-                            <div class="contents">
-                                <table>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Mattress</td>
-                                        <td>Orthopedic</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>Thickness</th>
-                                    </tr>
-                                    <tr>
-                                        <td>72x60 Inch</td>
-                                        <td>6 Inch</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Warranty</th>
-                                        <th>Material</th>
-                                    </tr>
-                                    <tr>
-                                        <td>5 Years</td>
-                                        <td>Memory Foam</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 4 -->
-                    <div class="wrapper">
-                        <div class="container">
-                            <div class="top" style="background-image:url('assets/images/Pride\ Mattress\ .jpg')">
-                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
-                                <button class="wishlist-icon"><span>♡</span></button>
-                            </div>
-                            <div class="bottom">
-                                <div class="left">
-                                    <div class="details">
-                                        <h1>Ortho Memory</h1>
-                                        <p>(72X60X6 Inch)</p>
-                                        <p>(1829X1524X153 mm)</p>
-                                        <div class="price-group">
-                                            <span class="price">₹5,249</span>
-                                            <span class="discount">58% off</span>
-                                        </div>
-                                    </div>
-                                    <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
-                                </div>
-                                <div class="right">
-                                    <div class="done"><i class="material-icons">done</i></div>
-                                    <div class="details">
-                                        <h1>Added to cart</h1>
-                                        <p>Ortho Memory</p>
-                                    </div>
-                                    <div class="remove"><i class="material-icons">clear</i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="inside">
-                            <div class="icon"><i class="material-icons">info_outline</i></div>
-                            <div class="contents">
-                                <table>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Mattress</td>
-                                        <td>Orthopedic</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>Thickness</th>
-                                    </tr>
-                                    <tr>
-                                        <td>72x60 Inch</td>
-                                        <td>6 Inch</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Warranty</th>
-                                        <th>Material</th>
-                                    </tr>
-                                    <tr>
-                                        <td>5 Years</td>
-                                        <td>Memory Foam</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 5 -->
-                    <div class="wrapper">
-                        <div class="container">
-                            <div class="top" style="background-image:url('assets/images/Prestige\ Mattress\ .jpg')">
-                                <div class="rating-badge">4.5 <i class="fa-solid fa-star"></i></div>
-                                <button class="wishlist-icon"><span>♡</span></button>
-                            </div>
-                            <div class="bottom">
-                                <div class="left">
-                                    <div class="details">
-                                        <h1>Ortho Memory</h1>
-                                        <p>(72X60X6 Inch)</p>
-                                        <p>(1829X1524X153 mm)</p>
-                                        <div class="price-group">
-                                            <span class="price">₹5,249</span>
-                                            <span class="discount">58% off</span>
-                                        </div>
-                                    </div>
-                                    <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
-                                </div>
-                                <div class="right">
-                                    <div class="done"><i class="material-icons">done</i></div>
-                                    <div class="details">
-                                        <h1>Added to cart</h1>
-                                        <p>Ortho Memory</p>
-                                    </div>
-                                    <div class="remove"><i class="material-icons">clear</i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="inside">
-                            <div class="icon"><i class="material-icons">info_outline</i></div>
-                            <div class="contents">
-                                <table>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Type</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Mattress</td>
-                                        <td>Orthopedic</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>Thickness</th>
-                                    </tr>
-                                    <tr>
-                                        <td>72x60 Inch</td>
-                                        <td>6 Inch</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Warranty</th>
-                                        <th>Material</th>
-                                    </tr>
-                                    <tr>
-                                        <td>5 Years</td>
-                                        <td>Memory Foam</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
 
 @endsection
+
+<script>
+
+document.addEventListener('click', function (e) {
+    // PLUS BUTTON
+    if (e.target.classList.contains('plus')) {
+        console.debug('Plus button clicked');
+        const item = e.target.closest('.cart-item');
+        const input = item.querySelector('.quantity-input');
+        input.value = parseInt(input.value) + 1;
+        updateQuantity(item, input.value);
+    }
+
+    // MINUS BUTTON
+    if (e.target.classList.contains('minus')) {
+        console.debug('Minus button clicked');
+        const item = e.target.closest('.cart-item');
+        const input = item.querySelector('.quantity-input');
+        let val = parseInt(input.value) - 1;
+        if (val < 1) val = 1;
+        input.value = val;
+        updateQuantity(item, val);
+    }
+});
+
+// INPUT CHANGE
+document.addEventListener('change', function (e) {
+    if (e.target.classList.contains('quantity-input')) {
+        console.debug('Quantity input changed');
+        let val = parseInt(e.target.value);
+        if (isNaN(val) || val < 1) {
+            e.target.value = 1;
+            val = 1;
+        }
+        const item = e.target.closest('.cart-item');
+        updateQuantity(item, val);
+    }
+});
+
+function updateQuantity(item, quantity) {
+    const form = item.querySelector('.quantity-form');
+    const url = form.action;
+    const token = form.querySelector('input[name="_token"]').value;
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
+    formData.append('quantity', quantity);
+    console.debug('Sending quantity update:', { url, quantity });
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => {
+        console.debug('Received response', res);
+        return res.json();
+    })
+    .then(data => {
+        console.debug('Response data', data);
+        if (data.success) {
+            location.reload(); // OR update subtotal via JS
+        } else {
+            alert('Failed to update quantity');
+        }
+    })
+    .catch((err) => {
+        console.error('Quantity update error', err);
+        alert('Something went wrong');
+    });
+}
+</script>

@@ -29,6 +29,16 @@ class CartItem extends Model
 
     public function product()
     {
-        return $this->belongsTo(ProductInformation::class, 'product_id');
+        return $this->belongsTo(ProductInformation::class, 'product_id', 'product_id');
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class, 'variant_id');
+    }
+
+    public function thickness()
+    {
+        return $this->belongsTo(Thickness::class, 'thickness_id');
     }
 }
