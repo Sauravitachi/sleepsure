@@ -107,6 +107,17 @@
                 console.log(data);
             });
     });
+    document.querySelectorAll('.slider-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const slider = document.getElementById(btn.dataset.target);
+        if (!slider) return;
+        const scrollAmount = slider.offsetWidth * 0.8;
+        slider.scrollBy({
+            left: btn.classList.contains('left') ? -scrollAmount : scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+});
     </script>
 </body>
 </html>

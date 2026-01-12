@@ -3,7 +3,105 @@
 @section('title', 'Premium Mattress & Sleep Solutions')
 
 @section('content')
+<style>
+    .slider-wrapper {
+    position: relative;
+    width: 100%;
+}
 
+.slider-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 40px;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar */
+.slider-container::-webkit-scrollbar {
+    display: none;
+}
+.slider-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Product card width */
+.slider-container .wrapper {
+    flex: 0 0 280px;
+    min-width: 240px;
+}
+
+.slider-container .testimonial-card,
+.slider-container .award-item {
+    min-width: 220px;
+    max-width: 320px;
+    flex: 0 0 80vw;
+}
+
+/* ===== ARROWS ===== */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: #0b3b8c;
+    color: #fff;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-btn.left {
+    left: 0;
+}
+
+.slider-btn.right {
+    right: 0;
+}
+
+.slider-btn:hover {
+    background: #092f6e;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+    .slider-container {
+        padding: 10px 0;
+        gap: 12px;
+    }
+    .slider-btn {
+        display: none; /* swipe only */
+    }
+    .slider-container .wrapper,
+    .slider-container .testimonial-card,
+    .slider-container .award-item {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    /* Optional: add a scroll hint gradient */
+    .slider-wrapper::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 40px;
+        height: 100%;
+        pointer-events: none;
+        background: linear-gradient(to left, #fff 60%, transparent 100%);
+        z-index: 2;
+        display: block;
+    }
+}
+
+</style>
  <!-- Breadcrumb -->
     <section class="breadcrumb">
         <div class="container breadcrumb-container">
@@ -195,4 +293,5 @@ function updateQuantity(item, quantity) {
         alert('Something went wrong');
     });
 }
+
 </script>
