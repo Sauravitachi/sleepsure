@@ -25,10 +25,36 @@
             <span class="material-icons desktop-only">phone</span>
             <a href="">
                 <span class="material-icons desktop-only">favorite_border</span>
-            </a>
-            <a href="">
+            </a>           
+             <a href="{{ route('cart.index') }}" class="cart-icon">
                 <span class="material-icons">shopping_cart</span>
+                <span id="cartCountBadge" class="cart-count-badge"></span>
             </a>
+            </style>
+            <style>
+            .cart-icon {
+                position: relative;
+                display: inline-block;
+            }
+            .cart-count-badge {
+                position: absolute;
+                top: -6px;
+                right: -6px;
+                background: #e53935;
+                color: #fff;
+                border-radius: 50%;
+                padding: 2px 7px;
+                font-size: 12px;
+                min-width: 20px;
+                text-align: center;
+                display: none;
+                z-index: 1;
+                line-height: 1.2;
+                font-weight: 600;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+                pointer-events: none;
+            }
+            </style>
             <div class="account-icon">
                 @auth
                     <div class="dropdown">
@@ -456,4 +482,26 @@
             }
         });
     });
+  
+    document.addEventListener('DOMContentLoaded', function () {
+        function updateCartCount() {
+            fetch("{{ route('cart.products.count') }}")
+                .then(res => res.json())
+                .then(data => {
+                    const badge = document.getElementById('cartCountBadge');
+                    if (badge) {
+                        if (data.count > 0) {
+                            badge.textContent = data.count;
+                            badge.style.display = 'inline-block';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                });
+        }
+        updateCartCount();
+        // Optionally, update on interval or after cart actions
+        window.updateCartCount = updateCartCount;
+    });
+          
 </script>

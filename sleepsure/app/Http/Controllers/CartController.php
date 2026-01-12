@@ -152,7 +152,7 @@ public function remove(Request $request, $id)
 public function productsCount()
 {
     if (Auth::check()) {
-        $cart = Cart::where('customer_id', Auth::id())
+$cart = Cart::where('customer_id', Auth::id())
                     ->where('status', 'active')
                     ->first();
     } else {
@@ -161,8 +161,8 @@ public function productsCount()
                     ->first();
     }
 
-    $count = $cart ? $cart->items()->sum('quantity') : 0;
 
+    $count = $cart ? $cart->items()->sum('quantity') : 0;
     return response()->json(['count' => $count]);
 }
 public function quantityUpdate(Request $request, $id)
