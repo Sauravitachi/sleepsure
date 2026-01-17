@@ -30,10 +30,10 @@
 }
 
 /* Product card width */
-.slider-container .wrapper {
-    flex: 0 0 280px;
+/* .slider-container .wrapper {
+    flex: 2;
     min-width: 240px;
-}
+} */
 
 .slider-container .testimonial-card,
 .slider-container .award-item {

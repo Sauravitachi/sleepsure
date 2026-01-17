@@ -136,7 +136,7 @@ class ProductController extends Controller
         $sizeGroups = array_keys($displayGrouped);
         $dimensionsByGroup = $displayGrouped;
         
-        return view('frontend.product_details', [
+        return view('frontend.product_details2', [
             'product'            => $productObj,
             'variantName'        => $transformed['variant_name'] ?? null,
             'productModel'       => $product,
@@ -145,6 +145,9 @@ class ProductController extends Controller
             'variantCat'         => $variantCat,
             'dimensionVariants'  => $dimensionVariants,
             'thicknessVariants'  => $thicknessVariants,
+            // Add these for compatibility with the Blade file
+            'variants'           => $dimensionVariants,
+            'thicknesses'        => $thicknessVariants,
         ]);
     }
 

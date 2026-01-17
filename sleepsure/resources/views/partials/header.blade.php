@@ -164,7 +164,7 @@
             <a href="{{ route('blogs.index') }}"><span class="material-icons">article</span> <strong>Blog</strong></a>
             <a href="{{ route('contact.index') }}"><span class="material-icons">call</span> <strong>Contact Us</strong></a>
             <a href="{{ route('faq.index') }}"><span class="material-icons">help_outline</span> <strong>FAQ</strong></a>
-            <a href="#"><span class="material-icons">sitemap</span> <strong>Sitemap</strong></a>
+            <a href="#"><span class="material-icons">map</span> <strong>Sitemap</strong></a>
             @auth
                 <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                     @csrf

@@ -149,8 +149,17 @@
                             <div class="item-details">
                                 <h3 class="item-name">{{ $pname }}</h3>
                                 <p class="item-size">
-                                    Size: {{ $item->variant->variant_cat ?? 'N/A' }}
-                                </p>
+                                    Size:
+                                    @if($item->custom_length && $item->custom_breadth)
+                                        Custom: {{ $item->custom_length }} x {{ $item->custom_breadth }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
+                                    @elseif($item->variant && $item->variant->variant_cat)
+                                        {{ $item->variant->variant_cat }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
+                                    @elseif($item->variant && $item->variant->variant_cat)
+                                        {{ $item->variant->variant_cat }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
+                                    @else
+                                        N/A@if($item->thickness) x {{ $item->thickness->thick }}
+                                        @endif
+                                
                                 <p class="item-price">₹{{ number_format($item->price, 2) }}</p>
                                 <div class="item-actions">
                                     <form action="{{ route('cart.quantityUpdate', $item->id) }}" method="POST" class="quantity-form" style="display:inline-flex;align-items:center;" onsubmit="return false;">
