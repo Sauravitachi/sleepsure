@@ -13,6 +13,7 @@ use App\Http\Controllers\{
     BulkOrderController,
     DealerController,
     ProductReviewController
+    ,WishListController
 };
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -96,3 +97,10 @@ Route::prefix('cart')->group(function () {
 Route::get('/view-products', [HomeController::class, 'viewProducts'])->name('view.products');
 Route::get('/products/category/{categoryName}', [PageController::class, 'category'])->name('products.categories');
 Route::get('/search/products', [ProductController::class, 'globalSearch'])->name('products.globalSearch');
+
+// Wishlist routes
+Route::middleware('auth')->group(function () {
+    Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/add', [WishListController::class, 'add'])->name('wishlist.add');
+    Route::post('/wishlist/remove', [WishListController::class, 'remove'])->name('wishlist.remove');
+});

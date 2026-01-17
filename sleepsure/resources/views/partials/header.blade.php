@@ -47,7 +47,7 @@
 
         <div class="header-icons">
             <span class="material-icons desktop-only">phone</span>
-            <a href="">
+            <a href="{{ route('wishlist.index') }}">
                 <span class="material-icons desktop-only">favorite_border</span>
             </a>           
              <a href="{{ route('cart.index') }}" class="cart-icon">

@@ -15,92 +15,97 @@
 
         <!-- Wishlist Items -->
         <div class="wishlist-items">
-            <!-- Item 1 -->
-            <div class="wishlist-item">
-                <div class="item-image">
-                    <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Premium Mattress">
-                </div>
-                <div class="item-details">
-                    <div class="item-category">Mattress</div>
-                    <h3 class="item-title">SleepSure Premium Memory Foam Mattress</h3>
-                    <div class="item-price">
-                        $899.99 <span class="old-price">$1,099.99</span>
-                        <span class="sale-badge">Sale</span>
+            @forelse($products as $product)
+                <div class="wishlist-item" data-product-id="{{ $product->product_id }}">
+                    <div class="item-image">
+                        <img src="{{ $product->image_url ?? asset('assets/images/noimage.png') }}" alt="{{ $product->product_name }}">
+                    </div>
+                    <div class="item-details">
+                        <div class="item-category">{{ $product->categoryDetails->category_name ?? '' }}</div>
+                        <h3 class="item-title">{{ $product->product_name }}</h3>
+                        <div class="item-price">
+                            ₹{{ number_format($product->price, 2) }}
+                            @if(!empty($product->old_price) && $product->old_price > $product->price)
+                                <span class="old-price">₹{{ number_format($product->old_price, 2) }}</span>
+                                <span class="sale-badge">Sale</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-success add-to-cart-btn">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                        <button class="btn btn-danger remove-wishlist-btn">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
                     </div>
                 </div>
-                <div class="item-actions">
-                    <button class="btn btn-success">
-                        <i class="fas fa-cart-plus"></i> Add to Cart
-                    </button>
-                    <button class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Remove
-                    </button>
+            @empty
+                <div class="empty-wishlist">
+                    <i class="fas fa-heart-broken"></i>
+                    <h3>Your wishlist is empty</h3>
+                    <p>Browse products and add them to your wishlist!</p>
                 </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="wishlist-item">
-                <div class="item-image">
-                    <img src="https://images.unsplash.com/photo-1586105251261-72a756497a11?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Pillows">
-                </div>
-                <div class="item-details">
-                    <div class="item-category">Pillows</div>
-                    <h3 class="item-title">Ergonomic Sleep Pillows (Set of 2)</h3>
-                    <div class="item-price">$79.99</div>
-                </div>
-                <div class="item-actions">
-                    <button class="btn btn-success">
-                        <i class="fas fa-cart-plus"></i> Add to Cart
-                    </button>
-                    <button class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Remove
-                    </button>
-                </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="wishlist-item">
-                <div class="item-image">
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Bed Frame">
-                </div>
-                <div class="item-details">
-                    <div class="item-category">Bed Frame</div>
-                    <h3 class="item-title">Modern Platform Bed Frame - Queen Size</h3>
-                    <div class="item-price">$449.99</div>
-                </div>
-                <div class="item-actions">
-                    <button class="btn btn-success">
-                        <i class="fas fa-cart-plus"></i> Add to Cart
-                    </button>
-                    <button class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Remove
-                    </button>
-                </div>
-            </div>
-
-            <!-- Item 4 -->
-            <div class="wishlist-item">
-                <div class="item-image">
-                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Comforter">
-                </div>
-                <div class="item-details">
-                    <div class="item-category">Bedding</div>
-                    <h3 class="item-title">All-Season Down Alternative Comforter</h3>
-                    <div class="item-price">$129.99</div>
-                </div>
-                <div class="item-actions">
-                    <button class="btn btn-success">
-                        <i class="fas fa-cart-plus"></i> Add to Cart
-                    </button>
-                    <button class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Remove
-                    </button>
-                </div>
-            </div>
-
-           
+            @endforelse
         </div>
 
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Add to Cart
+    document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var productId = this.closest('.wishlist-item').getAttribute('data-product-id');
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Added to cart!');
+                    if (window.updateCartCount) window.updateCartCount();
+                } else {
+                    alert(data.message || 'Could not add to cart.');
+                }
+            });
+        });
+    });
+    // Remove from Wishlist
+    document.querySelectorAll('.remove-wishlist-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var productId = this.closest('.wishlist-item').getAttribute('data-product-id');
+            fetch('/wishlist/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.closest('.wishlist-item').remove();
+                    if (!document.querySelector('.wishlist-item')) {
+                        document.querySelector('.wishlist-items').innerHTML = `<div class='empty-wishlist'><i class='fas fa-heart-broken'></i><h3>Your wishlist is empty</h3><p>Browse products and add them to your wishlist!</p></div>`;
+                    }
+                } else {
+                    alert(data.message || 'Could not remove from wishlist.');
+                }
+            }.bind(this));
+        });
+    });
+});
+</script>
+@endpush
