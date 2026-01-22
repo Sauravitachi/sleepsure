@@ -136,7 +136,7 @@ class ProductController extends Controller
         $sizeGroups = array_keys($displayGrouped);
         $dimensionsByGroup = $displayGrouped;
         
-        return view('frontend.product_details2', [
+        return view('frontend.product_details', [
             'product'            => $productObj,
             'variantName'        => $transformed['variant_name'] ?? null,
             'productModel'       => $product,

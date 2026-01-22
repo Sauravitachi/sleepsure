@@ -14,6 +14,7 @@ use App\Http\Controllers\{
     DealerController,
     ProductReviewController
     ,WishListController
+    ,ShippingInfoController
 };
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -37,6 +38,9 @@ Route::post('/dealer/register', [DealerController::class, 'register'])
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Shipping Info Submission
+Route::post('/shipping-info', [ShippingInfoController::class, 'store'])->name('shipping-info.store');
 
 
 Route::get('/categories', [HomeController::class, 'allCategories'])
