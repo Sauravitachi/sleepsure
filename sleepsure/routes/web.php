@@ -98,6 +98,16 @@ Route::prefix('cart')->group(function () {
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 });
 
+// Checkout order placement
+Route::post('/checkout', [App\Http\Controllers\CheckOutController::class, 'store'])->name('checkout.store');
+
+// Payment routes
+Route::prefix('payment')->group(function () {
+    Route::post('/create-order', [App\Http\Controllers\PaymentController::class, 'createPaymentOrder'])->name('payment.create-order');
+    Route::post('/verify', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('payment.verify');
+    Route::post('/failed', [App\Http\Controllers\PaymentController::class, 'paymentFailed'])->name('payment.failed');
+});
+
 Route::get('/view-products', [HomeController::class, 'viewProducts'])->name('view.products');
 Route::get('/products/category/{categoryName}', [PageController::class, 'category'])->name('products.categories');
 Route::get('/search/products', [ProductController::class, 'globalSearch'])->name('products.globalSearch');

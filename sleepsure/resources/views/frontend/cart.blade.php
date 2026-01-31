@@ -154,11 +154,10 @@
                                         Custom: {{ $item->custom_length }} x {{ $item->custom_breadth }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
                                     @elseif($item->variant && $item->variant->variant_cat)
                                         {{ $item->variant->variant_cat }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
-                                    @elseif($item->variant && $item->variant->variant_cat)
-                                        {{ $item->variant->variant_cat }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
                                     @else
                                         N/A@if($item->thickness) x {{ $item->thickness->thick }}
-                                        @endif
+                                    @endif
+                                </p>
                                 
                                 <p class="item-price">₹{{ number_format($item->price, 2) }}</p>
                                 <div class="item-actions">
