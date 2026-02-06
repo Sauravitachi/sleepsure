@@ -187,45 +187,104 @@
 
         <!-- Why Choose Section -->
         <section class="whychoose">
-            <div class="container mt-5 py-4 border-top">
+            <div class="container mt-0 py-4">
                 <div class="row mb-5">
                     <div class="col-12">
-                        <div class="whychooseheading">
-                            <h3 class="fw-bold mb-4">Why Choose Bond Tuff?</h3>
+                        <div class="whychooseheading mb-3">
+                            <h2 class="fw-bold mb-4 text-center">Why Choose Bond Tuff?</h2>
                         </div>
-                        <div class="whychoosefeature row g-4">
-                            <div class="col-md-3">
-                                <h2>Features</h2>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="row g-4">
-                                    <div class="col-md-4 col-6 d-flex align-items-start">
-                                        <i class="fas fa-layer-group text-primary me-3 mt-1"></i>
-                                        <p class="small mb-0">High Density Premium Bonded Foam Core</p>
-                                    </div>
-                                    <div class="col-md-4 col-6 d-flex align-items-start">
-                                        <i class="fas fa-bone text-primary me-3 mt-1"></i>
-                                        <p class="small mb-0">Superior Spine Alignment Support</p>
-                                    </div>
-                                    <div class="col-md-4 col-6 d-flex align-items-start">
-                                        <i class="fas fa-wind text-primary me-3 mt-1"></i>
-                                        <p class="small mb-0">Breathable Premium Knitted Fabric</p>
-                                    </div>
-                                    <div class="col-md-4 col-6 d-flex align-items-start">
-                                        <i class="fas fa-thumbs-up text-primary me-3 mt-1"></i>
-                                        <p class="small mb-0">Medium-Firm Support Feel</p>
-                                    </div>
-                                    <div class="col-md-4 col-6 d-flex align-items-start">
-                                        <i class="fas fa-certificate text-primary me-3 mt-1"></i>
-                                        <p class="small mb-0">HD Foam Quilting Layer</p>
-                                    </div>
-                                    <div class="col-md-4 col-6 d-flex align-items-start">
-                                        <i class="fas fa-shield-alt text-primary me-3 mt-1"></i>
-                                        <p class="small mb-0">Durable Construction</p>
-                                    </div>
-                                    <div class="col-md-4 col-6 d-flex align-items-start">
-                                        <i class="fas fa-calendar-check text-primary me-3 mt-1"></i>
-                                        <p class="small mb-0">60-month warranty</p>
+                        <div class="whychoosefeature">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="row g-4">
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-cubes"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>High Density Foam Core</h4>
+                                                    <p>Premium bonded foam for enhanced durability and support</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-bone"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>Spine Alignment</h4>
+                                                    <p>Superior support for proper spinal alignment</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-wind"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>Breathable Fabric</h4>
+                                                    <p>Premium knitted fabric for optimal air circulation</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-balance-scale"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>Medium-Firm Feel</h4>
+                                                    <p>Perfect balance of comfort and support</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-layer-group"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>HD Foam Quilting</h4>
+                                                    <p>Enhanced cushioning and pressure relief</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-shield-alt"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>Durable Construction</h4>
+                                                    <p>Built to last with high-quality materials</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>60-Month Warranty</h4>
+                                                    <p>Extended protection for peace of mind</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-12">
+                                            <div class="feature-item d-flex">
+                                                <div class="feature-icon">
+                                                    <i class="fas fa-temperature-low"></i>
+                                                </div>
+                                                <div class="feature-text">
+                                                    <h4>Cool Sleep Technology</h4>
+                                                    <p>Maintains optimal sleeping temperature</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -234,8 +293,10 @@
                 </div>
 
                 <!-- Specifications -->
-                <div class="row align-items-center">
-                    <h3 class="fw-bold mb-4">Mattress Specifications</h3>
+                <div class="row align-items-center mt-5 pt-5">
+                    <div class="col-12 mb-4">
+                        <h2 class="fw-bold text-center">Mattress Specifications</h2>
+                    </div>
                     <div class="col-md-7">
                         <div class="position-relative">
                             <img src="assets/img2/P4 (1).jpg" class="img-fluid" alt="Bond Tuff Layers" style="aspect-ratio: 3/2;object-fit: contain;">
