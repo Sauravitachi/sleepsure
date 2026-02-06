@@ -151,8 +151,6 @@ class ProductController extends Controller
         ]);
     }
 
-    
-
     public function checkDelivery(Request $request)
     {
         $pincode = $request->pincode;
@@ -271,8 +269,6 @@ class ProductController extends Controller
         $formatted = number_format((float)$amount, 2, '.', ',');
         return '₹ ' . $formatted;
     }
-
-
    
     public function globalSearch(Request $request)
     {

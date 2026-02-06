@@ -12,27 +12,21 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    /**
-     * Display the stores page
-     */
+    //Display the stores page
     public function stores()
     {
         $global = globalData();
         return view('frontend.stores', $global);
     }
 
-    /**
-     * Display the bulk orders page
-     */
+    //Display the bulk orders page
     public function bulkOrders()
     {
         $global = globalData();
         return view('frontend.bulk_order', $global);
     }
 
-    /**
-     * Display the FAQ page
-     */
+    //Display the FAQ page
     public function faq()
     {
         $global = globalData();
@@ -42,18 +36,14 @@ class PageController extends Controller
         return view('frontend.faq', array_merge($global, compact('faqCategories')));
     }
 
-    /**
-     * Display the about us page
-     */
+    //Display the about us page
     public function aboutUs()
     {
         $global = globalData();
         return view('frontend.about-us', $global);
     }
 
-    /**
-     * Display the offers page
-     */
+    //Display the offers page
     public function offer()
     {
         $global = globalData();
@@ -65,8 +55,8 @@ class PageController extends Controller
         return view('frontend.offer', array_merge($global, compact('rewards', 'rewardTypes')));
     }
 
-public function category($categoryName)
-{
+    public function category($categoryName)
+    {
     $global = globalData();
     $categories = $global['categories'];
 
@@ -109,7 +99,7 @@ public function category($categoryName)
         ->filter()
         ->values();
 
-    
+
     $selectedMaterials = request()->input('materials', []);
 
     return view('frontend.categories', compact(
@@ -121,20 +111,21 @@ public function category($categoryName)
         'allMaterials',
         'selectedMaterials'
     ));
-}
-private function getCategoryTreeIds($category)
-{
-    $ids = [$category->category_id];
-
-    foreach ($category->subcategories as $sub) {
-        $ids[] = $sub->category_id;
-
-        foreach ($sub->models as $model) {
-            $ids[] = $model->category_id;
-        }
     }
 
-    return $ids;
-}
+    private function getCategoryTreeIds($category)
+    {
+        $ids = [$category->category_id];
+
+        foreach ($category->subcategories as $sub) {
+            $ids[] = $sub->category_id;
+
+            foreach ($sub->models as $model) {
+                $ids[] = $model->category_id;
+            }
+        }
+
+        return $ids;
+    }
 
 }

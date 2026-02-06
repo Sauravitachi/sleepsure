@@ -86,6 +86,7 @@ class CartController extends Controller
 
         return back()->with('success', 'Product added to cart!');
     }
+    
     public function remove($id)
     {
         $item = CartItem::find($id);
@@ -196,7 +197,7 @@ class CartController extends Controller
         ];
     }
 
-   private function applyImageAndWarranty($product, $global)
+    private function applyImageAndWarranty($product, $global)
     {
         if (is_iterable($product)) {
             foreach ($product as $item) {

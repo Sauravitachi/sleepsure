@@ -9,9 +9,7 @@ use App\Models\PaymentGateway;
 
 class PaymentGatewayController extends Controller
 {
-    /**
-     * Display the payment gateway settings
-     */
+    //Display the payment gateway settings
     public function index()
     {
         $razorpayConfig = PaymentGateway::where('gateway_name', 'razorpay')->first();
@@ -19,9 +17,7 @@ class PaymentGatewayController extends Controller
         return view('admin.payment-gateway', compact('razorpayConfig'));
     }
 
-    /**
-     * Update Razorpay configuration
-     */
+    //Update Razorpay configuration
     public function updateRazorpay(Request $request)
     {
         $request->validate([
@@ -44,9 +40,7 @@ class PaymentGatewayController extends Controller
         return redirect()->back()->with('success', 'Razorpay configuration updated successfully!');
     }
 
-    /**
-     * Test Razorpay connection
-     */
+    //Test Razorpay connection
     public function testRazorpay()
     {
         try {

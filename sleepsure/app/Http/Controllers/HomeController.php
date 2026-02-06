@@ -84,10 +84,9 @@ class HomeController extends Controller
     }
 
 
-
-
     // function for all categories page
-    public function allCategories(Request $request){
+    public function allCategories(Request $request)
+    {
         $global = globalData();
         
         // $categories = ProductCategory::where('parent_category_id', null)
@@ -222,23 +221,8 @@ class HomeController extends Controller
             'allMaterials'
         ));
     }
-
-    //   public function viewProducts(Request $request)
-    // {
-    //     $global = globalData();
-    //     $type = $request->input('type');
-    //     $products = collect();
-    //     $title = '';
-    //     if ($type === 'featured') {
-    //         $products = $this->getProducts('is_featured', $global, 1000);
-    //         $title = 'All Featured Products';
-    //     } elseif ($type === 'best_seller') {
-    //         $products = $this->getProducts('best_sale', $global, 1000);
-    //         $title = 'All Best Seller Products';
-    //     }
-    //     return view('frontend.viewproducts', compact('products', 'title'));
-    // }
-public function viewProducts(Request $request)
+ 
+    public function viewProducts(Request $request)
     {
         $global = globalData();
         $categories = $global['categories'];
@@ -352,8 +336,7 @@ public function viewProducts(Request $request)
             });
            
         return view('frontend.viewproducts', compact('products', 'title', 'paginatedProducts', 'categories', 'variantCat'));   
- }
-
+    }
 
     private function getSliders($global)
     {
@@ -369,7 +352,6 @@ public function viewProducts(Request $request)
                 return $slider;
             });
     }
-
 
     public function getProducts(string $filterField, array $global, int $limit = 10)
     {
@@ -515,6 +497,7 @@ public function viewProducts(Request $request)
 
 
     }
+
     public function transformProduct($product)
     {
         $variant = $this->getVariantDetails($product->product_id);
@@ -659,9 +642,7 @@ public function viewProducts(Request $request)
 
     }
 
-    /**
-     * Format a number as Indian Rupee with 2 decimals and comma grouping
-     */
+    //Format a number as Indian Rupee with 2 decimals and comma grouping
     public function formatRupee($amount)
     {
         if (!is_numeric($amount)) return '';
@@ -669,12 +650,7 @@ public function viewProducts(Request $request)
         return '₹ ' . $formatted;
     }
 
-    /**
-     * Calculate SQFT from inches
-     * @param float $lengthInch
-     * @param float $widthInch
-     * @return float
-     */
+    //Calculate SQFT from inches
     public function calculateSqft($lengthInch, $widthInch)
     {
         if ($lengthInch > 0 && $widthInch > 0) {
@@ -683,24 +659,13 @@ public function viewProducts(Request $request)
         return 0;
     }
 
-    /**
-     * Convert inches to centimeters
-     * @param float $inch
-     * @return float
-     */
+    //Convert inches to centimeters
     public function inchToCm($inch)
     {
         return $inch > 0 ? round($inch * 2.54, 1) : 0;
     }
 
-    /**
-     * Calculate price based on SQFT and rates
-     * @param float $sqft
-     * @param float|null $default_rate
-     * @param float|null $oddsize_rate
-     * @param object|null $variant
-     * @return float
-     */
+    //Calculate price based on SQFT and rates
     public function calculatePrice($sqft, $default_rate, $oddsize_rate, $variant)
     {
         if ($variant) {
@@ -720,36 +685,36 @@ public function viewProducts(Request $request)
         }
         return 0;
     }
-private function formatWarranty($months)
-{
-    if (!$months || $months <= 0) {
-        return '';
+
+    private function formatWarranty($months)
+    {
+        if (!$months || $months <= 0) {
+            return '';
+        }
+
+        $years  = intdiv($months, 12);
+        $remain = $months % 12;
+
+        if ($years > 0 && $remain === 0) {
+            return $years . ' Year' . ($years > 1 ? 's' : '');
+        }
+
+        if ($years > 0 && $remain > 0) {
+            return $years . ' Year' . ($years > 1 ? 's' : '') . ' ' .
+                $remain . ' Month' . ($remain > 1 ? 's' : '');
+        }
+
+        return $months . ' Month' . ($months > 1 ? 's' : '');
     }
 
-    $years  = intdiv($months, 12);
-    $remain = $months % 12;
-
-    if ($years > 0 && $remain === 0) {
-        return $years . ' Year' . ($years > 1 ? 's' : '');
+    public function extractDimensions($variantName)
+    {
+        preg_match('/(\d+(?:\.\d+)?)\s*[xX×]\s*(\d+(?:\.\d+)?)/', $variantName, $matches);
+        return [
+            'dim1' => isset($matches[1]) ? (float) $matches[1] : 0,
+            'dim2' => isset($matches[2]) ? (float) $matches[2] : 0,
+        ];
     }
-
-    if ($years > 0 && $remain > 0) {
-        return $years . ' Year' . ($years > 1 ? 's' : '') . ' ' .
-               $remain . ' Month' . ($remain > 1 ? 's' : '');
-    }
-
-    return $months . ' Month' . ($months > 1 ? 's' : '');
-}
-
-public function extractDimensions($variantName)
-{
-    preg_match('/(\d+(?:\.\d+)?)\s*[xX×]\s*(\d+(?:\.\d+)?)/', $variantName, $matches);
-    return [
-        'dim1' => isset($matches[1]) ? (float) $matches[1] : 0,
-        'dim2' => isset($matches[2]) ? (float) $matches[2] : 0,
-    ];
-}
-
 
 
 

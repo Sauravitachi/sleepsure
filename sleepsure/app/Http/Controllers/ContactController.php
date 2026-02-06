@@ -8,18 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
-    /**
-     * Show contact page
-     */
+    //Show contact page
     public function index()
     {
         $global = globalData();
         return view('frontend.contact', $global);
     }
 
-    /**
-     * Handle contact form submission
-     */
+    //Handle contact form submission
     public function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
