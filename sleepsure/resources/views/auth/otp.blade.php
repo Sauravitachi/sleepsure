@@ -5,7 +5,11 @@
 @section('content')
 <section class="otp-main">
     <div class="otp-container">
-
+    @if(session('otp_alert'))
+    <script>
+        alert('Your OTP is: {{ session('otp_alert') }}');
+    </script>
+    @endif
         <!-- HEADER -->
         <div class="otp-header">
             <a href="{{ route('login') }}" class="back-btn">
@@ -121,22 +125,18 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", e => {
         e.preventDefault();
 
-        errorBox.style.display = "none";
-        successBox.style.display = "none";
-
         if (otpHidden.value.length !== 6) {
             errorBox.innerText = "Please enter 6-digit OTP";
             errorBox.style.display = "block";
             return;
         }
 
-        fetch("/verify-otp-proxy", {
+        fetch("/verify-otp", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": csrfToken
             },
-            // ✅ SEND ONLY OTP (mobile comes from session)
             body: JSON.stringify({
                 otp: otpHidden.value
             })
@@ -146,16 +146,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.success) {
                 successBox.style.display = "block";
                 setTimeout(() => {
-                    window.location.href = data.redirect || "/";
+                    window.location.href = data.redirect;
                 }, 800);
             } else {
                 errorBox.innerText = data.message || "Invalid OTP";
                 errorBox.style.display = "block";
             }
-        })
-        .catch(() => {
-            errorBox.innerText = "Verification failed";
-            errorBox.style.display = "block";
         });
     });
 

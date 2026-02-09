@@ -125,7 +125,7 @@
                                 </button>
                             </form>
 
-                            <div class="separator">
+                            {{-- <div class="separator">
                                 <span class="separator-text">Or continue with</span>
                             </div>
 
@@ -136,7 +136,7 @@
                                 <button type="button" class="social-button">
                                     <i class="fab fa-facebook-f"></i> Facebook
                                 </button>
-                            </div>
+                            </div> --}}
 
                             <div class="auth-link">
                                 Already have an account? <a href="{{ route('login') }}">Sign in here</a>

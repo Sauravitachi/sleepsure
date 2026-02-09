@@ -17,18 +17,19 @@ use App\Http\Controllers\{
     ,ShippingInfoController
 };
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-Route::post('/login-otp', [AuthController::class, 'loginOtp'])->name('login.otp');
 
 Route::get('/signup', [AuthController::class, 'showSignup'])->name('signup');
 Route::post('/signup', [AuthController::class, 'signup'])->name('signup.submit');
 
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+
+Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('otp.send');
+
 Route::get('/verify-otp', [AuthController::class, 'showOtpVerify'])->name('otp.verify');
+
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify.submit');
-Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
-Route::post('/send-otp', [AuthController::class, 'proxySendOtp'])->name('otp.proxy.send');
-Route::post('/verify-otp-proxy', [AuthController::class, 'proxyVerifyOtp'])->name('otp.proxy.verify');
+
+Route::post('/resend-otp', [AuthController::class, 'sendOtp'])->name('otp.resend');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

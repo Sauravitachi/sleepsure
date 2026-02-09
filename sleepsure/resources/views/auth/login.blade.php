@@ -19,7 +19,7 @@
                     <h2 class="form-title">Welcome Back</h2>
                     <p class="form-subtitle">Enter your mobile number to continue</p>
                     
-                    <form id="phoneForm" method="POST" action="{{ route('login.submit') }}">
+                    <form id="phoneForm">
                         @csrf
                         <div class="form-group">
                             <label for="phone-number">Mobile Number</label>
@@ -39,18 +39,18 @@
                         </button>
                     </form>
                     
-                    <div class="divider">
+                    {{-- <div class="divider">
                         <span>Or continue with</span>
-                    </div>
+                    </div> --}}
                     
-                    <div class="social-login">
+                    {{-- <div class="social-login">
                         <button class="social-btn google">
                             <i class="fab fa-google"></i> Google
                         </button>
                         <button class="social-btn facebook">
                             <i class="fab fa-facebook-f"></i> Facebook
                         </button>
-                    </div>
+                    </div> --}}
                     
                     <div class="auth-switch">
                         New to SleepSure? <a href="{{ route('signup') }}" id="switch-to-signup">Create Account</a>
@@ -92,22 +92,23 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/send-otp', {
             method: 'POST',
             body: formData,
-            headers: { 'X-CSRF-TOKEN': csrfToken }
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            }
         })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
+
+                // 🔥 TEMP DEV ONLY
                 if (data.otp) {
-                    alert('Your OTP is: ' + data.otp); // Show OTP in alert
+                    alert('Your OTP is: ' + data.otp);
                 }
+
                 window.location.href = '/verify-otp';
             } else {
                 alert(data.message || 'Failed to send OTP');
             }
-        })
-        .catch(err => {
-            alert('OTP service error');
-            console.error(err);
         });
     });
 });
