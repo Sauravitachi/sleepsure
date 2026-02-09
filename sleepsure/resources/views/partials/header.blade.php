@@ -68,7 +68,7 @@
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">Logout</button>
+                                    <button type="submit" class="dropdown-item text-danger">Logout</button>
                                 </form>
                             </li>
                         </ul>
@@ -169,7 +169,7 @@
                 <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                     @csrf
                     <button type="submit" style="width: 100%; text-align: left; background: none; border: none; padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: inherit;">
-                        <span class="material-icons">logout</span> <strong>Logout</strong>
+                        <span class="material-icons text-danger">logout</span> <strong>Logout</strong>
                     </button>
                 </form>
             @endauth

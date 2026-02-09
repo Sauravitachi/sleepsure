@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch("/verify-otp", {
+        fetch('{{ url('/verify-otp') }}', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

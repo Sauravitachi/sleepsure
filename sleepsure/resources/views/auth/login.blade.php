@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const csrfToken = document.querySelector('input[name=_token]').value;
 
-        fetch('/send-otp', {
+        fetch('{{ url('/send-otp') }}', {
             method: 'POST',
             body: formData,
             headers: {
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Your OTP is: ' + data.otp);
                 }
 
-                window.location.href = '/verify-otp';
+                window.location.href = '{{ route('otp.verify') }}';
             } else {
                 alert(data.message || 'Failed to send OTP');
             }
