@@ -165,14 +165,14 @@
             <a href="{{ route('contact.index') }}"><span class="material-icons">call</span> <strong>Contact Us</strong></a>
             <a href="{{ route('faq.index') }}"><span class="material-icons">help_outline</span> <strong>FAQ</strong></a>
             <a href="#"><span class="material-icons">map</span> <strong>Sitemap</strong></a>
-            @auth
+            {{-- @auth
                 <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                     @csrf
                     <button type="submit" style="width: 100%; text-align: left; background: none; border: none; padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: inherit;">
-                        <span class="material-icons text-danger">logout</span> <strong>Logout</strong>
+                        <span class="material-icons">logout</span> <strong>Logout</strong>
                     </button>
                 </form>
-            @endauth
+            @endauth --}}
         </nav>
     </div>
 </aside>
