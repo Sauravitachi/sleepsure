@@ -152,7 +152,7 @@
         </div>
 
         <div class="sidebar-utility-buttons">
-            <a href="/cart" class="utility-btn">
+            <a href="{{ route('cart.index') }}" class="utility-btn">
                 <span class="material-icons">shopping_cart</span> My Cart
             </a>
             <a href="" class="utility-btn">

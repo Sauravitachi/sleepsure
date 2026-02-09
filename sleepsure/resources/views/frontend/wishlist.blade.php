@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var productId = this.closest('.wishlist-item').getAttribute('data-product-id');
-            fetch('/cart/add', {
+            fetch('{{ route("cart.add") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
