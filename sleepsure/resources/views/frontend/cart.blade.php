@@ -139,45 +139,7 @@
                             $totalQuantity += $item->quantity;
                         @endphp
                         <div class="cart-item">
-                            <div class="item-image">
-                                @php
-                                    $img = isset($item->product) && isset($item->product->image_url) ? $item->product->image_url : 'assets/images/default.jpg';
-                                    $pname = isset($item->product) && isset($item->product->product_name) ? $item->product->product_name : 'Product';
-                                    @endphp
-                                <img src="{{ asset($img) }}" alt="{{ $pname }}">
-                            </div>
-                            <div class="item-details">
-                                <h3 class="item-name">{{ $pname }}</h3>
-                                <p class="item-size">
-                                    Size:
-                                    @if($item->custom_length && $item->custom_breadth)
-                                        Custom: {{ $item->custom_length }} x {{ $item->custom_breadth }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
-                                    @elseif($item->variant && $item->variant->variant_cat)
-                                        {{ $item->variant->variant_cat }}@if($item->thickness) x {{ $item->thickness->thick }}@endif
-                                    @else
-                                        N/A@if($item->thickness) x {{ $item->thickness->thick }}
-                                    @endif
-                                </p>
-                                
-                                <p class="item-price">₹{{ number_format($item->price, 2) }}</p>
-                                <div class="item-actions">
-                                    <form action="{{ route('cart.quantityUpdate', $item->id) }}" method="POST" class="quantity-form" style="display:inline-flex;align-items:center;" onsubmit="return false;">
-                                        @csrf
-                                        <div class="quantity-selector">
-                                            <button type="button" class="quantity-btn minus" @if($item->quantity <= 1) disabled @endif>-</button>
-                                            <input type="number" class="quantity-input" name="quantity" value="{{ $item->quantity }}" min="1" step="1" style="width:60px; text-align:center;" @if($item->quantity <= 1) min="1" @endif>
-                                            <button type="button" class="quantity-btn plus">+</button>
-                                        </div>
-                                    </form>
-                                    <form action="{{ route('cart.remove', $item->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="remove-btn">
-                                            <i class="fas fa-trash"></i> Remove
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+                            <!-- item details -->
                         </div>
                     @empty
                         <div class="cart-item">
@@ -188,6 +150,8 @@
                     @endforelse
                 </div>
 
+                {{-- Show order summary only if there are items --}}
+                @if($totalQuantity > 0)
                 <div class="cart-summary">
                     <h2 class="summary-title">Order Summary</h2>
                     <div class="summary-row">
@@ -207,7 +171,7 @@
                         <span>Total</span>
                         <span class="amount">₹{{ number_format($subtotal + $tax, 2) }}</span>
                     </div>
-                   
+                
                     <a href="{{ route('checkout') }}" class="checkout-btn">
                         <i class="fas fa-lock"></i>Proceed to checkout
                     </a>
@@ -215,6 +179,7 @@
                         <i class="fas fa-arrow-left"></i> Continue Shopping
                     </a>
                 </div>
+                @endif
             </div>
         </div>
     </section>
