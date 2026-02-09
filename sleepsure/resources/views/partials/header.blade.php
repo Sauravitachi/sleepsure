@@ -46,7 +46,9 @@
         </nav>
 
         <div class="header-icons">
-            <span class="material-icons desktop-only">phone</span>
+            <a href="{{ route('contact.index') }}">
+                <span class="material-icons desktop-only">phone</span>
+            </a>
             <a href="{{ route('wishlist.index') }}">
                 <span class="material-icons desktop-only">favorite_border</span>
             </a>           

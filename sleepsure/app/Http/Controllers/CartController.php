@@ -25,8 +25,10 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
+        $user = auth()->user();
+
         Log::info('🛒 Add to cart request', [
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'session_id' => session()->getId(),
             'payload' => $request->all(),
         ]);

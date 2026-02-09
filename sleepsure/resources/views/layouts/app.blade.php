@@ -25,6 +25,12 @@
     <!-- Header -->
     @include('partials.header')
 
+    @if(session('alert'))
+        <script>
+            alert("{{ session('alert') }}");
+        </script>
+    @endif
+
     <!-- Main Content -->
     <main class="main-content">
         @yield('content')
