@@ -14,17 +14,15 @@ function globalData()
 
     $pay_with = PayWith::all()->map(function ($item) use ($base_url, $fallback_logo) {
 
-    if (!empty($item->image)) {
-        $item->image_url = rtrim($base_url, '/') 
-            . '/my-assets/image/pay_with/' 
-            . ltrim($item->image, '/');
-    } else {
-        $item->image_url = $fallback_logo;
-    }
-
-    return $item;
-});
-
+        if (!empty($item->image)) {
+            $item->image_url = rtrim($base_url, '/') 
+                . '/my-assets/image/pay_with/' 
+                . ltrim($item->image, '/');
+        } else {
+            $item->image_url = $fallback_logo;
+        }
+        return $item;
+    });
 
 
     $categories = ProductCategory::where(function($q) {
