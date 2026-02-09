@@ -177,8 +177,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         resend.classList.add("disabled");
 
-        fetch("/resend-otp", {
+        // Get mobile number from hidden input
+        const mobile = document.getElementById("mobile").value;
+
+        // Prepare form data to send mobile number
+        const formData = new FormData();
+        formData.append('mobile', mobile);
+
+        fetch('{{ url('/send-otp') }}', {
             method: "POST",
+            body: formData,
             headers: {
                 "X-CSRF-TOKEN": csrfToken
             }
@@ -186,12 +194,17 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                time = 120;
+                alert('Your OTP is: ' + (data.otp ?? ''));
+                time = 120; // reset timer
                 startTimer();
             } else {
                 alert(data.message || "Failed to resend OTP");
                 resend.classList.remove("disabled");
             }
+        })
+        .catch(() => {
+            alert("Error resending OTP");
+            resend.classList.remove("disabled");
         });
     });
 
