@@ -1723,14 +1723,17 @@
 
 @push('scripts')
     <script>
+        const dimensionGroups = @json($dimensionsByGroup);
+        const dimensionContainer = document.getElementById('dimensionOptions');
+        const thicknessContainer = document.getElementById('thicknessOptions');
+
         function triggerCustomPriceUpdate() {
             const customLength = document.getElementById('customLength')?.value;
             const customBreadth = document.getElementById('customBreadth')?.value;
 
             let thicknessBtn = null;
-            const thicknessGroups = document.querySelectorAll('.dimension-options');
-            if (thicknessGroups.length > 1) {
-                thicknessBtn = Array.from(thicknessGroups[1].querySelectorAll('.dimension-btn')).find(btn => btn.classList
+            if (thicknessContainer) {
+                thicknessBtn = Array.from(thicknessContainer.querySelectorAll('.dimension-btn')).find(btn => btn.classList
                     .contains('active'));
             }
 
@@ -1751,7 +1754,7 @@
             document.getElementById('customBreadth')?.addEventListener(evt, triggerCustomPriceUpdate);
         });
 
-        document.querySelectorAll('.dimension-options:nth-of-type(2) .dimension-btn')
+        thicknessContainer?.querySelectorAll('.dimension-btn')
             .forEach(btn => {
                 btn.addEventListener('click', triggerCustomPriceUpdate);
             });
@@ -1809,6 +1812,22 @@
                 const formThicknessId = document.getElementById('formThicknessId');
                 const formProductPrice = document.getElementById('formProductPrice');
                 const hiddenProductPrice = document.getElementById('hiddenProductPrice');
+                const hiddenCustomLength = document.getElementById('hiddenCustomLength');
+                const hiddenCustomBreadth = document.getElementById('hiddenCustomBreadth');
+
+                const isCustomSize = !!(hiddenCustomLength?.value && hiddenCustomBreadth?.value);
+
+                // If not custom, refresh hidden fields from the currently active buttons
+                if (!isCustomSize) {
+                    const activeDimension = dimensionContainer?.querySelector('.dimension-btn.active');
+                    const activeThickness = thicknessContainer?.querySelector('.dimension-btn.active');
+                    if (activeDimension && variantId) {
+                        variantId.value = activeDimension.dataset.variantId || '';
+                    }
+                    if (activeThickness && thicknessId) {
+                        thicknessId.value = activeThickness.dataset.thicknessId || '';
+                    }
+                }
                 
                 if (variantId && formVariantId) {
                     formVariantId.value = variantId.value;
@@ -1902,6 +1921,31 @@
             const customBtn = document.getElementById('customSizeBtn');
             const customInputs = document.getElementById('customSizeInputs');
             const dimensionOptions = document.getElementById('dimensionOptions');
+            const getDimensionBtns = () => Array.from(dimensionContainer ? dimensionContainer.querySelectorAll('.dimension-btn') : []);
+            const getThicknessBtns = () => Array.from(thicknessContainer ? thicknessContainer.querySelectorAll('.dimension-btn') : []);
+
+            function renderDimensionsForGroup(groupName) {
+                if (!dimensionContainer) return;
+                const groupData = dimensionGroups[groupName] || {};
+                const buttonsHtml = Object.keys(groupData).map(dimName => {
+                    const thicknesses = groupData[dimName] || {};
+                    const firstThickness = Object.values(thicknesses)[0] || {};
+                    return `<button type="button" class="dimension-btn" data-variant-id="${firstThickness.variant_id || ''}" data-dimension="${dimName}">${dimName}</button>`;
+                }).join('');
+                dimensionContainer.innerHTML = buttonsHtml;
+                const newBtns = getDimensionBtns();
+                if (newBtns.length) {
+                    newBtns[0].classList.add('active');
+                    const variantInput = document.getElementById('variant_id');
+                    const formVariantInput = document.getElementById('formVariantId');
+                    if (variantInput) {
+                        variantInput.value = newBtns[0].dataset.variantId || '';
+                        if (formVariantInput) formVariantInput.value = variantInput.value;
+                    }
+                }
+                wireDimensionClicks();
+            }
+
             sizeGroupBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     sizeGroupBtns.forEach(b => b.classList.remove('active'));
@@ -1912,8 +1956,9 @@
                     } else {
                         customInputs.style.display = 'none';
                         if (dimensionOptions) dimensionOptions.style.display = '';
-                        const dimensionBtnsArr = Array.from(dimensionBtns);
-                        const thicknessBtnsArr = Array.from(thicknessBtns);
+                        renderDimensionsForGroup(this.dataset.group);
+                        const dimensionBtnsArr = getDimensionBtns();
+                        const thicknessBtnsArr = getThicknessBtns();
                         if (!dimensionBtnsArr.some(b => b.classList.contains('active')) &&
                             dimensionBtnsArr.length > 0) {
                             dimensionBtnsArr.forEach(b => b.classList.remove('active'));
@@ -1929,14 +1974,9 @@
                 });
             });
 
-            const dimensionBtns = document.querySelectorAll('.dimension-options')[0].querySelectorAll(
-                '.dimension-btn');
-            const thicknessBtns = document.querySelectorAll('.dimension-options')[1].querySelectorAll(
-                '.dimension-btn');
-
             function getSelectedVariantAndThickness() {
-                const dimensionBtn = Array.from(dimensionBtns).find(b => b.classList.contains('active'));
-                const thicknessBtn = Array.from(thicknessBtns).find(b => b.classList.contains('active'));
+                const dimensionBtn = getDimensionBtns().find(b => b.classList.contains('active'));
+                const thicknessBtn = getThicknessBtns().find(b => b.classList.contains('active'));
                 const sizeGroupBtn = Array.from(sizeGroupBtns).find(b => b.classList.contains('active'));
                 return {
                     variantId: dimensionBtn ? dimensionBtn.dataset.variantId : '',
@@ -1953,22 +1993,44 @@
                 }
             }
 
-            dimensionBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.parentElement.querySelectorAll('.dimension-btn').forEach(b => b.classList
-                        .remove('active'));
-                    this.classList.add('active');
-                    triggerRealtimePriceUpdate();
+            function wireDimensionClicks() {
+                getDimensionBtns().forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.parentElement.querySelectorAll('.dimension-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        const variantInput = document.getElementById('variant_id');
+                        const formVariantInput = document.getElementById('formVariantId');
+                        if (variantInput) {
+                            variantInput.value = this.dataset.variantId || '';
+                            if (formVariantInput) {
+                                formVariantInput.value = variantInput.value;
+                            }
+                        }
+                        triggerRealtimePriceUpdate();
+                    });
                 });
-            });
-            thicknessBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.parentElement.querySelectorAll('.dimension-btn').forEach(b => b.classList
-                        .remove('active'));
-                    this.classList.add('active');
-                    triggerRealtimePriceUpdate();
+            }
+
+            function wireThicknessClicks() {
+                getThicknessBtns().forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.parentElement.querySelectorAll('.dimension-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        const thicknessInput = document.getElementById('thickness_id');
+                        const formThicknessInput = document.getElementById('formThicknessId');
+                        if (thicknessInput) {
+                            thicknessInput.value = this.dataset.thicknessId || '';
+                            if (formThicknessInput) {
+                                formThicknessInput.value = thicknessInput.value;
+                            }
+                        }
+                        triggerRealtimePriceUpdate();
+                    });
                 });
-            });
+            }
+
+            wireDimensionClicks();
+            wireThicknessClicks();
 
 
             const confirmVariantBtn = document.querySelector('.confirm-variant-btn');
@@ -1999,10 +2061,8 @@
                     return;
                 }
 
-                const dimensionBtns = document.querySelectorAll('.dimension-options')[0].querySelectorAll(
-                    '.dimension-btn');
-                const thicknessBtns = document.querySelectorAll('.dimension-options')[1].querySelectorAll(
-                    '.dimension-btn');
+                const dimensionBtns = dimensionContainer ? dimensionContainer.querySelectorAll('.dimension-btn') : [];
+                const thicknessBtns = thicknessContainer ? thicknessContainer.querySelectorAll('.dimension-btn') : [];
                 const dimensionBtn = Array.from(dimensionBtns).find(b => b.classList.contains('active'));
                 const thicknessBtn = Array.from(thicknessBtns).find(b => b.classList.contains('active'));
                 if (!sizeBtn || !dimensionBtn || !thicknessBtn) {
@@ -2057,19 +2117,22 @@
             const defaultThicknessId = '{{ $product->default_thickness_id ?? '' }}';
 
             // Activate the corresponding dimension button
-            const dimensionBtns = document.querySelectorAll('.dimension-options .dimension-btn');
+            const dimensionBtns = dimensionContainer ? dimensionContainer.querySelectorAll('.dimension-btn') : [];
             dimensionBtns.forEach(btn => {
-                if (btn.textContent.trim() === defaultVariantId) {
+                if (btn.dataset.variantId === defaultVariantId) {
                     btn.classList.add('active');
+                    // Ensure hidden field reflects the default match
+                    document.getElementById('variant_id').value = defaultVariantId;
                 }
             });
 
             // Activate the corresponding thickness button
-            const thicknessBtns = document.querySelectorAll('.dimension-options')[1].querySelectorAll(
-                '.dimension-btn');
+            const thicknessBtns = thicknessContainer ? thicknessContainer.querySelectorAll('.dimension-btn') : [];
             thicknessBtns.forEach(btn => {
-                if (btn.textContent.trim() === defaultThicknessId) {
+                if (btn.dataset.thicknessId === defaultThicknessId) {
                     btn.classList.add('active');
+                    // Ensure hidden field reflects the default match
+                    document.getElementById('thickness_id').value = defaultThicknessId;
                 }
             });
         });
