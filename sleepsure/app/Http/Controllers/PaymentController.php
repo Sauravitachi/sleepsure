@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Services\RazorpayService;
-use App\Models\Order; // or CustomerOrder if that’s the table
+use App\Models\Order; 
+use App\Models\Cart;
 use App\Models\CartItem;
-use Illuminate\Support\Facades\Schema;
+use Log;
 
 class PaymentController extends Controller
 {
@@ -82,14 +84,32 @@ class PaymentController extends Controller
             $order->status      = 1; // adjust to your “paid” status
             $order->save();
 
-            $cartId = $request->input('cart_id')
-                ?? $order->customer_id
-                ?? $order->user_id
-                ?? $order->store_id;
+            // Clear the shopper's active cart (auth user or current session) so items disappear after payment
+            $cart = null;
 
-            if ($cartId) {
-                CartItem::where('cart_id', $cartId)->delete();
+            if ($request->filled('cart_id')) {
+                $cart = Cart::whereKey($request->input('cart_id'))->first();
             }
+
+            if (!$cart && Auth::check()) {
+                $cart = Cart::where('customer_id', Auth::id())
+                    ->where('status', 'active')
+                    ->first();
+            }
+
+            if (!$cart) {
+                $cart = Cart::where('session_id', $request->session()->getId())
+                    ->where('status', 'active')
+                    ->first();
+            }
+            Log::info('Clearing cart for order ' . $orderId . ', found cart: ' . ($cart ? $cart->id : 'none'));
+
+            if ($cart) {
+                CartItem::where('cart_id', $cart->id)->delete();
+                $cart->status = 'checked_out';
+                $cart->save();
+            }
+            Log::info('Cart cleared for order ' . $orderId);
 
         }
 
