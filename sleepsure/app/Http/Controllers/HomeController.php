@@ -568,6 +568,7 @@ class HomeController extends Controller
 
         // Calculate price using oddsize_rate and SQFT as per business logic
         $price = $this->calculatePrice($sqft, $default_rate, $oddsize_rate, $variant);
+        $priceNumeric = (float) $price;
 
         $default_price_calculated = $default_rate ?? 0;
         $oddsize_price_calculated = $oddsize_rate ?? 0;
@@ -575,7 +576,11 @@ class HomeController extends Controller
         return [
             'product_id' => $product->product_id,
             'product_name' => $product->product_name ?? '',
-            'name' => $product->product_name ?? '', // Alias for blade template
+            'name' => $product->product_name ?? '', 
+            'variant_id' => $variant->var_size_id ?? null,
+            'thickness_id' => $variant->var_thickness_id ?? null,
+            // Numeric price that matches the displayed formatted price
+            'price_value' => $priceNumeric,
             'type' => $product->type ?? 'N/A',
             'material' => $product->tag ? str_replace(',', ', ', $product->tag) : 'N/A',
             'image_url' => $product->image_url ?? '',
@@ -586,7 +591,7 @@ class HomeController extends Controller
             'description' => $product->description ?? '',
             'onsale' => $product->onsale ?? false,
             'onsale_price' => $product->onsale_price ?? null,
-            'price' => $this->formatRupee($price),
+            'price' => $this->formatRupee($priceNumeric),
             'specification' => $product->specification ?? '',
             'category_id' => $product->categoryDetails->category_id ?? 'N/A',
             'category_name' =>

@@ -103,7 +103,7 @@
                     <input type="hidden" name="variant_id" id="formVariantId" value="{{ $product->default_variant_id ?? '' }}">
                     <input type="hidden" name="thickness_id" id="formThicknessId" value="{{ $product->default_thickness_id ?? '' }}">
                     <input type="hidden" name="quantity" id="hiddenQuantity" value="1">
-                    <input type="hidden" name="price" id="formProductPrice" value="{{ $product->price }}">
+                    <input type="hidden" name="price" id="formProductPrice" value="{{ $product->price_value ?? 0 }}">
                     <input type="hidden" name="custom_length" id="hiddenCustomLength" value="">
                     <input type="hidden" name="custom_breadth" id="hiddenCustomBreadth" value="">
 
@@ -119,7 +119,7 @@
                 <!-- Hidden fields for variant selection -->
                 <input type="hidden" id="variant_id" value="{{ $product->default_variant_id ?? '' }}">
                 <input type="hidden" id="thickness_id" value="{{ $product->default_thickness_id ?? '' }}">
-                <input type="hidden" id="hiddenProductPrice" value="{{ $product->price }}">
+                <input type="hidden" id="hiddenProductPrice" value="{{ $product->price_value ?? 0 }}">
 
 
                 <div class="save-extra-section">
@@ -2158,13 +2158,16 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        // Update both main and modal price
-                        document.getElementById('mainProductPrice').textContent = data.price;
-                        document.getElementById('hiddenProductPrice').value = data.price;
+                        const formattedPrice = data.price ?? '';
+                        const numericPrice = (typeof data.price_value !== 'undefined') ? data.price_value : formattedPrice;
+                        // Update both main and modal price displays
+                        document.getElementById('mainProductPrice').textContent = formattedPrice;
+                        document.getElementById('hiddenProductPrice').value = numericPrice;
                         var modalPrice = document.getElementById('modalProductPrice');
-                        if (modalPrice) modalPrice.textContent = data.price;
+                        if (modalPrice) modalPrice.textContent = formattedPrice;
                     } else {
                         document.getElementById('mainProductPrice').textContent = 'N/A';
+                        document.getElementById('hiddenProductPrice').value = '';
                         var modalPrice = document.getElementById('modalProductPrice');
                         if (modalPrice) modalPrice.textContent = 'N/A';
                         alert(data.message);

@@ -177,7 +177,8 @@ class ProductController extends Controller
         if (!$sizeVariant) {
             return response()->json([
                 'success' => true,
-                'price'   => $home->formatRupee(0)
+                'price'   => $home->formatRupee(0),
+                'price_value' => 0
             ]);
         }
 
@@ -201,10 +202,12 @@ class ProductController extends Controller
                 ->where('var_thickness_id', $thicknessId)
                 ->value('price');            
             if (!is_null($fixedPrice)) {
+                $fixedPriceValue = (float) $fixedPrice;
                 return response()->json([
                     'success' => true,
                     'sqft'    => $sqft,
-                    'price'   => $home->formatRupee($fixedPrice),
+                    'price'   => $home->formatRupee($fixedPriceValue),
+                    'price_value' => $fixedPriceValue,
                     'type'    => 'fixed'
                 ]);
             }
@@ -217,10 +220,12 @@ class ProductController extends Controller
                 ->min('price');
             
             if (!is_null($minPrice)) {
+                $minPriceValue = (float) $minPrice;
                 return response()->json([
                     'success' => true,
                     'sqft'    => $sqft,
-                    'price'   => $home->formatRupee($minPrice),
+                    'price'   => $home->formatRupee($minPriceValue),
+                    'price_value' => $minPriceValue,
                     'type'    => 'dimension-only'
                 ]);
             }
@@ -243,7 +248,7 @@ class ProductController extends Controller
             \Log::info('Rates for fallback', compact('default_rate', 'oddsize_rate'));
         }
 
-        $price = $home->calculatePrice(
+        $priceValue = $home->calculatePrice(
             $sqft,
             $default_rate,
             $oddsize_rate,
@@ -257,7 +262,8 @@ class ProductController extends Controller
             'rate'    => $isCustom
                 ? ($oddsize_rate ?: $default_rate)
                 : $default_rate,
-            'price'   => $home->formatRupee($price),
+            'price'   => $home->formatRupee($priceValue),
+            'price_value' => $priceValue,
             'type'    => $isCustom ? 'custom-rate' : 'default-rate'
         ]);
     }

@@ -33,14 +33,30 @@
                                     <p>({{ $product['size'] }})</p>
                                     <p>({{ $product['size_cm'] }})</p>
                                     <div class="price-group">
-                                        <span class="price">{{ $product['price'] ?? 0 }}</span>
-                                        @if($product['discount_percent'] > 0)
-                                        <span class="discount">{{ $product['discount_percent'] }}% off</span>
+                                                <span class="price">{{ $product['price'] ?? 0 }}</span>
+                                                @if($product['discount_percent'] > 0)
+                                                <span class="discount">{{ $product['discount_percent'] }}% off</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if(!empty($product['variant_id']) && !empty($product['thickness_id']))
+                                        <form class="add-to-cart-form" action="{{ route('cart.add') }}" method="POST" style="height:100%;display:flex;align-items:center;">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product['product_id'] }}">
+                                            <input type="hidden" name="variant_id" value="{{ $product['variant_id'] }}">
+                                            <input type="hidden" name="thickness_id" value="{{ $product['thickness_id'] }}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <input type="hidden" name="price" value="{{ $product['price_value'] ?? 0 }}">
+                                            <button type="submit" class="buy" aria-label="Add to cart" style="border:0;">
+                                                <i class="fa-solid fa-cart-shopping"></i>
+                                            </button>
+                                        </form>
+                                        @else
+                                        <a class="buy" href="{{ route('product.details', ['id' => $product['product_id']]) }}" aria-label="View details to select options">
+                                            <i class="fa-solid fa-cart-shopping"></i>
+                                        </a>
                                         @endif
                                     </div>
-                                </div>
-                                <div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
-                            </div>
                             <div class="right">
                                 <div class="done"><i class="fa-solid fa-check"></i></div>
                                 <div class="details">
