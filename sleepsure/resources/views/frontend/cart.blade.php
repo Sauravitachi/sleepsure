@@ -71,6 +71,29 @@
     background: #092f6e;
 }
 
+.cart-container {
+    gap: 20px;
+}
+
+.cart-items {
+    max-height: 800px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.cart-items::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+
+.cart-items::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
 /* Mobile tweaks */
 @media (max-width: 768px) {
     .slider-container {
@@ -121,12 +144,12 @@
 
     <!-- Cart Section -->
     <section class="cart-section">
-        <div class="container">
+        <div class="container ">
             <h1 class="cart-title">
                 <i class="fas fa-shopping-cart"></i> Your Shopping Cart
             </h1>
 
-            <div class="cart-container">
+            <div class="cart-container x-overflow h-64">
                 <div class="cart-items">
                     @php
                         $subtotal = 0;

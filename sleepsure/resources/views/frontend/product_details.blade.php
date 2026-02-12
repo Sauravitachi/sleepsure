@@ -115,6 +115,7 @@
                 <button type="button" class="buy-now-btn" id="buyNowBtn">
                     <i class="fas fa-shopping-bag"></i> Buy Now
                 </button>
+                <div id="actionMessage" class="action-message" aria-live="polite"></div>
 
                 <!-- Hidden fields for variant selection -->
                 <input type="hidden" id="variant_id" value="{{ $product->default_variant_id ?? '' }}">
@@ -1043,6 +1044,28 @@
         background: #029b42;
     }
 
+    .cta-disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .action-message {
+        margin-top: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #1b4e9b;
+        min-height: 20px;
+    }
+
+    .action-message.error {
+        color: #c0392b;
+    }
+
+    .action-message.success {
+        color: #2d9d3a;
+    }
+
     .qty-group {
         background: #f1f3f5;
         border-radius: 6px;
@@ -1726,10 +1749,54 @@
         const dimensionGroups = @json($dimensionsByGroup);
         const dimensionContainer = document.getElementById('dimensionOptions');
         const thicknessContainer = document.getElementById('thicknessOptions');
+        const productId = '{{ $product->product_id }}';
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        const buyNowPrimaryBtn = document.getElementById('buyNowBtn');
+        const actionMessage = document.getElementById('actionMessage');
+
+        function showActionMessage(message, type = 'info') {
+            if (!actionMessage) return;
+            actionMessage.textContent = message;
+            actionMessage.classList.remove('error', 'success');
+            if (type === 'error') actionMessage.classList.add('error');
+            if (type === 'success') actionMessage.classList.add('success');
+        }
+
+        function hasValidSelection() {
+            const variantId = document.getElementById('variant_id')?.value || '';
+            const thicknessId = document.getElementById('thickness_id')?.value || '';
+            const customLength = document.getElementById('hiddenCustomLength')?.value || '';
+            const customBreadth = document.getElementById('hiddenCustomBreadth')?.value || '';
+            const hasCustomSize = !!(customLength && customBreadth);
+            const hasVariant = !!variantId;
+            const hasThickness = !!thicknessId;
+            return hasThickness && (hasVariant || hasCustomSize);
+        }
+
+        function toggleCtas(enabled) {
+            [addToCartBtn, buyNowPrimaryBtn].forEach(btn => {
+                if (!btn) return;
+                if (enabled) {
+                    btn.classList.remove('cta-disabled');
+                    btn.removeAttribute('disabled');
+                    btn.setAttribute('aria-disabled', 'false');
+                } else {
+                    btn.classList.add('cta-disabled');
+                    btn.setAttribute('disabled', 'disabled');
+                    btn.setAttribute('aria-disabled', 'true');
+                }
+            });
+        }
+
+        function updateActionButtonsState() {
+            toggleCtas(hasValidSelection());
+        }
 
         function triggerCustomPriceUpdate() {
             const customLength = document.getElementById('customLength')?.value;
             const customBreadth = document.getElementById('customBreadth')?.value;
+
+            updateActionButtonsState();
 
             let thicknessBtn = null;
             if (thicknessContainer) {
@@ -1794,8 +1861,14 @@
             const addToCartForm = document.getElementById('addToCartForm');
             if (buyNowBtn && addToCartForm) {
                 buyNowBtn.addEventListener('click', function() {
+                    if (!hasValidSelection()) {
+                        showActionMessage('Please select size and thickness before buying.', 'error');
+                        updateActionButtonsState();
+                        return;
+                    }
                     // Sync form fields before submission
                     syncFormFields();
+                    showActionMessage('Redirecting to checkout...', 'success');
                     addToCartForm.submit();
                 });
             }
@@ -1843,7 +1916,14 @@
             // Ensure form fields are synced before form submit
             if (addToCartForm) {
                 addToCartForm.addEventListener('submit', function(e) {
+                    if (!hasValidSelection()) {
+                        e.preventDefault();
+                        showActionMessage('Please select size and thickness before adding to cart.', 'error');
+                        updateActionButtonsState();
+                        return;
+                    }
                     syncFormFields();
+                    showActionMessage('Product added to cart!', 'success');
                 });
             }
 
@@ -2006,6 +2086,7 @@
                                 formVariantInput.value = variantInput.value;
                             }
                         }
+                        updateActionButtonsState();
                         triggerRealtimePriceUpdate();
                     });
                 });
@@ -2024,6 +2105,7 @@
                                 formThicknessInput.value = thicknessInput.value;
                             }
                         }
+                        updateActionButtonsState();
                         triggerRealtimePriceUpdate();
                     });
                 });
@@ -2043,20 +2125,29 @@
                 if (isCustom) {
                     const customLength = document.getElementById('customLength').value;
                     const customBreadth = document.getElementById('customBreadth').value;
+                    const thicknessBtn = Array.from(thicknessContainer ? thicknessContainer.querySelectorAll('.dimension-btn') : []).find(b => b.classList.contains('active'));
                     if (!customLength || !customBreadth) {
                         alert('Please enter both length and breadth for custom size.');
                         return;
                     }
+                    if (!thicknessBtn) {
+                        alert('Please select thickness.');
+                        return;
+                    }
                     document.getElementById('variant_id').value = '';
-                    document.getElementById('thickness_id').value = '';
+                    document.getElementById('thickness_id').value = thicknessBtn.dataset.thicknessId || '';
                     document.getElementById('hiddenCustomLength').value = customLength;
                     document.getElementById('hiddenCustomBreadth').value = customBreadth;
+                    document.getElementById('formVariantId').value = '';
+                    document.getElementById('formThicknessId').value = thicknessBtn.dataset.thicknessId || '';
                     // Update both display locations
                     const customText = `Custom: ${customLength} x ${customBreadth}`;
                     const displayDropdown = document.getElementById('selectedSizeDisplayDropdown');
                     const displayTop = document.getElementById('selectedSizeDisplayTop');
                     if (displayDropdown) displayDropdown.textContent = customText;
                     if (displayTop) displayTop.textContent = customText;
+                    updateActionButtonsState();
+                    showActionMessage('Custom size selected. Please proceed to add to cart.', 'success');
                     variantModal.classList.remove('active');
                     return;
                 }
@@ -2080,6 +2171,8 @@
                 document.getElementById('thickness_id').value = thicknessId;
                 document.getElementById('hiddenCustomLength').value = '';
                 document.getElementById('hiddenCustomBreadth').value = '';
+                document.getElementById('formVariantId').value = variantId;
+                document.getElementById('formThicknessId').value = thicknessId;
                 // Update both display locations
                     const displayDropdown = document.getElementById('selectedSizeDisplayDropdown');
                 const displayTop = document.getElementById('selectedSizeDisplayTop');
@@ -2090,6 +2183,8 @@
 
                 const productId = '{{ $product->product_id }}';
                 updateProductPrice(variantId, thicknessId, productId);
+                updateActionButtonsState();
+                showActionMessage('Size selected. You can proceed to add to cart.', 'success');
             });
 
 
@@ -2135,6 +2230,8 @@
                     document.getElementById('thickness_id').value = defaultThicknessId;
                 }
             });
+
+            updateActionButtonsState();
         });
 
         function updateProductPrice(variantId, thicknessId, productId) {
