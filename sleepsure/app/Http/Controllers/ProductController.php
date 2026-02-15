@@ -33,6 +33,12 @@ class ProductController extends Controller
         $transformed = $homeController->transformProduct($product);
         $merged = array_merge($product->toArray(), $transformed);
         $productObj = (object) $merged;
+
+        $productObj->default_variant_id = $productObj->variant_id
+            ?? ($product->default_variant ?? null);
+        $productObj->default_thickness_id = $productObj->thickness_id
+            ?? ($product->default_thickness_id ?? null);
+
         //  dd([
         //         'image_thumb' => $productObj->image_thumb,
         //         'image_large_details' => $productObj->image_large_details

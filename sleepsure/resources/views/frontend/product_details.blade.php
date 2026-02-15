@@ -644,11 +644,30 @@
                 <i class="fas fa-ruler-combined"></i> Not sure about size? Learn how to measure
             </div>
 
+            @php
+                $defaultVariantId = $product->default_variant_id ?? '';
+                $defaultThicknessId = $product->default_thickness_id ?? '';
+                $initialGroup = null;
+                $initialDimension = null;
+                foreach ($dimensionsByGroup as $groupName => $dims) {
+                    foreach ($dims as $dimName => $thicks) {
+                        foreach ($thicks as $t) {
+                            if ((string) ($t['variant_id'] ?? '') === (string) $defaultVariantId) {
+                                $initialGroup = $groupName;
+                                $initialDimension = $dimName;
+                                break 3;
+                            }
+                        }
+                    }
+                }
+                $initialGroup = $initialGroup ?? ($sizeGroups[0] ?? null);
+            @endphp
+
             <div class="size-selection-group">
                 <h3>Size Group</h3>
                 <div class="size-group-options">
                     @foreach ($sizeGroups as $group)
-                        <button class="size-group-btn" data-group="{{ $group }}">{{ ucfirst($group) }}</button>
+                        <button class="size-group-btn {{ $group === $initialGroup ? 'active' : '' }}" data-group="{{ $group }}">{{ ucfirst($group) }}</button>
                     @endforeach
                     <button class="size-group-btn" id="customSizeBtn">Custom</button>
                 </div>
@@ -680,19 +699,19 @@
                 <h3>Dimensions</h3>
                 <div class="dimension-options" id="dimensionOptions">
                     @php
-                        $firstGroup = $sizeGroups[0] ?? null;
-                        $dimensions = $firstGroup ? $dimensionsByGroup[$firstGroup] ?? [] : [];
-                        // Find the correct variant_id for each dimension
+                        $dimensions = $initialGroup ? $dimensionsByGroup[$initialGroup] ?? [] : [];
                         $variantIdsByDimension = [];
-                        if (isset($dimensionsByGroup[$firstGroup])) {
-                            foreach ($dimensionsByGroup[$firstGroup] as $dimensionName => $thicknesses) {
-                                $firstThickness = reset($thicknesses);
-                                $variantIdsByDimension[$dimensionName] = $firstThickness['variant_id'] ?? null;
+                        $activeDimension = $initialDimension;
+                        foreach ($dimensions as $dimensionName => $thicknesses) {
+                            $firstThickness = reset($thicknesses);
+                            $variantIdsByDimension[$dimensionName] = $firstThickness['variant_id'] ?? null;
+                            if (!$activeDimension) {
+                                $activeDimension = $dimensionName;
                             }
                         }
                     @endphp
                     @foreach ($dimensions as $dimensionName => $thicknesses)
-                        <button type="button" class="dimension-btn"
+                        <button type="button" class="dimension-btn {{ $dimensionName === $activeDimension ? 'active' : '' }}"
                             data-variant-id="{{ $variantIdsByDimension[$dimensionName] ?? '' }}"
                             data-dimension="{{ $dimensionName }}">{{ $dimensionName }}</button>
                     @endforeach
@@ -703,7 +722,10 @@
                 <h3>Thickness</h3>
                 <div class="dimension-options" id="thicknessOptions">
                     @foreach ($thicknessVariants as $thickness)
-                        <button type="button" class="dimension-btn"
+                        @php
+                            $isActiveThickness = (string) $thickness->id === (string) $defaultThicknessId || ($defaultThicknessId === '' && $loop->first);
+                        @endphp
+                        <button type="button" class="dimension-btn {{ $isActiveThickness ? 'active' : '' }}"
                             data-thickness-id="{{ $thickness->id }}">{{ $thickness->thick }}</button>
                     @endforeach
                 </div>
@@ -771,6 +793,41 @@
     /* =========================================== */
     /* PRODUCT DETAIL PAGE STYLES */
     /* =========================================== */
+
+    /* Variant modal buttons */
+    .size-group-options,
+    .dimension-options {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .size-group-btn,
+    .dimension-btn {
+        border: 1px solid #cdd6e0;
+        background: #fff;
+        color: #1a2b4c;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        min-width: 64px;
+        text-transform: capitalize;
+    }
+
+    .size-group-btn.active,
+    .dimension-btn.active {
+        background: #1b4e9b;
+        color: #fff;
+        border-color: #1b4e9b;
+        box-shadow: 0 2px 6px rgba(27, 78, 155, 0.25);
+    }
+
+    .size-group-btn:hover,
+    .dimension-btn:hover {
+        border-color: #1b4e9b;
+        color: #1b4e9b;
+    }
 
     .product-page-container {
         margin: 0 auto;
@@ -2004,7 +2061,38 @@
             const getDimensionBtns = () => Array.from(dimensionContainer ? dimensionContainer.querySelectorAll('.dimension-btn') : []);
             const getThicknessBtns = () => Array.from(thicknessContainer ? thicknessContainer.querySelectorAll('.dimension-btn') : []);
 
-            function renderDimensionsForGroup(groupName) {
+            function findGroupByVariant(variantId) {
+                if (!variantId) return null;
+                const target = String(variantId);
+                for (const [groupName, dims] of Object.entries(dimensionGroups || {})) {
+                    for (const dimName of Object.keys(dims || {})) {
+                        const thicknesses = dims[dimName] || {};
+                        for (const t of Object.values(thicknesses)) {
+                            if (String(t.variant_id) === target) return groupName;
+                        }
+                    }
+                }
+                return null;
+            }
+
+            function markThicknessActive(thicknessId) {
+                const buttons = getThicknessBtns();
+                buttons.forEach(b => b.classList.remove('active'));
+                const match = buttons.find(b => b.dataset.thicknessId === String(thicknessId));
+                const targetBtn = match || buttons[0];
+                if (!targetBtn) return;
+                targetBtn.classList.add('active');
+                const thicknessInput = document.getElementById('thickness_id');
+                const formThicknessInput = document.getElementById('formThicknessId');
+                if (thicknessInput) {
+                    thicknessInput.value = targetBtn.dataset.thicknessId || '';
+                    if (formThicknessInput) {
+                        formThicknessInput.value = thicknessInput.value;
+                    }
+                }
+            }
+
+            function renderDimensionsForGroup(groupName, preferredVariantId = '') {
                 if (!dimensionContainer) return;
                 const groupData = dimensionGroups[groupName] || {};
                 const buttonsHtml = Object.keys(groupData).map(dimName => {
@@ -2015,42 +2103,53 @@
                 dimensionContainer.innerHTML = buttonsHtml;
                 const newBtns = getDimensionBtns();
                 if (newBtns.length) {
-                    newBtns[0].classList.add('active');
+                    let activeBtn = null;
+                    if (preferredVariantId) {
+                        activeBtn = newBtns.find(btn => btn.dataset.variantId === String(preferredVariantId));
+                    }
+                    if (!activeBtn) {
+                        activeBtn = newBtns[0];
+                    }
+                    activeBtn.classList.add('active');
                     const variantInput = document.getElementById('variant_id');
                     const formVariantInput = document.getElementById('formVariantId');
                     if (variantInput) {
-                        variantInput.value = newBtns[0].dataset.variantId || '';
+                        variantInput.value = activeBtn.dataset.variantId || '';
                         if (formVariantInput) formVariantInput.value = variantInput.value;
                     }
                 }
                 wireDimensionClicks();
             }
 
+            function activateSizeGroup(groupName, preferredVariantId = '') {
+                if (!groupName) return;
+                sizeGroupBtns.forEach(b => b.classList.remove('active'));
+                const btn = Array.from(sizeGroupBtns).find(b => b.dataset.group === groupName) || (groupName === 'Custom' ? customBtn : null);
+                if (btn) {
+                    btn.classList.add('active');
+                }
+                const isCustom = btn === customBtn;
+                if (isCustom) {
+                    customInputs.style.display = 'block';
+                    if (dimensionOptions) dimensionOptions.style.display = 'none';
+                    const variantInput = document.getElementById('variant_id');
+                    const formVariantInput = document.getElementById('formVariantId');
+                    if (variantInput) {
+                        variantInput.value = '';
+                        if (formVariantInput) formVariantInput.value = '';
+                    }
+                } else {
+                    customInputs.style.display = 'none';
+                    if (dimensionOptions) dimensionOptions.style.display = '';
+                    renderDimensionsForGroup(groupName, preferredVariantId);
+                }
+            }
+
             sizeGroupBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    sizeGroupBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    if (this === customBtn) {
-                        customInputs.style.display = 'block';
-                        if (dimensionOptions) dimensionOptions.style.display = 'none';
-                    } else {
-                        customInputs.style.display = 'none';
-                        if (dimensionOptions) dimensionOptions.style.display = '';
-                        renderDimensionsForGroup(this.dataset.group);
-                        const dimensionBtnsArr = getDimensionBtns();
-                        const thicknessBtnsArr = getThicknessBtns();
-                        if (!dimensionBtnsArr.some(b => b.classList.contains('active')) &&
-                            dimensionBtnsArr.length > 0) {
-                            dimensionBtnsArr.forEach(b => b.classList.remove('active'));
-                            dimensionBtnsArr[0].classList.add('active');
-                        }
-                        if (!thicknessBtnsArr.some(b => b.classList.contains('active')) &&
-                            thicknessBtnsArr.length > 0) {
-                            thicknessBtnsArr.forEach(b => b.classList.remove('active'));
-                            thicknessBtnsArr[0].classList.add('active');
-                        }
-                        triggerRealtimePriceUpdate();
-                    }
+                    const groupName = this.dataset.group;
+                    activateSizeGroup(groupName);
+                    triggerRealtimePriceUpdate();
                 });
             });
 
@@ -2205,31 +2304,14 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('variant_id').value = '{{ $product->default_variant_id ?? '' }}';
-            document.getElementById('thickness_id').value = '{{ $product->default_thickness_id ?? '' }}';
-
             const defaultVariantId = '{{ $product->default_variant_id ?? '' }}';
             const defaultThicknessId = '{{ $product->default_thickness_id ?? '' }}';
 
-            // Activate the corresponding dimension button
-            const dimensionBtns = dimensionContainer ? dimensionContainer.querySelectorAll('.dimension-btn') : [];
-            dimensionBtns.forEach(btn => {
-                if (btn.dataset.variantId === defaultVariantId) {
-                    btn.classList.add('active');
-                    // Ensure hidden field reflects the default match
-                    document.getElementById('variant_id').value = defaultVariantId;
-                }
-            });
-
-            // Activate the corresponding thickness button
-            const thicknessBtns = thicknessContainer ? thicknessContainer.querySelectorAll('.dimension-btn') : [];
-            thicknessBtns.forEach(btn => {
-                if (btn.dataset.thicknessId === defaultThicknessId) {
-                    btn.classList.add('active');
-                    // Ensure hidden field reflects the default match
-                    document.getElementById('thickness_id').value = defaultThicknessId;
-                }
-            });
+            const initialGroup = findGroupByVariant(defaultVariantId) || (sizeGroupBtns[0]?.dataset.group || '');
+            if (initialGroup) {
+                activateSizeGroup(initialGroup, defaultVariantId);
+            }
+            markThicknessActive(defaultThicknessId);
 
             updateActionButtonsState();
         });
