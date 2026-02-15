@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ProductInformation;
+use App\Models\Variant; 
 
 class OrderDetails extends Model
 {
@@ -17,11 +19,21 @@ class OrderDetails extends Model
         'variant_color',
         'store_id',
         'quantity',
-        'rate',                           
+        'rate',                          
         'supplier_rate',                  
         'total_price',                    
         'discount',                       
         'product_discount',               
         'status',                         
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(ProductInformation::class, 'product_id', 'product_id');
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class, 'variant_id', 'variant_id');
+    }
 }

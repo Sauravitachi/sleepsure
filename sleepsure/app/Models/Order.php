@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\OrderPayment;
 
 class Order extends Model
 {
@@ -44,6 +45,11 @@ class Order extends Model
     public function delivery()
     {
         return $this->hasOne(OrderDelivery::class, 'order_id', 'order_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(OrderPayment::class, 'order_id', 'order_id');
     }
     public function customer(){
         return $this->belongsTo(CustomerInformation::class, 'customer_id', 'customer_id');

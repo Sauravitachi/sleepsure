@@ -63,8 +63,8 @@
                             <span class="material-icons">account_circle</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
-                            <li><a class="dropdown-item" href="#">My Account</a></li>
-                            <li><a class="dropdown-item" href="#">My Orders</a></li>
+                            <li><a class="dropdown-item" href="{{ route('account.index') }}">My Account</a></li>
+                            <li><a class="dropdown-item" href="{{ route('orders.index') }}">My Orders</a></li>
                             <li><a class="dropdown-item" href="#">Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
@@ -155,7 +155,7 @@
             <a href="{{ route('cart.index') }}" class="utility-btn">
                 <span class="material-icons">shopping_cart</span> My Cart
             </a>
-            <a href="" class="utility-btn">
+            <a href="{{ route('orders.index') }}" class="utility-btn">
                 <span class="material-icons">assignment</span> My Orders
             </a>
         </div>

@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     HomeController,
+    AccountController,
     ProductController,
     BlogController,
     AuthController,
@@ -16,7 +17,8 @@ use App\Http\Controllers\{
     WishListController,
     ShippingInfoController,
     CheckOutController,
-    PaymentController
+    PaymentController,
+    OrderController
 };
 
 
@@ -69,6 +71,11 @@ Route::middleware('check.auth')->group(function () {
     Route::post('/checkout', [CheckOutController::class, 'store'])->name('checkout.store');
 });
 
+// Account dashboard
+Route::middleware('check.auth')->group(function () {
+    Route::get('/my-account', [AccountController::class, 'index'])->name('account.index');
+});
+
 // Payment routes
 Route::prefix('payment')->group(function () {
     Route::post('/create-order', [PaymentController::class, 'createPaymentOrder'])->name('payment.create-order');
@@ -85,4 +92,9 @@ Route::middleware('check.auth')->group(function () {
     Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist/add', [WishListController::class, 'add'])->name('wishlist.add');
     Route::post('/wishlist/remove', [WishListController::class, 'remove'])->name('wishlist.remove');
+});
+
+// Orders - authenticated customers only
+Route::middleware('check.auth')->group(function () {
+    Route::get('/my-orders', [OrderController::class, 'index'])->name('orders.index');
 });
