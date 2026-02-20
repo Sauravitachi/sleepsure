@@ -35,7 +35,7 @@
         </div>
 
         <div class="search-container">
-            <span class="material-icons search-icon">search</span>
+            <span class="material-icons search-icon cursor-pointer">search</span>
             <input type="text" placeholder="Search for Mattress, Category, Tag..." class="search-input" id="globalSearchInput" autocomplete="off" readonly style="cursor:pointer;">
         </div>
 
@@ -252,42 +252,49 @@
             // Search Modal Logic
             document.addEventListener('DOMContentLoaded', function () {
                 const searchInput = document.getElementById('globalSearchInput');
+                const searchContainer = document.querySelector('.search-container');
+                const searchIcon = document.querySelector('.search-icon');
                 const searchModal = document.getElementById('searchModal');
                 const closeModalBtn = document.getElementById('closeSearchModal');
                 const modalInput = document.getElementById('modalSearchInput');
                 const modalContent = document.getElementById('searchModalContent');
 
-                if (searchInput) {
-                    searchInput.addEventListener('focus', function () {
-                        searchModal.style.display = 'flex';
-                        setTimeout(() => modalInput.focus(), 100);
-                    });
-                    searchInput.addEventListener('click', function () {
-                        searchModal.style.display = 'flex';
-                        setTimeout(() => modalInput.focus(), 100);
-                    });
-                }
+                const openSearchModal = () => {
+                    if (!searchModal) return;
+                    searchModal.style.display = 'flex';
+                    setTimeout(() => {
+                        if (modalInput) modalInput.focus();
+                    }, 100);
+                };
+
+                [searchInput, searchContainer, searchIcon].forEach(el => {
+                    if (el) {
+                        el.addEventListener('focus', openSearchModal);
+                        el.addEventListener('click', openSearchModal);
+                    }
+                });
+
                 if (closeModalBtn) {
                     closeModalBtn.onclick = function () {
                         searchModal.style.display = 'none';
-                        modalInput.value = '';
-                        modalContent.innerHTML = '';
+                        if (modalInput) modalInput.value = '';
+                        if (modalContent) modalContent.innerHTML = '';
                     };
                 }
                 if (searchModal) {
                     searchModal.onclick = function (e) {
                         if (e.target === this) {
                             searchModal.style.display = 'none';
-                            modalInput.value = '';
-                            modalContent.innerHTML = '';
+                            if (modalInput) modalInput.value = '';
+                            if (modalContent) modalContent.innerHTML = '';
                         }
                     };
                 }
                 document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') {
-                        searchModal.style.display = 'none';
-                        modalInput.value = '';
-                        modalContent.innerHTML = '';
+                        if (searchModal) searchModal.style.display = 'none';
+                        if (modalInput) modalInput.value = '';
+                        if (modalContent) modalContent.innerHTML = '';
                     }
                 });
                 // Live search
@@ -344,7 +351,7 @@
             const searchInput = document.getElementById('globalSearchInput');
             const resultsBox = document.getElementById('globalSearchResults');
             let debounceTimeout;
-            if (searchInput) {
+            if (searchInput && resultsBox) {
                 searchInput.addEventListener('input', function () {
                     const q = this.value.trim();
                     clearTimeout(debounceTimeout);

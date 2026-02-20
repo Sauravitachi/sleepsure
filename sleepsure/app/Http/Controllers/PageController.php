@@ -7,6 +7,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductInformation;
 use App\Models\Reward;
 use App\Models\RewardType;
+use App\Models\StoreSet;
 use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,9 @@ class PageController extends Controller
     public function stores()
     {
         $global = globalData();
-        return view('frontend.stores', $global);
+        $store_sets = StoreSet::get();
+
+        return view('frontend.stores', array_merge($global, compact('store_sets')));
     }
 
     //Display the bulk orders page

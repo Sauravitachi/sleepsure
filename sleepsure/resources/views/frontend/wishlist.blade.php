@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.remove-wishlist-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var productId = this.closest('.wishlist-item').getAttribute('data-product-id');
-            fetch('/wishlist/remove', {
+            fetch('{{ url("wishlist/remove") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

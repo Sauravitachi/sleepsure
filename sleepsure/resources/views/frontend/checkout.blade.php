@@ -55,6 +55,18 @@
 
 @section('content')
 
+@php
+    $subtotal = 0;
+    $totalQuantity = 0;
+    foreach ($cartItems as $item) {
+        $subtotal += $item->price * $item->quantity;
+        $totalQuantity += $item->quantity;
+    }
+    $taxRate = 0.03;
+    $tax = $subtotal * $taxRate;
+    $grandTotal = $subtotal + $tax;
+@endphp
+
 <!-- Breadcrumb -->
 <section class="breadcrumb">
     <div class="container breadcrumb-container">
@@ -159,7 +171,7 @@
                     
                     <!-- Hidden fields -->
                     <input type="hidden" name="delivery_method" value="1">
-                    <input type="hidden" name="total_amount" value="{{ $subtotal + ($subtotal * 0.18) }}">
+                    <input type="hidden" name="total_amount" value="{{ $grandTotal }}">
                     
                     <!-- Add cart items as hidden fields -->
                     @foreach($cartItems as $item)
@@ -189,15 +201,9 @@
             <div class="order-summary">
                 <h2 class="summary-title">Order Summary</h2>
                 <div class="order-items">
-                    @php
-                        $subtotal = 0;
-                        $totalQuantity = 0;
-                    @endphp
                     @forelse($cartItems as $item)
                         @php
                             $itemTotal = $item->price * $item->quantity;
-                            $subtotal += $itemTotal;
-                            $totalQuantity += $item->quantity;
                             $img = isset($item->product) && isset($item->product->image_url) ? $item->product->image_url : 'assets/images/default.jpg';
                             $pname = isset($item->product) && isset($item->product->product_name) ? $item->product->product_name : 'Product';
                             $size = $item->variant->variant_cat ?? 'N/A';
@@ -228,14 +234,13 @@
                     <span>Shipping</span>
                     <span>FREE</span>
                 </div>
-                @php $tax = $subtotal * 0.03; @endphp
                 <div class="summary-row">
                     <span>Tax</span>
                     <span>₹{{ number_format($tax, 2) }}</span>
                 </div>
                 <div class="summary-row summary-total">
                     <span>Total</span>
-                    <span class="amount">₹{{ number_format($subtotal + $tax, 2) }}</span>
+                    <span class="amount">₹{{ number_format($grandTotal, 2) }}</span>
                 </div>
 
                 <div class="secure-checkout">
@@ -302,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function initiateRazorpayPayment(orderData) {
-        fetch('/payment/create-order', {
+        fetch('{{ url("payment/create-order") }}', {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -350,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function verifyPayment(response, orderId) {
-        fetch('/payment/verify', {
+        fetch('{{ url("payment/verify") }}', {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -382,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function paymentFailed(orderId, error) {
-        fetch('/payment/failed', {
+        fetch('{{ url("payment/failed") }}', {
             method: 'POST',
             credentials: 'same-origin',
             headers: {

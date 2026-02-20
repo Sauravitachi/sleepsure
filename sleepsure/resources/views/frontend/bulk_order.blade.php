@@ -10,7 +10,7 @@
             <h2 class="section-title">Request a Bulk Quote</h2>
             
             <div id="successMessage" class="alert alert-success" style="display:none; margin-bottom: 20px;">
-                Your bulk order request has been submitted successfully! Our team will contact you within 2 business hours.
+                Your bulk order request has been submitted successfully! Our team will contact you within 2 business Days.
             </div>
             
             <div id="errorMessage" class="alert alert-danger" style="display:none; margin-bottom: 20px;"></div>

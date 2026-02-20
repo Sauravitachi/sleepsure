@@ -47,7 +47,7 @@ class BulkOrderController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Your bulk order request has been submitted successfully! Our team will contact you within 2 business hours.',
+                'message' => 'Your bulk order request has been submitted successfully! Our team will contact you within 2 business Days.',
                 'enquiry_id' => $enquiry->id
             ], 201);
 

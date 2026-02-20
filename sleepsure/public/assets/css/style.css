@@ -212,6 +212,7 @@
       color: var(--sleepsure-blue);
       margin-right: var(--spacing-xs);
       font-size: 20px;
+      cursor:pointer;
   }
 
   .search-input {
