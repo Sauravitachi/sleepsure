@@ -36,14 +36,12 @@ class AuthController extends Controller
 
         if (($data['success'] ?? '') === "true") {
 
-            // ✅ STORE MOBILE ONLY
             session(['otp_phone' => $request->mobile]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent successfully',
 
-                // 🔥 TEMP DEV ONLY (remove later)
                 'otp' => $data['otp'] ?? null,
             ]);
         }

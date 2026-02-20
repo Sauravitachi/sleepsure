@@ -96,19 +96,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 'X-CSRF-TOKEN': csrfToken
             }
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-
-                // 🔥 TEMP DEV ONLY
-                if (data.otp) {
-                    alert('Your OTP is: ' + data.otp);
-                }
-
-                window.location.href = '{{ route('otp.verify') }}';
-            } else {
-                alert(data.message || 'Failed to send OTP');
+        .then(async res => {
+            const text = await res.text();
+            try {
+                return JSON.parse(text);
+            } catch (err) {
+                return { success: res.ok, message: text || 'No message returned' };
             }
+        })
+        .then(data => {
+            const message = data.message || 'No message returned';
+            const otpPart = data.otp ? `\nOTP: ${data.otp}` : '';
+            alert(message + otpPart);
+
+            if (data.success) {
+                window.location.href = '{{ route('otp.verify') }}';
+            }
+        })
+        .catch(() => {
+            alert('Failed to send OTP');
         });
     });
 });
