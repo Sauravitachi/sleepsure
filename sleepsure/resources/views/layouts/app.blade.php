@@ -107,7 +107,7 @@
             content.innerHTML = `<div>Trending Searches: ...</div>`;
             return;
         }
-        fetch(`/search/products?q=${encodeURIComponent(q)}`)
+        fetch(`{{ url('/search/products') }}?q=${encodeURIComponent(q)}`)
             .then(res => res.json())
             .then(data => {
                 if (data.success && data.results.length > 0) {
