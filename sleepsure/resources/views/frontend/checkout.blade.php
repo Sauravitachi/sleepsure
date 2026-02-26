@@ -215,6 +215,8 @@
                             <div class="order-item-details">
                                 <h3 class="order-item-name">{{ $pname }}</h3>
                                 <p class="order-item-size">Size: {{ $size }}</p>
+
+                                <p class="order-item-size">Type: {{ $item->variant->variant_name ?? 'N/A' }}</p>
                                 <p class="order-item-price">₹{{ number_format($item->price, 2) }} × {{ $item->quantity }}</p>
                             </div>
                         </div>
@@ -283,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     initiateRazorpayPayment(data);
                 } else {
                     alert('Order placed successfully! Order ID: ' + data.order_id);
-                    window.location.href = '/';
+                    window.location.href = '{{ route('orders.index') }}';
                 }
             } else {
                 alert('Error placing order: ' + (data.message || 'Unknown error'));
@@ -375,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 alert('Payment successful! Order ID: ' + orderId);
-                window.location.href = '/';
+                window.location.href = '{{ route('orders.index') }}';
             } else {
                 alert('Payment verification failed: ' + (data.message || 'Unknown'));
             }

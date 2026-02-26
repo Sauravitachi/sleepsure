@@ -16,6 +16,10 @@ use App\Models\OrderTaxColDetails;
 use App\Models\SoftSetting;
 use App\Models\Store;
 use App\Models\PaymentGateway;
+use App\Models\EmailConfiguration;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class CheckOutController extends Controller
 {
@@ -220,6 +224,36 @@ class CheckOutController extends Controller
             if ($sms_status == 1) {
                 // Implement send_sms logic or call service
                 // $this->send_sms($order_id, $customer->customer_id, "Order");
+            }
+
+            // Step 13: Send order confirmation email using env/config (no DB override)
+            try {
+                if (empty($customer->customer_email)) {
+                    Log::info('Order email skipped: customer email missing', ['order_id' => $order_id]);
+                } else {
+                    $subject = 'Your SleepSure order ' . $order_id;
+                    $body = "Hi {$request->first_name},\n\n" .
+                        'Thank you for your order with SleepSure.' . "\n" .
+                        'Order ID: ' . $order_id . "\n" .
+                        'Total Amount: ₹' . number_format((float)$request->total_amount, 2) . "\n" .
+                        'Payment Method: ' . $request->payment_method . "\n\n" .
+                        'We will notify you when your order is on the way.';
+
+                    Mail::raw($body, function ($message) use ($customer, $subject) {
+                        $message->to($customer->customer_email)
+                            ->subject($subject);
+                    });
+
+                    Log::info('Order confirmation email sent', [
+                        'order_id' => $order_id,
+                        'customer_email' => $customer->customer_email,
+                    ]);
+                }
+            } catch (\Throwable $ex) {
+                Log::warning('Order email failed', [
+                    'order_id' => $order_id,
+                    'error' => $ex->getMessage(),
+                ]);
             }
 
             // Return different responses based on payment method

@@ -94,6 +94,31 @@
         color: #666;
         text-align: center;
     }
+
+	.price-badges {
+		display: flex;
+		gap: 6px;
+		align-items: center;
+		margin-top: 4px;
+	}
+
+	.price-badge {
+		display: inline-flex;
+		align-items: center;
+		padding: 2px 8px;
+		border-radius: 6px;
+		background: #f3f4f6;
+		color: #0f172a;
+		font-size: 11px;
+		line-height: 1.2;
+		letter-spacing: 0.2px;
+	}
+
+	.price-badge.alt {
+		background: #e8f4ff;
+		color: #0b4fa7;
+		border: 1px solid #d0e6ff;
+	}
 </style>
 <div class="container-fluid">
 
@@ -225,14 +250,20 @@
 								<div class="left">
 									<div class="details">
 										<h1>{{ $product['product_name'] ?? 'N/A' }}</h1>
+										<p>Type: {{ $product['type'] ?? ($product['variant_name'] ?? 'N/A') }}</p>
 										<p>({{ $product['size'] }})</p>
 										<p>({{ $product['size_cm'] }})</p>
 										<div class="price-group">
-											                                         <span class="price">{{ $product['price'] ?? 0 }}</span>
+												                                         <span class="price">{{ $product['price'] ?? 0 }}</span>
 
 											@if($product['discount_percent'] > 0)
 											<span class="discount">{{ $product['discount_percent'] }}% off</span>
 											@endif
+										</div>
+										@php $addedCount = rand(80, 220); @endphp
+										<div class="price-badges">
+											<span class="price-badge">*</span>
+											<span class="price-badge alt">{{ $addedCount }} added to cart</span>
 										</div>
 									</div>
 									<div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>

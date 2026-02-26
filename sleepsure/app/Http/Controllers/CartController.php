@@ -34,6 +34,7 @@ class CartController extends Controller
         ]);
 
         $input = $request->all();
+        $redirectToCheckout = $request->boolean('buy_now');
 
         if (isset($input['price'])) {
             $input['price'] = preg_replace('/[^0-9.]/', '', $input['price']);
@@ -47,6 +48,7 @@ class CartController extends Controller
             'price'           => 'required|numeric|min:0',
             'custom_length'   => 'nullable|integer|min:1',
             'custom_breadth'  => 'nullable|integer|min:1',
+            'buy_now'         => 'sometimes|boolean',
         ])->validate();
 
         $cart = $this->resolveCart();
@@ -85,6 +87,10 @@ class CartController extends Controller
             'cart_item_id' => $item->id,
             'cart_id' => $cart->id,
         ]);
+
+        if ($redirectToCheckout) {
+            return redirect()->route('checkout');
+        }
 
         return back()->with('success', 'Product added to cart!');
     }

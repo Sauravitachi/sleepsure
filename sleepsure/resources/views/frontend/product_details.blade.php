@@ -106,6 +106,7 @@
                     <input type="hidden" name="price" id="formProductPrice" value="{{ $product->price_value ?? 0 }}">
                     <input type="hidden" name="custom_length" id="hiddenCustomLength" value="">
                     <input type="hidden" name="custom_breadth" id="hiddenCustomBreadth" value="">
+                    <input type="hidden" name="buy_now" id="buyNowFlag" value="0">
 
                     <button type="submit" class="add-to-cart-btn">
                         <i class="fas fa-cart-plus"></i> Add to Cart
@@ -669,14 +670,14 @@
                     @foreach ($sizeGroups as $group)
                         <button class="size-group-btn {{ $group === $initialGroup ? 'active' : '' }}" data-group="{{ $group }}">{{ ucfirst($group) }}</button>
                     @endforeach
-                    <button class="size-group-btn" id="customSizeBtn">Custom</button>
+                    <button class="size-group-btn" id="customSizeBtn" data-group="custom">Custom</button>
                 </div>
                 <!-- Custom size input fields, hidden by default -->
                 <div id="customSizeInputs"
                     style="display:none; margin-top:16px; padding:14px 10px; background:#f8f8f8; border-radius:8px; border:1px solid #e0e0e0; max-width:340px;">
                     <div style="display:flex; gap:16px; align-items:center; justify-content:space-between;">
                         <div style="flex:1;">
-                            <label for="customLength" style="font-weight:500; font-size:14px; color:#333;">Length
+                            <label for="customLength" style="font-weight:500; font-size:14px; color:#333;">Height
                                 (inches)</label>
                             <input type="number" min="1" id="customLength" name="custom_length"
                                 class="custom-size-input"
@@ -684,7 +685,7 @@
                                 placeholder="e.g. 75" />
                         </div>
                         <div style="flex:1;">
-                            <label for="customBreadth" style="font-weight:500; font-size:14px; color:#333;">Breadth
+                            <label for="customBreadth" style="font-weight:500; font-size:14px; color:#333;">Width
                                 (inches)</label>
                             <input type="number" min="1" id="customBreadth" name="custom_breadth"
                                 class="custom-size-input"
@@ -1809,6 +1810,7 @@
         const productId = '{{ $product->product_id }}';
         const addToCartBtn = document.querySelector('.add-to-cart-btn');
         const buyNowPrimaryBtn = document.getElementById('buyNowBtn');
+        const buyNowFlag = document.getElementById('buyNowFlag');
         const actionMessage = document.getElementById('actionMessage');
 
         function showActionMessage(message, type = 'info') {
@@ -1850,6 +1852,10 @@
         }
 
         function triggerCustomPriceUpdate() {
+            const sizeBtn = document.querySelector('.size-group-btn.active');
+            const isCustom = sizeBtn && (sizeBtn.dataset.group || '').toLowerCase() === 'custom';
+            if (!isCustom) return;
+
             const customLength = document.getElementById('customLength')?.value;
             const customBreadth = document.getElementById('customBreadth')?.value;
 
@@ -1925,8 +1931,19 @@
                     }
                     // Sync form fields before submission
                     syncFormFields();
+                    if (buyNowFlag) {
+                        buyNowFlag.value = '1';
+                    }
                     showActionMessage('Redirecting to checkout...', 'success');
                     addToCartForm.submit();
+                });
+            }
+
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    if (buyNowFlag) {
+                        buyNowFlag.value = '0';
+                    }
                 });
             }
 
@@ -2124,11 +2141,12 @@
             function activateSizeGroup(groupName, preferredVariantId = '') {
                 if (!groupName) return;
                 sizeGroupBtns.forEach(b => b.classList.remove('active'));
-                const btn = Array.from(sizeGroupBtns).find(b => b.dataset.group === groupName) || (groupName === 'Custom' ? customBtn : null);
+                const normalized = String(groupName).toLowerCase();
+                const btn = Array.from(sizeGroupBtns).find(b => (b.dataset.group || '').toLowerCase() === normalized) || (normalized === 'custom' ? customBtn : null);
                 if (btn) {
                     btn.classList.add('active');
                 }
-                const isCustom = btn === customBtn;
+                const isCustom = normalized === 'custom';
                 if (isCustom) {
                     customInputs.style.display = 'block';
                     if (dimensionOptions) dimensionOptions.style.display = 'none';
@@ -2138,11 +2156,14 @@
                         variantInput.value = '';
                         if (formVariantInput) formVariantInput.value = '';
                     }
+                    document.getElementById('hiddenCustomLength').value = '';
+                    document.getElementById('hiddenCustomBreadth').value = '';
                 } else {
                     customInputs.style.display = 'none';
                     if (dimensionOptions) dimensionOptions.style.display = '';
                     renderDimensionsForGroup(groupName, preferredVariantId);
                 }
+                updateActionButtonsState();
             }
 
             sizeGroupBtns.forEach(btn => {
@@ -2166,7 +2187,16 @@
 
             function triggerRealtimePriceUpdate() {
                 const ids = getSelectedVariantAndThickness();
-                // Always update price if dimension or thickness or size group changes
+                const sizeBtn = document.querySelector('.size-group-btn.active');
+                const isCustom = sizeBtn && ((sizeBtn.dataset.group || '').toLowerCase() === 'custom');
+
+                // Custom path: use height/width + thickness
+                if (isCustom) {
+                    triggerCustomPriceUpdate();
+                    return;
+                }
+
+                // Standard path: variant + thickness
                 if (ids.variantId && ids.thicknessId) {
                     updateProductPrice(ids.variantId, ids.thicknessId, '{{ $product->product_id }}');
                 }
@@ -2220,7 +2250,7 @@
 
             confirmVariantBtn.addEventListener('click', function() {
                 const sizeBtn = document.querySelector('.size-group-btn.active');
-                const isCustom = sizeBtn && sizeBtn.textContent.trim() === 'Custom';
+                const isCustom = sizeBtn && ((sizeBtn.dataset.group || '').toLowerCase() === 'custom');
                 if (isCustom) {
                     const customLength = document.getElementById('customLength').value;
                     const customBreadth = document.getElementById('customBreadth').value;
@@ -2273,7 +2303,7 @@
                 document.getElementById('formVariantId').value = variantId;
                 document.getElementById('formThicknessId').value = thicknessId;
                 // Update both display locations
-                    const displayDropdown = document.getElementById('selectedSizeDisplayDropdown');
+                const displayDropdown = document.getElementById('selectedSizeDisplayDropdown');
                 const displayTop = document.getElementById('selectedSizeDisplayTop');
                 const displayText = `${selectedSize} | ${selectedDimension} x ${selectedThickness}`;
                 if (displayDropdown) displayDropdown.textContent = displayText;
