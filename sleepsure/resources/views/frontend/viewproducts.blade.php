@@ -122,26 +122,32 @@
 </style>
 <div class="container-fluid">
 
-	<div style="display: flex;">
+	<div class="sidebar-container" style="display: flex;">
 		<!-- Filter Sidebar -->
-		<aside class="filter-sidebar">
+		<aside class="filter-sidebar" id="filterSidebar">
+			<div class="filter-header">
+				<h2>Filter Products</h2>
+				<button class="close-filter" id="closeFilter">
+					<span class="material-icons">close</span>
+				</button>
+			</div>
 			<form id="filterForm" method="GET" action="{{ route('view.products') }}">
 				<input type="hidden" name="type" value="{{ request('type') }}">
-                <div class="filter-group">
-                    <h3>Categories</h3>
-                    <div class="filter-options">
-                        @foreach($categories->take(5) as $category)
-                        <div class="filter-option">
-                            <input type="checkbox" 
-                                   name="categories[]" 
-                                   id="category-{{ $category->category_id }}" 
-                                   value="{{ $category->category_id }}"
-                                   {{ in_array($category->category_id, (array)request('categories', [])) ? 'checked' : '' }}>
-                            <label for="category-{{ $category->category_id }}">{{ $category->category_name }}</label>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
+				<div class="filter-group">
+					<h3>Categories</h3>
+					<div class="filter-options">
+						@foreach($categories->take(5) as $category)
+						<div class="filter-option">
+							<input type="checkbox"
+							   name="categories[]"
+							   id="category-{{ $category->category_id }}"
+							   value="{{ $category->category_id }}"
+							   {{ in_array($category->category_id, (array)request('categories', [])) ? 'checked' : '' }}>
+							<label for="category-{{ $category->category_id }}">{{ $category->category_name }}</label>
+						</div>
+						@endforeach
+					</div>
+				</div>
 				<div class="filter-group">
 					<h3>Price Range</h3>
 					<div class="slidecontainer">
@@ -152,10 +158,10 @@
 				<div class="filter-group">
 					<h3>Size</h3>
 					<div class="filter-options">
-                        @php
-                            if (!isset($variantCat)) { $variantCat = collect(); }
-                            $selectedSizes = request('sizes', []);
-                        @endphp
+						@php
+							if (!isset($variantCat)) { $variantCat = collect(); }
+							$selectedSizes = request('sizes', []);
+						@endphp
 						@foreach($variantCat as $size)
 							@php
 								$filterValue = lcfirst(str_replace(' ', '', ucwords(strtolower($size->variant_cat))));
@@ -163,17 +169,17 @@
 							@endphp
 							<div class="filter-option">
 								<input type="checkbox"
-									name="sizes[]"
-									id="size-{{ $loop->index }}"
-									value="{{ $filterValue }}"
-									{{ in_array($filterValue, (array)$selectedSizes) ? 'checked' : '' }}>
+								   name="sizes[]"
+								   id="size-{{ $loop->index }}"
+								   value="{{ $filterValue }}"
+								   {{ in_array($filterValue, (array)$selectedSizes) ? 'checked' : '' }}>
 								<label for="size-{{ $loop->index }}">{{ $label }}</label>
 							</div>
 						@endforeach
-                    </div>
+					</div>
 				</div>
-				
-		<div style="display: flex; gap: 10px; flex-direction:column">
+
+				<div style="display: flex; gap: 10px; flex-direction:column">
 					<button type="submit" class="apply-filters">Apply Filters</button>
 					@php
 						$clearParams = [];
@@ -182,47 +188,14 @@
 						}
 					@endphp
 					<a href="{{ route('view.products', $clearParams) }}" class="btn btn-secondary" style="background: #eee; color: #333; border: 1px solid #ccc; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">Clear Filters</a>
-                </div>
-                    <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
-                </form>
-            </aside>
-        
-			<script>
-			document.addEventListener('DOMContentLoaded', function () {
-				// Auto-submit on filter change (checkboxes, price range)
-				const filterForm = document.getElementById('filterForm');
-				if (filterForm) {
-					// For checkboxes (auto-submit on change)
-					filterForm.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
-						cb.addEventListener('change', function() {
-							filterForm.submit();
-						});
-					});
-					// For price range
-					const priceSlider = document.getElementById('myRange');
-					if (priceSlider) {
-						priceSlider.addEventListener('change', function() {
-							filterForm.submit();
-						});
-					}
-					// For sort dropdown
-					const sortSelect = document.getElementById('sort');
-					if (sortSelect) {
-						sortSelect.addEventListener('change', function() {
-							filterForm.submit();
-						});
-					}
-				}
-			});
-			</script>
-                <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
-            </form>
-        </aside>
+				</div>
+				<input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
 			</form>
 		</aside>
+		<div class="sidebar-overlay" id="sidebarOverlay"></div>
 		<!-- Products Grid -->
 		<div style="flex:1;">
-			<div class="filter-tab" style="display: flex;justify-content: flex-end;align-items: center;box-shadow: var(--shadow-light); ">
+			<div class="filter-tab" style="display: flex;justify-content: space-between;align-items: center;box-shadow: var(--shadow-light); ">
 				<div class="sort-bar">
 					<div class="sort-options">
 						<label for="sort" style="font-size: 12px;">Sort by:</label>
@@ -234,6 +207,9 @@
 							<option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
 						</select>
 					</div>
+				</div>
+				<div class="filter-toggle mobile-only" id="filterToggle">
+					<span class="material-icons">filter_list</span>
 				</div>
 			</div>
 			<div class="products-grid">
@@ -261,10 +237,7 @@
 											@endif
 										</div>
 										@php $addedCount = rand(80, 220); @endphp
-										<div class="price-badges">
-											<span class="price-badge">*</span>
-											<span class="price-badge alt">{{ $addedCount }} added to cart</span>
-										</div>
+										
 									</div>
 									<div class="buy"><i class="fa-solid fa-cart-shopping"></i></div>
 								</div>
@@ -354,6 +327,22 @@
 			priceValue.textContent = this.value;
 		});
 	}
+
+	// Auto-submit filters on change
+	const filterForm = document.getElementById('filterForm');
+	if (filterForm) {
+		filterForm.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+			cb.addEventListener('change', function() {
+				filterForm.submit();
+			});
+		});
+		if (priceSlider) {
+			priceSlider.addEventListener('change', function() {
+				filterForm.submit();
+			});
+		}
+	}
+
 	// Sort select auto-submit
 	const sortSelect = document.getElementById('sort');
 	if (sortSelect) {
@@ -362,6 +351,32 @@
 			url.searchParams.set('sort', this.value);
 			window.location.href = url.toString();
 		});
+	}
+
+	// Mobile filter toggle
+	const filterToggle = document.getElementById('filterToggle');
+	const filterSidebar = document.getElementById('filterSidebar');
+	const closeFilter = document.getElementById('closeFilter');
+	const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+	const openSidebar = () => {
+		if (filterSidebar) { filterSidebar.classList.add('active'); }
+		if (sidebarOverlay) { sidebarOverlay.classList.add('active'); }
+	};
+
+	const hideSidebar = () => {
+		if (filterSidebar) { filterSidebar.classList.remove('active'); }
+		if (sidebarOverlay) { sidebarOverlay.classList.remove('active'); }
+	};
+
+	if (filterToggle) {
+		filterToggle.addEventListener('click', openSidebar);
+	}
+	if (closeFilter) {
+		closeFilter.addEventListener('click', hideSidebar);
+	}
+	if (sidebarOverlay) {
+		sidebarOverlay.addEventListener('click', hideSidebar);
 	}
 </script>
 
