@@ -107,7 +107,7 @@
                                     <div class="checkbox-item">
                                         <input type="checkbox" class="checkbox-input" id="acceptTerms" required>
                                         <label for="acceptTerms" class="checkbox-text">
-                                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                                            I agree to the <a href="{{ route('terms.index') }}">Terms of Service</a> and <a href="{{ route('privacy-policy.index') }}">Privacy
                                                 Policy</a>
                                         </label>
                                     </div>

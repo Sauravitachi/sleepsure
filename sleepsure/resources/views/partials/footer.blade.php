@@ -15,22 +15,22 @@
         <div class="footer-column">
             <h4 class="footer-heading">Quick Links</h4>
             <ul class="footer-links">
-                <li><a href="">Shop All Mattresses</a></li>
-                <li><a href="">Pillows & Comfort</a></li>
-                <li><a href="">Bulk Orders (B2B)</a></li>
-                <li><a href="">Contact Us</a></li>
-                <li><a href="">FAQs</a></li>
+                <li><a href="{{ route('categories.index') }}">Shop All Mattresses</a></li>
+                <li><a href="{{ route('categories.index') }}">Pillows & Comfort</a></li>
+                <li><a href="{{ route('bulk-orders.index') }}">Bulk Orders (B2B)</a></li>
+                <li><a href="{{ route('contact.index') }}">Contact Us</a></li>
+                <li><a href="{{ route('faq.index') }}">FAQs</a></li>
             </ul>
         </div>
 
         <div class="footer-column">
             <h4 class="footer-heading">Company</h4>
             <ul class="footer-links">
-                <li><a href="">About SleepSure</a></li>
-                <li><a href="">Careers</a></li>
-                <li><a href="">Our Guarantees</a></li>
-                <li><a href="">Terms & Conditions</a></li>
-                <li><a href="">Privacy Policy</a></li>
+                <li><a href="{{ route('about-us.index') }}">About SleepSure</a></li>
+                <li><a href="{{ route('careers.index') }}">Careers</a></li>
+                <li><a href="{{ route('guarantees.index') }}">Our Guarantees</a></li>
+                <li><a href="{{ route('terms.index') }}">Terms & Conditions</a></li>
+                <li><a href="{{ route('privacy-policy.index') }}">Privacy Policy</a></li>
             </ul>
         </div>
 

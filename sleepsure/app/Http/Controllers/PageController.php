@@ -29,6 +29,32 @@ class PageController extends Controller
         return view('frontend.bulk_order', $global);
     }
 
+    //Display the privacy policy page
+    public function privacyPolicy()
+    {
+        return view('frontend.privacy_policy');
+    }
+
+    //display the terms and conditions page
+    public function terms()
+    {
+        return view('frontend.term_conditions');
+    }
+
+    //careers page
+    public function careers()
+    {
+        $global = globalData();
+        return view('frontend.career', $global);
+    }
+
+    //our guarantees page
+    public function guarantees()
+    {
+        $global = globalData();
+        return view('frontend.our_gurranty', $global);
+    }
+
     //Display the FAQ page
     public function faq()
     {

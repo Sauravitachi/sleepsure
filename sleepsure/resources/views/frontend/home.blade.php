@@ -303,7 +303,9 @@
                     <h2>Does your Parents keep complaining about their back?</h2>
                     <p>As a parent, you’re worried about how that impacts their physical health and quality of sleep
                         — both of which are vital to their development.</p>
-                    <button class="shop-button">Find out more →</button>
+                    <a href="{{ route('categories.index') }}">
+                        <button class="shop-button">Find out more →</button>
+                    </a>
                 </div>
             </div>
             <div class="row main-col">
@@ -353,7 +355,7 @@
                     @endforeach
                 </div>
 
-                <a href="#" class="view-stores-link">View {{ $store_sets->count() }}+ Stores</a>
+                <a href="{{ route('stores.index') }}" class="view-stores-link">View {{ $store_sets->count() }}+ Stores</a>
             </div>
 
             <!-- Right Side: Image -->
@@ -619,7 +621,7 @@
                 </div>
             </div>
 
-            <button class="shop-button">Shop Now &rarr;</button>
+            <a href="{{ route('categories.index') }}"><button class="shop-button">Shop Now &rarr;</button></a>
         </div>
 
         <div class="image-container">
