@@ -8,7 +8,9 @@ use App\Models\Variant;
 use App\Services\SearchService;    
 use App\Http\Controllers\HomeController;
 use App\Models\Thickness;
+use App\Models\WishList;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -141,6 +143,12 @@ class ProductController extends Controller
         }
         $sizeGroups = array_keys($displayGrouped);
         $dimensionsByGroup = $displayGrouped;
+
+        $isWishlisted = Auth::check()
+            ? WishList::where('user_id', Auth::id())
+                ->where('product_id', $id)
+                ->exists()
+            : false;
         
         return view('frontend.product_details', [
             'product'            => $productObj,
@@ -154,6 +162,7 @@ class ProductController extends Controller
             // Add these for compatibility with the Blade file
             'variants'           => $dimensionVariants,
             'thicknesses'        => $thicknessVariants,
+            'isWishlisted'       => $isWishlisted,
         ]);
     }
 

@@ -10,9 +10,18 @@
                 <div class="thumbnails">
                     <img src="{{ $product->image_url }}" alt="{{ $product->product_name }}" class="active"
                         data-image="{{ $product->image_url }}">
-                </div>
-                <div class="main-image-container">
-                    <img src="{{ $product->image_url }}" alt="{{ $product->product_name }}" id="mainImage">
+                    </div>
+                    <div class="main-image-container">
+                        <img src="{{ $product->image_url }}" alt="{{ $product->product_name }}" id="mainImage">
+                        <i
+                            class="fas fa-heart heart-icon"
+                            role="button"
+                            tabindex="0"
+                            data-auth="{{ auth()->check() ? '1' : '0' }}"
+                            data-wishlisted="{{ $isWishlisted ? '1' : '0' }}"
+                            aria-pressed="{{ $isWishlisted ? 'true' : 'false' }}"
+                            aria-label="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}"
+                        ></i>
                 </div>
             </div>
 
@@ -898,12 +907,45 @@
         flex: 1;
         border-radius: var(--border-radius-md);
         overflow: hidden;
+        position: relative;
     }
 
     .main-image-container img {
         width: 100%;
         height: 700px;
         object-fit: cover;
+    }
+
+    .heart-icon {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        font-size: 22px;
+        color: #cbd5e1;
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+        transition: transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .heart-icon:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+    }
+
+    .heart-icon.active {
+        color: #e11d48;
+    }
+
+    .heart-icon.is-busy {
+        opacity: 0.6;
+        pointer-events: none;
     }
 
     /* Product Details */
@@ -1812,6 +1854,65 @@
         const buyNowPrimaryBtn = document.getElementById('buyNowBtn');
         const buyNowFlag = document.getElementById('buyNowFlag');
         const actionMessage = document.getElementById('actionMessage');
+        const heartIcon = document.querySelector('.heart-icon');
+        const wishlistAddUrl = "{{ route('wishlist.add') }}";
+        const wishlistRemoveUrl = "{{ route('wishlist.remove') }}";
+        const loginUrl = "{{ route('login') }}";
+
+        if (heartIcon) {
+            let isWishlisted = heartIcon.dataset.wishlisted === '1';
+            const isAuthenticated = heartIcon.dataset.auth === '1';
+
+            function setHeartState(active) {
+                heartIcon.classList.toggle('active', active);
+                heartIcon.setAttribute('aria-pressed', active ? 'true' : 'false');
+                heartIcon.setAttribute('aria-label', active ? 'Remove from wishlist' : 'Add to wishlist');
+            }
+
+            setHeartState(isWishlisted);
+
+            function toggleWishlist() {
+                if (!isAuthenticated) {
+                    window.location.href = loginUrl;
+                    return;
+                }
+
+                heartIcon.classList.add('is-busy');
+                const url = isWishlisted ? wishlistRemoveUrl : wishlistAddUrl;
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data || data.success !== true) {
+                            throw new Error('Wishlist update failed');
+                        }
+                        isWishlisted = !isWishlisted;
+                        setHeartState(isWishlisted);
+                        showActionMessage(isWishlisted ? 'Added to wishlist.' : 'Removed from wishlist.', 'success');
+                    })
+                    .catch(() => {
+                        showActionMessage('Could not update wishlist right now.', 'error');
+                    })
+                    .finally(() => {
+                        heartIcon.classList.remove('is-busy');
+                    });
+            }
+
+            heartIcon.addEventListener('click', toggleWishlist);
+            heartIcon.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleWishlist();
+                }
+            });
+        }
 
         function showActionMessage(message, type = 'info') {
             if (!actionMessage) return;

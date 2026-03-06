@@ -12,8 +12,25 @@ class WishListController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $wishlist = WishList::where('user_id', $user->id)->get();
-        $products = ProductInformation::whereIn('product_id', $wishlist->pluck('product_id'))->get();
+        $global = globalData();
+        $wishlist = WishList::where('user_id', $user->customer_id)->get();
+        $rawProducts = ProductInformation::with(['categoryDetails'])
+            ->whereIn('product_id', $wishlist->pluck('product_id'))
+            ->get();
+        
+        // Transform products to get proper image URLs and pricing
+        $homeController = app(HomeController::class);
+        $products = $rawProducts->map(function ($product) use ($homeController, $global) {
+            $transformed = $homeController->transformProduct($product);
+            $merged = array_merge($product->toArray(), $transformed);
+            $productObj = (object) $merged;
+            
+            // Apply image and warranty like in ProductController
+            $homeController->applyImageAndWarranty($productObj, $global);
+            
+            return $productObj;
+        });
+        
         return view('frontend.wishlist', compact('products'));
     }
 
@@ -21,11 +38,12 @@ class WishListController extends Controller
     {
         $user = Auth::user();
         $productId = $request->input('product_id');
-        $exists = WishList::where('user_id', $user->id)->where('product_id', $productId)->exists();
+        $exists = WishList::where('user_id', $user->customer_id)->where('product_id', $productId)->exists();
         if (!$exists) {
             WishList::create([
-                'user_id' => $user->id,
+                'user_id' => $user->customer_id,
                 'product_id' => $productId,
+                    'status' => 1,
             ]);
         }
         return response()->json(['success' => true]);
@@ -35,7 +53,7 @@ class WishListController extends Controller
     {
         $user = Auth::user();
         $productId = $request->input('product_id');
-        WishList::where('user_id', $user->id)->where('product_id', $productId)->delete();
+        WishList::where('user_id', $user->customer_id)->where('product_id', $productId)->delete();
         return response()->json(['success' => true]);
     }
 }
