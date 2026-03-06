@@ -23,7 +23,7 @@
                     @endforeach
                 </div>
 
-                <a href="#" class="view-stores-link">View {{ $store_sets->count() }}+ Stores</a>
+                <a href="{{ route('stores.index') }}" class="view-stores-link">View {{ $store_sets->count() }}+ Stores</a>
             </div>
 
                 <!-- Right Side: Image -->

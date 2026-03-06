@@ -19,10 +19,12 @@ class BulkOrderController extends Controller
             'company' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/'], // only digits with optional leading plus
             'client_type' => 'required|string|max:50',
             'quantity' => 'required|string|max:100',
             'message' => 'nullable|string'
+        ], [
+            'phone.regex' => 'Phone number must contain only digits (optionally starting with +) and be 7-15 characters long.',
         ]);
 
         if ($validator->fails()) {

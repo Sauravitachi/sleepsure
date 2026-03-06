@@ -228,11 +228,26 @@ class HomeController extends Controller
         $categories = $global['categories'];
         $type = $request->input('type');
         $title = '';
+        $joinedVariants = false;
         $productsQuery = ProductInformation::with([
             'categoryDetails',
             'categoryDetails.parentCategoryDetails',
             'reviews'
         ])->where('status', 1);
+
+        $quizKeywords = $this->buildQuizKeywords($request);
+        if (!empty($quizKeywords)) {
+            $title = 'Mattresses Picked For You';
+            $productsQuery->where(function($q) use ($quizKeywords) {
+                foreach ($quizKeywords as $keyword) {
+                    $like = '%' . strtolower($keyword) . '%';
+                    $q->orWhereRaw('LOWER(product_information.tag) LIKE ?', [$like])
+                      ->orWhereRaw('LOWER(product_information.product_name) LIKE ?', [$like])
+                      ->orWhereRaw('LOWER(product_information.description) LIKE ?', [$like])
+                      ->orWhereRaw('LOWER(product_information.product_details) LIKE ?', [$like]);
+                }
+            });
+        }
 
         // If no type, show all products
         if ($type === 'featured') {
@@ -244,7 +259,7 @@ class HomeController extends Controller
         } elseif ($type === 'top_rated') {
             $productsQuery->where('top_rated', 1);
             $title = 'All Top Rated Products';
-        } else {
+        } elseif (empty($title)) {
             $title = 'All Products';
         }
 
@@ -336,6 +351,44 @@ class HomeController extends Controller
             });
            
         return view('frontend.viewproducts', compact('products', 'title', 'paginatedProducts', 'categories', 'variantCat'));   
+    }
+
+    private function buildQuizKeywords(Request $request): array
+    {
+        $map = [
+            'disruption' => [
+                'sweat' => ['cool', 'cooling', 'breathable', 'temperature', 'gel'],
+                'backpain' => ['orthopedic', 'back', 'spine', 'support', 'firm'],
+                'restless' => ['motion', 'responsive', 'bounce'],
+                'other' => [],
+            ],
+            'position' => [
+                'left' => ['side', 'pressure relief', 'plush'],
+                'right' => ['side', 'pressure relief', 'plush'],
+                'back' => ['back sleeper', 'support', 'medium firm'],
+                'tummy' => ['stomach', 'firm'],
+                'turning' => ['responsive', 'motion'],
+            ],
+            'ideal' => [
+                'extra-soft' => ['extra soft', 'soft'],
+                'plushy' => ['plush'],
+                'bouncy' => ['bounce', 'spring'],
+                'firm' => ['firm'],
+                'supportive' => ['support'],
+            ],
+        ];
+
+        $answers = $request->only(['disruption', 'position', 'ideal']);
+        $keywords = [];
+
+        foreach ($answers as $question => $choice) {
+            if (!$choice || !isset($map[$question][$choice])) {
+                continue;
+            }
+            $keywords = array_merge($keywords, $map[$question][$choice]);
+        }
+
+        return array_values(array_unique(array_filter($keywords)));
     }
 
     private function getSliders($global)

@@ -353,7 +353,7 @@
                     @endforeach
                 </div>
 
-                <a href="#" class="view-stores-link">View {{ $store_sets->count() }}+ Stores</a>
+                <a href="{{ route('stores.index') }}" class="view-stores-link">View {{ $store_sets->count() }}+ Stores</a>
             </div>
 
             <!-- Right Side: Image -->
@@ -405,10 +405,10 @@
                 <span id="closeMattressQuiz" class="close-button">&times;</span>
             </div>
 
-            <form class="quiz-form">
+            <form class="quiz-form" method="GET" action="{{ route('view.products') }}">
                 <fieldset class="question-group">
                     <legend>1. What disrupts your sleep, in your opinion?</legend>
-                    <label><input type="radio" name="disruption" value="sweat"> Night Sweat</label>
+                    <label><input type="radio" name="disruption" value="sweat" required> Night Sweat</label>
                     <label><input type="radio" name="disruption" value="backpain"> Backpain</label>
                     <label><input type="radio" name="disruption" value="restless"> Restless Sleep</label>
                     <label><input type="radio" name="disruption" value="other"> Something Else</label>
@@ -416,7 +416,7 @@
 
                 <fieldset class="question-group">
                     <legend>2. What is your preferred sleeping position?</legend>
-                    <label><input type="radio" name="position" value="left"> On Left Side</label>
+                    <label><input type="radio" name="position" value="left" required> On Left Side</label>
                     <label><input type="radio" name="position" value="right"> On Right Side</label>
                     <label><input type="radio" name="position" value="back"> On Back</label>
                     <label><input type="radio" name="position" value="tummy"> On Tummy</label>
@@ -425,7 +425,7 @@
 
                 <fieldset class="question-group">
                     <legend>3. What would you describe as your ideal mattress?</legend>
-                    <label><input type="radio" name="ideal" value="extra-soft"> Extra Soft Mattress</label>
+                    <label><input type="radio" name="ideal" value="extra-soft" required> Extra Soft Mattress</label>
                     <label><input type="radio" name="ideal" value="plushy"> Plushy Mattress</label>
                     <label><input type="radio" name="ideal" value="bouncy"> Bouncy Mattress</label>
                     <label><input type="radio" name="ideal" value="firm"> Firm Mattress</label>

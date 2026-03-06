@@ -35,7 +35,7 @@
 
                     <div class="form-group">
                         <label class="form-label" for="phone">Phone Number *</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                        <input type="tel" class="form-control" id="phone" name="phone" inputmode="tel" pattern="\+?[0-9]{7,15}" title="Use 7-15 digits, digits only, optional leading +" required>
                     </div>
 
                     <div class="form-group">
@@ -103,6 +103,13 @@
     </div>
     
     <script>
+    // Guard against non-numeric phone input on the client side
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', () => {
+        const cleaned = phoneInput.value.replace(/[^0-9+]/g, '').slice(0, 15);
+        phoneInput.value = cleaned;
+    });
+
     document.getElementById('bulkOrderForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
