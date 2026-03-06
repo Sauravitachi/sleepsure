@@ -55,6 +55,10 @@ Route::post('/bulk-orders', [BulkOrderController::class, 'store'])->name('bulk-o
 Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about-us.index');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq.index');
 Route::get('/offer', [PageController::class, 'offer'])->name('offer.index');
+Route::get('/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy-policy.index');
+Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('terms.index');
+Route::get('/careers', [PageController::class, 'careers'])->name('careers.index');
+Route::get('/our-guarantees', [PageController::class, 'guarantees'])->name('guarantees.index');
 
 //apply auth middleware to cart routes
 Route::prefix('cart')->middleware('check.auth')->group(function () {
