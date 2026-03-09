@@ -66,30 +66,32 @@
                 <div class="inside">
                     <div class="icon"><i class="fa-solid fa-info"></i></div>
                     <div class="contents">
-                        <table>
+                        <table class="w-full">
                             <tr>
                                 <th>Category</th>
-                                <th>Type</th>
+                                <th class="text-end">Type</th>
                             </tr>
                             <tr>
                                 <td>{{ $product['category_name'] ?? 'N/A' }}</td>
-                                <td>{{ $product['type'] ?? 'N/A' }}</td>
+                                <td class="text-end">{{ $product['type'] ?? 'N/A' }}</td>
                             </tr>
+
                             <tr>
                                 <th>Size</th>
-                                <th>Thickness</th>
+                                <th class="text-end">Thickness</th>
                             </tr>
                             <tr>
                                 <td>{{ $product['product_size'] ?? ($product['size_display'] ?? 'N/A') }}</td>
-                                <td>{{ $product['thickness'] ?? ($product['thick_display'] ?? 'N/A') }}</td>
+                                <td class="text-end">{{ $product['thickness'] ?? ($product['thick_display'] ?? 'N/A') }}</td>
                             </tr>
+
                             <tr>
                                 <th>Warranty</th>
-                                <th>Material</th>
+                                <th class="text-end">Material</th>
                             </tr>
                             <tr>
                                 <td>{{ $product['warranty_text'] ?? 'N/A' }}</td>
-                                <td>{{ $product['material'] ?? 'N/A' }}</td>
+                                <td class="text-end">{{ $product['material'] ?? 'N/A' }}</td>
                             </tr>
                         </table>
                     </div>
