@@ -291,9 +291,9 @@
   }
 
   .nav-item-mat {
-
-      padding: 0;
-  }
+    padding: 0;
+    position: static; /* CHANGE: from default to static */
+}
 
   .nav-link-mat {
       display: block;
@@ -309,30 +309,29 @@
 
   /* 🛑 DROPDOWN PANEL: DEFAULT STATE (HIDDEN) */
   .mat-dropdown-container {
-      display: none;
-      /* HIDE BY DEFAULT */
-      position: absolute;
-
-      left: -40px;
-      top: 100%;
-
-      width: auto;
-      background-color: white;
-      border: 1px solid var(--border-light);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      z-index: 999;
-      padding: 20px 0;
-      box-sizing: border-box;
-  }
+    display: none;
+    position: absolute;
+    left: 50%; /* CHANGE: from -40px to 50% */
+    transform: translateX(-50%); /* ADD: this new line */
+    top: 100%;
+    width: 90vw; /* CHANGE: from auto to 90vw */
+    max-width: 1200px; /* ADD: this new line */
+    background-color: white;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
 
 
 
 
   .nav-item-mat:hover .mat-dropdown-container {
-      display: flex;
-      justify-content: space-between;
-  }
-
+        display: grid; /* CHANGE: from flex to grid */
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* ADD: this new line */
+        gap: 10px; /* ADD: this new line */
+    }
 
   .nav-item-mat:hover .nav-link-mat {
 
@@ -343,15 +342,78 @@
 
   /* --- Column Styles --- */
   .dropdown-col {
-      flex: 1;
-      padding: 0 15px;
-      border-right: 1px solid var(--border-light);
-      min-width: auto;
-  }
+    flex: 1;
+    padding: 0 15px;
+    border-right: none; /* CHANGE: from 1px solid to none */
+    min-width: 200px; /* ADD: this new line */
+}
 
   .dropdown-col.last-col {
       border-right: none;
   }
+
+  /* Optional border between columns */
+.dropdown-col:not(:last-child) {
+    border-right: 1px solid var(--border-light);
+}
+
+/* ========== NEW CSS TO ADD ========== */
+
+/* Update nav-item-mat position */
+.nav-item-mat {
+    position: static !important;
+}
+
+/* Update dropdown container positioning */
+.mat-dropdown-container {
+    left: 50% !important;
+    transform: translateX(-50%);
+    width: 90vw !important;
+    max-width: 1200px;
+}
+
+/* Change hover display to grid */
+.nav-item-mat:hover .mat-dropdown-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+/* Update dropdown columns */
+.dropdown-col {
+    border-right: none !important;
+    min-width: 200px;
+}
+
+/* Add border between columns */
+.dropdown-col:not(:last-child) {
+    border-right: 1px solid var(--border-light) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .mat-dropdown-container {
+        width: 95vw !important;
+    }
+    
+    .nav-item-mat:hover .mat-dropdown-container {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mat-dropdown-container {
+        width: 100vw !important;
+        left: 0 !important;
+        transform: none;
+        border-radius: 0;
+    }
+    
+    .dropdown-col {
+        min-width: 150px;
+    }
+}
 
   .col-title {
       /* font-size: 16px; */
