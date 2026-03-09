@@ -47,7 +47,7 @@
     @php
         // Error should always force red background; fall back to alert/success otherwise.
         $toastMessage = session('error') ?? session('alert') ?? session('success');
-        $toastVariant = session('error') ? 'danger' : (session('success') ? 'success' : 'primary');
+        $toastVariant = session('error') ? 'danger' : (session('alert') ? 'warning' : (session('success') ? 'success' : 'primary'));
     @endphp
 
     @if($toastMessage)

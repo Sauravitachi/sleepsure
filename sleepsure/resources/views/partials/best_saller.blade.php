@@ -1,4 +1,4 @@
-<section class="featured-products" id="bestSeller">
+<section class="featured-products mt-4" id="bestSeller">
     <div class="section-header">
         <h2>Best Seller Products</h2>
         <a href="{{ route('view.products', ['type' => 'best_seller']) }}" class="view-all">View All</a>
