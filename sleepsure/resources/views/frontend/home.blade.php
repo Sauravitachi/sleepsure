@@ -390,7 +390,7 @@
                 Take our quick, personalized quiz and instantly find the perfect mattress tailored to your unique
                 sleeping style, body type, and comfort preferences.</p>
 
-            <button id="openMattressQuiz" class="cta-button">
+            <button id="openMattressQuiz" type="button" class="cta-button">
                 FIND MY MATTRESS <span class="arrow">→</span>
             </button>
         </div>
@@ -447,7 +447,7 @@
 
         <div class="size-category-grid">
 
-            <a href="#" class="size-category-card"
+            <a href="{{ route('view.products', ['sizes' => ['single']]) }}" class="size-category-card"
                 style="background-image: url('https://m.media-amazon.com/images/I/71rNXU5sXKL._UF894,1000_QL80_.jpg');">
                 <div class="card-content">
                     <h3>Single Bed</h3>
@@ -456,7 +456,7 @@
                 </div>
             </a>
 
-            <a href="#" class="size-category-card"
+            <a href="{{ route('view.products', ['sizes' => ['double']]) }}" class="size-category-card"
                 style="background-image: url('https://m.media-amazon.com/images/I/91uOk4qaYVL._UF894,1000_QL80_.jpg');">
                 <div class="card-content">
                     <h3>Double Bed</h3>
@@ -465,7 +465,7 @@
                 </div>
             </a>
 
-            <a href="#" class="size-category-card recommended-card"
+            <a href="{{ route('view.products', ['sizes' => ['queen']]) }}" class="size-category-card recommended-card"
                 style="background-image: url('https://www.nismaayadecor.in/cdn/shop/collections/nismaaya-engla-king-size-bed-rattan_1.webp?v=1715083470');">
                 <div class="card-content">
                     <span class="badge">Most Popular</span>
@@ -475,7 +475,7 @@
                 </div>
             </a>
 
-            <a href="#" class="size-category-card"
+            <a href="{{ route('view.products', ['sizes' => ['king']]) }}" class="size-category-card"
                 style="background-image: url('https://sonaarts.in/wp-content/uploads/2024/12/81bFcMiU33L._SL1500_.jpg');">
                 <div class="card-content">
                     <h3>King Bed</h3>
@@ -753,6 +753,65 @@ document.querySelectorAll('.slider-btn').forEach(btn => {
         });
     });
 });
+
+(() => {
+    const modal = document.getElementById('mattressQuizModal');
+    const openBtn = document.getElementById('openMattressQuiz');
+    const closeBtn = document.getElementById('closeMattressQuiz');
+    const quizForm = modal ? modal.querySelector('form.quiz-form') : null;
+
+    const setModalState = (isOpen) => {
+        if (!modal) return;
+        modal.classList.toggle('open', isOpen);
+        modal.classList.toggle('active', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+    };
+
+    if (openBtn) {
+        openBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            setModalState(true);
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => setModalState(false));
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                setModalState(false);
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            setModalState(false);
+        }
+    });
+
+    if (quizForm) {
+        quizForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(quizForm);
+            const params = new URLSearchParams();
+
+            for (const [key, value] of formData.entries()) {
+                if (value !== null && String(value).trim() !== '') {
+                    params.append(key, String(value));
+                }
+            }
+
+            const targetUrl = params.toString()
+                ? `${quizForm.action}?${params.toString()}`
+                : quizForm.action;
+
+            window.location.href = targetUrl;
+        });
+    }
+})();
 </script>
 
 @endpush

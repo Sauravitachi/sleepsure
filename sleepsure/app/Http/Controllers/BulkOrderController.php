@@ -18,13 +18,14 @@ class BulkOrderController extends Controller
         $validator = Validator::make($request->all(), [
             'company' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/'], // only digits with optional leading plus
+            'email' => ['required', 'email', 'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/'],
+            'phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/'],
             'client_type' => 'required|string|max:50',
             'quantity' => 'required|string|max:100',
             'message' => 'nullable|string'
         ], [
             'phone.regex' => 'Phone number must contain only digits (optionally starting with +) and be 7-15 characters long.',
+            'email.regex' => 'Please enter a valid email address.'
         ]);
 
         if ($validator->fails()) {

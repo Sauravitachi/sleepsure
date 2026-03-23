@@ -5,37 +5,40 @@
 @section('content')
 
 <div class="bulk-container">
-        <!-- Bulk Order Form -->
         <section class="bulk-form-section">
             <h2 class="section-title">Request a Bulk Quote</h2>
             
             <div id="successMessage" class="alert alert-success" style="display:none; margin-bottom: 20px;">
-                Your bulk order request has been submitted successfully! Our team will contact you within 2 business Days.
+                Your bulk order request has been submitted successfully! Our team will contact you within 2 business days.
             </div>
             
             <div id="errorMessage" class="alert alert-danger" style="display:none; margin-bottom: 20px;"></div>
             
-            <form id="bulkOrderForm" method="POST" action="{{ route('bulk-order.store') }}">
+            <form id="bulkOrderForm" method="POST" action="{{ route('bulk-order.store') }}" novalidate>
                 @csrf
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label" for="company">Company Name *</label>
                         <input type="text" class="form-control" id="company" name="company" required>
+                        <div class="invalid-feedback js-error" id="company-error" style="display:none;"></div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="contact">Contact Person *</label>
                         <input type="text" class="form-control" id="contact" name="contact" required>
+                        <div class="invalid-feedback js-error" id="contact-error" style="display:none;"></div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="email">Email Address *</label>
                         <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="invalid-feedback js-error" id="email-error" style="display:none;"></div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="phone">Phone Number *</label>
                         <input type="tel" class="form-control" id="phone" name="phone" inputmode="tel" pattern="\+?[0-9]{7,15}" title="Use 7-15 digits, digits only, optional leading +" required>
+                        <div class="invalid-feedback js-error" id="phone-error" style="display:none;"></div>
                     </div>
 
                     <div class="form-group">
@@ -49,6 +52,7 @@
                             <option value="property">Property Management</option>
                             <option value="other">Other</option>
                         </select>
+                        <div class="invalid-feedback js-error" id="client_type-error" style="display:none;"></div>
                     </div>
 
                     <div class="form-group">
@@ -62,14 +66,14 @@
                             <option value="251-500">251-500 units</option>
                             <option value="500+">500+ units</option>
                         </select>
+                        <div class="invalid-feedback js-error" id="quantity-error" style="display:none;"></div>
                     </div>
-
-
 
                     <div class="form-group form-full">
                         <label class="form-label" for="message">Additional Requirements</label>
                         <textarea class="form-control" id="message" name="message"
                             placeholder="Tell us about your specific needs, delivery timeline, custom requirements..."></textarea>
+                        <div class="invalid-feedback js-error" id="message-error" style="display:none;"></div>
                     </div>
                 </div>
 
@@ -79,10 +83,6 @@
             </form>
         </section>
 
-
-
-
-        <!-- CTA Section -->
         <section class="cta-section">
             <h2 class="cta-title">Ready to Place Your Bulk Order?</h2>
             <p>Contact our commercial sales team for personalized pricing and custom solutions</p>
@@ -103,14 +103,65 @@
     </div>
     
     <script>
-    // Guard against non-numeric phone input on the client side
     const phoneInput = document.getElementById('phone');
     phoneInput.addEventListener('input', () => {
         const cleaned = phoneInput.value.replace(/[^0-9+]/g, '').slice(0, 15);
         phoneInput.value = cleaned;
     });
 
-    document.getElementById('bulkOrderForm').addEventListener('submit', function(e) {
+    const setAlert = (element, type, content) => {
+        element.classList.remove('alert-success', 'alert-danger');
+        element.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
+        element.style.display = 'block';
+        element.innerHTML = content;
+    };
+
+    const form = document.getElementById('bulkOrderForm');
+    form.addEventListener('invalid', (e) => {
+        e.preventDefault();
+    }, true);
+
+    const clearFieldErrors = () => {
+        form.querySelectorAll('.js-error').forEach((errorEl) => {
+            errorEl.textContent = '';
+            errorEl.style.display = 'none';
+        });
+
+        form.querySelectorAll('.is-invalid').forEach((fieldEl) => {
+            fieldEl.classList.remove('is-invalid');
+        });
+    };
+
+    const setFieldError = (fieldName, message) => {
+        const fieldEl = form.querySelector(`[name="${fieldName}"]`);
+        const errorEl = document.getElementById(`${fieldName}-error`);
+
+        if (fieldEl) {
+            fieldEl.classList.add('is-invalid');
+        }
+
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+    };
+
+    form.querySelectorAll('input, select, textarea').forEach((fieldEl) => {
+        const eventName = fieldEl.tagName === 'SELECT' ? 'change' : 'input';
+        fieldEl.addEventListener(eventName, () => {
+            if (fieldEl.classList.contains('is-invalid')) {
+                fieldEl.classList.remove('is-invalid');
+            }
+
+            const errorEl = document.getElementById(`${fieldEl.name}-error`);
+            if (errorEl) {
+                errorEl.textContent = '';
+                errorEl.style.display = 'none';
+            }
+        });
+    });
+
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const form = e.target;
@@ -125,6 +176,7 @@
         // Hide previous messages
         successMsg.style.display = 'none';
         errorMsg.style.display = 'none';
+        clearFieldErrors();
         
         // Get form data
         const formData = new FormData(form);
@@ -137,12 +189,14 @@
                 'X-Requested-With': 'XMLHttpRequest',
             }
         })
-        .then(response => response.json())
+        .then(async response => {
+            const data = await response.json();
+            return { ok: response.ok, data };
+        })
         .then(data => {
-            if (data.success) {
+            if (data.ok && data.data.success) {
                 // Show success message
-                successMsg.style.display = 'block';
-                successMsg.textContent = data.message;
+                setAlert(successMsg, 'success', data.data.message);
                 
                 // Reset form
                 form.reset();
@@ -151,21 +205,23 @@
                 successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
                 // Show error message
-                errorMsg.style.display = 'block';
-                if (data.errors) {
-                    const errorList = Object.values(data.errors).flat();
-                    errorMsg.innerHTML = '<strong>Please fix the following errors:</strong><ul>' + 
-                        errorList.map(err => '<li>' + err + '</li>').join('') + '</ul>';
+                if (data.data.errors) {
+                    Object.entries(data.data.errors).forEach(([fieldName, messages]) => {
+                        if (Array.isArray(messages) && messages.length) {
+                            setFieldError(fieldName, messages[0]);
+                        }
+                    });
+
+                    setAlert(errorMsg, 'error', 'Please fix the highlighted fields and try again.');
                 } else {
-                    errorMsg.textContent = data.message || 'An error occurred. Please try again.';
+                    setAlert(errorMsg, 'error', data.data.message || 'An error occurred. Please try again.');
                 }
                 errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         })
         .catch(error => {
             // Show error message
-            errorMsg.style.display = 'block';
-            errorMsg.textContent = 'An error occurred while submitting your request. Please try again.';
+            setAlert(errorMsg, 'error', 'An error occurred while submitting your request. Please try again.');
             errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         })
         .finally(() => {

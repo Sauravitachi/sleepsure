@@ -45,6 +45,19 @@
     font-size: 18px;
 }
 
+.validation-errors {
+    margin-top: 12px;
+}
+
+.validation-errors ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
 @media (max-width: 768px) {
     .payment-methods {
         flex-direction: column;
@@ -108,43 +121,43 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="first_name">First Name</label>
-                            <input type="text" id="first_name" name="first_name" class="form-control" value="{{ old('first_name') }}">
+                            <input type="text" id="first_name" name="first_name" class="form-control" value="{{ old('first_name') }}" required minlength="2" maxlength="255" pattern="[A-Za-z\s'.-]+" autocomplete="given-name" title="Only letters, spaces, apostrophe, dot, and hyphen are allowed.">
                         </div>
                         <div class="form-group">
                             <label for="last_name">Last Name</label>
-                            <input type="text" id="last_name" name="last_name" class="form-control" value="{{ old('last_name') }}">
+                            <input type="text" id="last_name" name="last_name" class="form-control" value="{{ old('last_name') }}" required minlength="1" maxlength="255" pattern="[A-Za-z\s'.-]+" autocomplete="family-name" title="Only letters, spaces, apostrophe, dot, and hyphen are allowed.">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="customer_email">Email Address</label>
-                        <input type="email" id="customer_email" name="customer_email" class="form-control" value="{{ old('customer_email') }}">
+                        <input type="email" id="customer_email" name="customer_email" class="form-control" value="{{ old('customer_email') }}" required maxlength="255" autocomplete="email">
                     </div>
                     <div class="form-group">
                         <label for="customer_mobile">Phone Number</label>
-                        <input type="tel" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile') }}">
+                        <input type="tel" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile') }}" required inputmode="numeric" minlength="10" maxlength="15" pattern="^\+?[0-9]{10,15}$" autocomplete="tel" title="Enter a valid phone number with 10 to 15 digits, optional + prefix.">
                     </div>
                     <div class="form-group">
                         <label for="customer_address_line_1">Street Address</label>
-                        <input type="text" id="customer_address_line_1" name="customer_address_line_1" class="form-control" value="{{ old('customer_address_line_1') }}">
+                        <input type="text" id="customer_address_line_1" name="customer_address_line_1" class="form-control" value="{{ old('customer_address_line_1') }}" required minlength="5" maxlength="255" autocomplete="address-line1">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="ship_city">City</label>
-                            <input type="text" id="ship_city" name="ship_city" class="form-control" value="{{ old('ship_city') }}">
+                            <input type="text" id="ship_city" name="ship_city" class="form-control" value="{{ old('ship_city') }}" required minlength="2" maxlength="100" pattern="[A-Za-z\s'.-]+" autocomplete="address-level2" title="Only letters, spaces, apostrophe, dot, and hyphen are allowed.">
                         </div>
                         <div class="form-group">
                             <label for="ship_state">State</label>
-                            <input type="text" id="ship_state" name="ship_state" class="form-control" value="{{ old('ship_state') }}">
+                            <input type="text" id="ship_state" name="ship_state" class="form-control" value="{{ old('ship_state') }}" required minlength="2" maxlength="100" pattern="[A-Za-z\s'.-]+" autocomplete="address-level1" title="Only letters, spaces, apostrophe, dot, and hyphen are allowed.">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="ship_zip">ZIP Code</label>
-                            <input type="text" id="ship_zip" name="ship_zip" class="form-control" value="{{ old('ship_zip') }}">
+                            <input type="text" id="ship_zip" name="ship_zip" class="form-control" value="{{ old('ship_zip') }}" required minlength="4" maxlength="10" pattern="[A-Za-z0-9\s-]{4,10}" autocomplete="postal-code" title="Use 4 to 10 characters. Letters, numbers, spaces and hyphen are allowed.">
                         </div>
                         <div class="form-group">
                             <label for="country">Country</label>
-                            <input type="text" id="country" name="country" class="form-control" value="{{ old('country') }}">
+                            <input type="text" id="country" name="country" class="form-control" value="{{ old('country') }}" required minlength="2" maxlength="100" pattern="[A-Za-z\s'.-]+" autocomplete="country-name" title="Only letters, spaces, apostrophe, dot, and hyphen are allowed.">
                         </div>
                     </div>
                     
@@ -262,8 +275,46 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form.form-section');
     const placeOrderBtn = document.getElementById('placeOrderBtn');
 
+    const clearValidationErrors = () => {
+        const existing = form.querySelector('.validation-errors');
+        if (existing) existing.remove();
+        form.querySelectorAll('.form-control.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    };
+
+    const showValidationErrors = (errors) => {
+        clearValidationErrors();
+        const errorWrapper = document.createElement('div');
+        errorWrapper.className = 'alert alert-danger validation-errors';
+        const list = document.createElement('ul');
+
+        Object.entries(errors).forEach(([field, messages]) => {
+            const input = form.querySelector(`[name="${field}"]`);
+            if (input) input.classList.add('is-invalid');
+
+            (messages || []).forEach((message) => {
+                const li = document.createElement('li');
+                li.textContent = message;
+                list.appendChild(li);
+            });
+        });
+
+        errorWrapper.appendChild(list);
+        form.insertBefore(errorWrapper, form.firstChild.nextSibling);
+    };
+
+    form.querySelectorAll('.form-control').forEach((input) => {
+        input.addEventListener('input', () => input.classList.remove('is-invalid'));
+    });
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        clearValidationErrors();
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
         placeOrderBtn.disabled = true;
         placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
@@ -278,7 +329,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(r => r.json())
+        .then(async (r) => {
+            const data = await safeJson(r);
+            if (!r.ok) {
+                throw data;
+            }
+            return data;
+        })
         .then(data => {
             if (data.success) {
                 if (data.payment_method === 'razorpay' && data.needs_payment) {
@@ -293,7 +350,13 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(err => {
             console.error('Error:', err);
-            alert('An error occurred while placing the order. Please try again.');
+
+            if (err && err.errors) {
+                showValidationErrors(err.errors);
+                return;
+            }
+
+            alert(err.message || 'An error occurred while placing the order. Please try again.');
         })
         .finally(() => {
             placeOrderBtn.disabled = false;

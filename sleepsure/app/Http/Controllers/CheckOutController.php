@@ -28,18 +28,21 @@ class CheckOutController extends Controller
         try {
             // Validate required fields
             $request->validate([
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'customer_email' => 'required|email',
-                'customer_mobile' => 'required|string',
-                'customer_address_line_1' => 'required|string',
-                'ship_city' => 'required|string',
-                'ship_state' => 'required|string',
-                'country' => 'required|string',
-                'ship_zip' => 'required|string',
-                'cart' => 'required|array',
-                'total_amount' => 'required|numeric',
+                'first_name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\pL\s\'.-]+$/u'],
+                'last_name' => ['required', 'string', 'min:1', 'max:255', 'regex:/^[\pL\s\'.-]+$/u'],
+                'customer_email' => 'required|email:rfc|max:255',
+                'customer_mobile' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
+                'customer_address_line_1' => 'required|string|min:5|max:255',
+                'ship_city' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[\pL\s\'.-]+$/u'],
+                'ship_state' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[\pL\s\'.-]+$/u'],
+                'country' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[\pL\s\'.-]+$/u'],
+                'ship_zip' => ['required', 'string', 'min:4', 'max:10', 'regex:/^[A-Za-z0-9\s-]{4,10}$/'],
+                'cart' => 'required|array|min:1',
+                'total_amount' => 'required|numeric|min:0',
                 'payment_method' => 'required|string|in:COD,razorpay'
+            ], [
+                'customer_mobile.regex' => 'Phone number must be 10 to 15 digits and may start with +.',
+                'ship_zip.regex' => 'ZIP code must be 4 to 10 characters and can contain letters, numbers, spaces, and hyphen.',
             ]);
 
             // Step 1: Generate random order id
