@@ -297,35 +297,65 @@ class ProductController extends Controller
         $limit = (int) $request->input('limit', 20);
         $results = $this->searchService->searchProducts($query, $limit);
         $global = globalData();
-        $transformed = $results->map(function ($item) use ($global) {
-            if (isset($item->search_type) && $item->search_type === 'category') {
-                $image = $item->image ?? $global['fallback_slider'] ?? '';
+        // $transformed = $results->map(function ($item) use ($global) {
+        //     if (isset($item->search_type) && $item->search_type === 'category') {
+        //         $image = $item->image ?? $global['fallback_slider'] ?? '';
+        //         return [
+        //             'search_type' => 'category',
+        //             'category_id' => $item->category_id,
+        //             'category_name' => $item->title ?? $item->category_name ?? '',
+        //             'image_url' => $image,
+        //             'slug' => $item->slug ?? null,
+        //             'link' => route('products.categories', ['categoryName' => $item->category_name]),
+        //         ];
+        //     } else {
+        //         $image = $item->image_url ?? $item->image_thumb ?? null;
+        //         if (!$image || !filter_var($image, FILTER_VALIDATE_URL)) {
+        //             $image = $global['fallback_slider'] ?? '';
+        //         }
+        //         return [
+        //             'search_type' => 'product',
+        //             'product_id' => $item->product_id,
+        //             'product_name' => $item->product_name,
+        //             'image_url' => $image,
+        //             'categoryDetails' => $item->categoryDetails ? [
+        //                 'category_id' => $item->categoryDetails->category_id ?? null,
+        //                 'category_name' => $item->categoryDetails->category_name ?? null,
+        //             ] : null,
+        //             'link' => url('/product/' . $item->product_id),
+        //         ];
+        //     }
+        // });
+        
+        //show only product no category with image mapping
+        $transformed = $results
+            ->filter(function ($item) {
+                return !isset($item->search_type) || $item->search_type !== 'category';
+            })
+            ->map(function ($item) use ($global) {
+
+                $rawImage = $item->image_url ?? $item->image_thumb ?? null;
+
+                $image = $this->setImageOrPlaceholder(
+                    $rawImage,
+                    $global['base_url'],
+                    $global['fallback_slider']
+                );
+
                 return [
-                    'search_type' => 'category',
-                    'category_id' => $item->category_id,
-                    'category_name' => $item->title ?? $item->category_name ?? '',
-                    'image_url' => $image,
-                    'slug' => $item->slug ?? null,
-                    'link' => route('products.categories', ['categoryName' => $item->category_name]),
-                ];
-            } else {
-                $image = $item->image_url ?? $item->image_thumb ?? null;
-                if (!$image || !filter_var($image, FILTER_VALIDATE_URL)) {
-                    $image = $global['fallback_slider'] ?? '';
-                }
-                return [
-                    'search_type' => 'product',
-                    'product_id' => $item->product_id,
+                    'search_type'  => 'product',
+                    'product_id'   => $item->product_id,
                     'product_name' => $item->product_name,
-                    'image_url' => $image,
+                    'image_url'    => $image,
                     'categoryDetails' => $item->categoryDetails ? [
-                        'category_id' => $item->categoryDetails->category_id ?? null,
+                        'category_id'   => $item->categoryDetails->category_id ?? null,
                         'category_name' => $item->categoryDetails->category_name ?? null,
                     ] : null,
                     'link' => url('/product/' . $item->product_id),
                 ];
-            }
-        });
+            })
+            ->values(); // reset indexes
+
         return response()->json([
             'success' => true,
             'results' => $transformed,

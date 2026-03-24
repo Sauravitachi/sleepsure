@@ -70,9 +70,9 @@
     <div class="contact-section">
         <h3 class="contact-title">Still have questions?</h3>
         <p>Our sleep experts are here to help you find the perfect mattress</p>
-        <button class="contact-btn">
+        <a href="{{ route('contact.index') }}" class="contact-btn">
             <i class="fas fa-headset"></i> Contact Support
-        </button>
+        </a>
     </div>
 </div>
 

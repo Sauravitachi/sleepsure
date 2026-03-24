@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Contact;
+use App\Models\{Contact,SupportCall};
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
@@ -11,8 +11,10 @@ class ContactController extends Controller
     //Show contact page
     public function index()
     {
+        $supportCall = SupportCall::where('status', 1)->get(); // only active
         $global = globalData();
-        return view('frontend.contact', $global);
+
+        return view('frontend.contact', compact('supportCall') + $global);
     }
 
     //Handle contact form submission
