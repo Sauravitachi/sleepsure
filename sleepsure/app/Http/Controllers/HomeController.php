@@ -89,10 +89,6 @@ class HomeController extends Controller
     {
         $global = globalData();
         
-        // $categories = ProductCategory::where('parent_category_id', null)
-        //     ->with('subcategories')
-         // Use the same category structure used globally (includes null/empty parent handling,
-        // status/cat_type filters, ordering and nested subcategories/models)
         $categories = $global['categories'];
         
         $productsQuery = ProductInformation::with([
