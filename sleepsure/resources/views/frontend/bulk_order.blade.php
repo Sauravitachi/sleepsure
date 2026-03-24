@@ -212,7 +212,7 @@
                         }
                     });
 
-                    setAlert(errorMsg, 'error', 'Please fix the highlighted fields and try again.');
+                    setAlert(errorMsg, 'error', 'Please enter all required values.');
                 } else {
                     setAlert(errorMsg, 'error', data.data.message || 'An error occurred. Please try again.');
                 }

@@ -134,7 +134,7 @@
                     </div>
                     <div class="form-group">
                         <label for="customer_mobile">Phone Number</label>
-                        <input type="tel" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile') }}" required inputmode="numeric" minlength="10" maxlength="15" pattern="^\+?[0-9]{10,15}$" autocomplete="tel" title="Enter a valid phone number with 10 to 15 digits, optional + prefix.">
+                        <input type="tel" id="customer_mobile" name="customer_mobile" class="form-control" value="{{ old('customer_mobile') }}" required inputmode="numeric" minlength="10" maxlength="15" pattern="^\+?[0-9]{10,10}$" autocomplete="tel" title="Enter a valid phone number.">
                     </div>
                     <div class="form-group">
                         <label for="customer_address_line_1">Street Address</label>
