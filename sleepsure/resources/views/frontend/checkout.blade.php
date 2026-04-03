@@ -68,17 +68,7 @@
 
 @section('content')
 
-@php
-    $subtotal = 0;
-    $totalQuantity = 0;
-    foreach ($cartItems as $item) {
-        $subtotal += $item->price * $item->quantity;
-        $totalQuantity += $item->quantity;
-    }
-    $taxRate = 0.03;
-    $tax = $subtotal * $taxRate;
-    $grandTotal = $subtotal + $tax;
-@endphp
+
 
 <!-- Breadcrumb -->
 <section class="breadcrumb">
@@ -103,6 +93,29 @@
                 <!-- Checkout Order Placement Form -->
                 <form method="POST" action="{{ route('checkout.store') }}" class="form-section">
                     @csrf
+                    @if(isset($savedAddresses) && count($savedAddresses) > 0)
+                        <div class="form-group mb-4" style="border: 2px solid red; padding: 15px; border-radius: 5px;">
+                            <label for="saved_address" style="color: red; font-size: 1.2rem; margin-bottom: 10px;">Previously stored address list</label>
+                            <select id="saved_address" class="form-control" onchange="fillAddress(this)">
+                                <option value="">-- Select a Saved Address --</option>
+                                @foreach($savedAddresses as $address)
+                                    <option value="{{ json_encode([
+                                        'first_name' => $address->first_name,
+                                        'last_name' => $address->last_name,
+                                        'customer_email' => $address->customer_email,
+                                        'customer_mobile' => $address->customer_mobile,
+                                        'customer_address_line_1' => $address->customer_address_1,
+                                        'ship_city' => $address->city,
+                                        'ship_state' => $address->state,
+                                        'ship_zip' => $address->zip,
+                                        'country' => $address->country
+                                    ]) }}">
+                                        {{ $address->first_name }} {{ $address->last_name }} - {{ $address->customer_address_1 }}, {{ $address->city }}, {{ $address->state }} {{ $address->zip }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
                     <h2 class="section-title">
                         <i class="fas fa-truck"></i> Shipping Information
                     </h2>
@@ -184,7 +197,7 @@
                     
                     <!-- Hidden fields -->
                     <input type="hidden" name="delivery_method" value="1">
-                    <input type="hidden" name="total_amount" value="{{ $grandTotal }}">
+                    <input type="hidden" name="total_amount" value="{{ $total }}">
                     
                     <!-- Add cart items as hidden fields -->
                     @foreach($cartItems as $item)
@@ -196,6 +209,13 @@
                         <input type="hidden" name="cart[{{ $loop->index }}][discount]" value="{{ $item->discount ?? 0 }}">
                         <input type="hidden" name="cart[{{ $loop->index }}][variant_color]" value="">
                         <input type="hidden" name="cart[{{ $loop->index }}][store_id]" value="1">
+                        @if(isset($item->calculated_taxes))
+                            @foreach($item->calculated_taxes as $ctax)
+                                @php $tgstName = strtolower($ctax['tax_name']); @endphp
+                                <input type="hidden" name="cart[{{ $loop->parent->index }}][options][{{ $tgstName }}_id]" value="{{ $ctax['tax_id'] }}">
+                                <input type="hidden" name="cart[{{ $loop->parent->index }}][options][{{ $tgstName }}]" value="{{ $ctax['tax_amount_per_unit'] }}">
+                            @endforeach
+                        @endif
                     @endforeach
                     <div class="checkbox-group">
                         <input type="checkbox" id="saveAddress" name="saveAddress">
@@ -249,13 +269,22 @@
                     <span>Shipping</span>
                     <span>FREE</span>
                 </div>
-                <div class="summary-row">
-                    <span>Tax</span>
-                    <span>₹{{ number_format($tax, 2) }}</span>
-                </div>
+                @if(isset($taxesBreakdown) && count($taxesBreakdown) > 0)
+                    @foreach($taxesBreakdown as $taxName => $taxData)
+                    <div class="summary-row">
+                        <span>{{ $taxName }} ({{ $taxData['percentage'] }}%)</span>
+                        <span>₹{{ number_format($taxData['amount'], 2) }}</span>
+                    </div>
+                    @endforeach
+                @else
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span>₹0.00</span>
+                    </div>
+                @endif
                 <div class="summary-row summary-total">
                     <span>Total</span>
-                    <span class="amount">₹{{ number_format($grandTotal, 2) }}</span>
+                    <span class="amount">₹{{ number_format($total, 2) }}</span>
                 </div>
 
                 <div class="secure-checkout">
@@ -271,6 +300,22 @@
 @push('scripts')
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+window.fillAddress = function(select) {
+    if(!select.value) return;
+    try {
+        const data = JSON.parse(select.value);
+        Object.keys(data).forEach(key => {
+            const el = document.getElementById(key);
+            if(el && data[key]) {
+                el.value = data[key];
+                el.classList.remove('is-invalid');
+            }
+        });
+    } catch(e) {
+        console.error(e);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form.form-section');
     const placeOrderBtn = document.getElementById('placeOrderBtn');

@@ -110,15 +110,18 @@
                     <div class="filter-options">
                         @php
                             $selectedCategories = request('categories', []);
+                            if(isset($category) && is_object($category) && isset($category->category_id)) {
+                                $selectedCategories = array_merge((array)$selectedCategories, [$category->category_id]);
+                            }
                         @endphp
-                        @foreach($categories as $category)
+                        @foreach($categories as $cat)
                             <div class="filter-option">
                                 <input type="checkbox"
                                     name="categories[]"
-                                    id="category-{{ $category['category_id'] ?? $category->category_id }}"
-                                    value="{{ $category['category_id'] ?? $category->category_id }}"
-                                    {{ in_array($category['category_id'] ?? $category->category_id, (array)$selectedCategories) ? 'checked' : '' }}>
-                                <label for="category-{{ $category['category_id'] ?? $category->category_id }}">{{ $category['category_name'] ?? $category->category_name }}</label>
+                                    id="category-{{ $cat['category_id'] ?? $cat->category_id }}"
+                                    value="{{ $cat['category_id'] ?? $cat->category_id }}"
+                                    {{ in_array($cat['category_id'] ?? $cat->category_id, (array)$selectedCategories) ? 'checked' : '' }}>
+                                <label for="category-{{ $cat['category_id'] ?? $cat->category_id }}">{{ $cat['category_name'] ?? $cat->category_name }}</label>
                             </div>
                         @endforeach
                     </div>

@@ -52,46 +52,34 @@
 
         <div class="coupon-container">
             <!-- Active Coupon -->
+            @if(isset($coupons) && $coupons->isNotEmpty())
+            @php
+                $activeCoupon = $coupons->sortByDesc('discount_percentage')->first();
+            @endphp
             <div class="active-coupon">
                 <div class="coupon-label">YOUR ACTIVE COUPON</div>
-                <div class="coupon-code">SLEEP40</div>
-                <div class="coupon-discount">Get 40% OFF on all premium mattresses</div>
-                <button class="copy-btn" onclick="copyCoupon('SLEEP40')">
+                <div class="coupon-code">{{ $activeCoupon->coupon_discount_code }}</div>
+                <div class="coupon-discount">{{ $activeCoupon->coupon_msg }}</div>
+                <button class="copy-btn" onclick="copyCoupon('{{ $activeCoupon->coupon_discount_code }}')">
                     <i class="fas fa-copy"></i> Copy Code
                 </button>
             </div>
+            @endif
 
             <!-- Coupon Grid -->
             <div class="coupon-grid">
-                <!-- Coupon 1 -->
-                <div class="coupon-card popular">
-                    <h3 class="coupon-card-title">First Order Special</h3>
-                    <div class="coupon-card-code">WELCOME25</div>
-                    <p class="coupon-card-desc">25% off on your first mattress purchase</p>
-                    <button class="coupon-card-btn" onclick="copyCoupon('WELCOME25')">
-                        Copy Code
-                    </button>
-                </div>
-
-                <!-- Coupon 2 -->
-                <div class="coupon-card">
-                    <h3 class="coupon-card-title">Luxury Upgrade</h3>
-                    <div class="coupon-card-code">LUXURY30</div>
-                    <p class="coupon-card-desc">30% off on SleepSure Luxury collection</p>
-                    <button class="coupon-card-btn" onclick="copyCoupon('LUXURY30')">
-                        Copy Code
-                    </button>
-                </div>
-
-                <!-- Coupon 3 -->
-                <div class="coupon-card">
-                    <h3 class="coupon-card-title">Bundle Deal</h3>
-                    <div class="coupon-card-code">BUNDLE35</div>
-                    <p class="coupon-card-desc">35% off when you buy mattress + bedding</p>
-                    <button class="coupon-card-btn" onclick="copyCoupon('BUNDLE35')">
-                        Copy Code
-                    </button>
-                </div>
+                @if(isset($coupons) && $coupons->isNotEmpty())
+                    @foreach($coupons as $coupon)
+                    <div class="coupon-card {{ $coupon->is_popular == '1' ? 'popular' : '' }}">
+                        <h3 class="coupon-card-title">{{ $coupon->coupon_name }}</h3>
+                        <div class="coupon-card-code">{{ $coupon->coupon_discount_code }}</div>
+                        <p class="coupon-card-desc">{{ $coupon->coupon_msg }}</p>
+                        <button class="coupon-card-btn" onclick="copyCoupon('{{ $coupon->coupon_discount_code }}')">
+                            Copy Code
+                        </button>
+                    </div>
+                    @endforeach
+                @endif
             </div>
 
             <!-- Terms & Conditions -->

@@ -80,8 +80,10 @@ class PageController extends Controller
         $rewards = Reward::with('rewardTypes')->get();
         
         $rewardTypes = RewardType::with('reward')->get();
+
+        $coupons = \Illuminate\Support\Facades\DB::table('coupon')->where('status', 1)->get();
         
-        return view('frontend.offer', array_merge($global, compact('rewards', 'rewardTypes')));
+        return view('frontend.offer', array_merge($global, compact('rewards', 'rewardTypes', 'coupons')));
     }
 
     public function category($categoryName)

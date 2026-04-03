@@ -133,8 +133,28 @@ class CartController extends Controller
 
         $totals = $this->calculateTotals($cartItems);
 
+        $savedAddresses = [];
+        if (Auth::check()) {
+            $user = Auth::user();
+            $customerId = $user->customer_id ?? null;
+            if (!$customerId) {
+                $customer = \App\Models\CustomerInformation::where('customer_email', $user->email ?? ($user->customer_email ?? ''))->first();
+                if ($customer) {
+                    $customerId = $customer->customer_id;
+                }
+            }
+            if ($customerId) {
+                $savedAddresses = \App\Models\ShippingInfo::where('customer_id', $customerId)
+                    ->orderBy('shiping_info_id', 'desc')
+                    ->get()
+                    ->unique(function ($item) {
+                        return $item->first_name . $item->last_name . $item->customer_address_1 . $item->city . $item->state . $item->zip;
+                    })->values();
+            }
+        }
+
         return view('frontend.checkout', array_merge(
-            compact('cartItems'),
+            compact('cartItems', 'savedAddresses'),
             $totals
         ));
     }
@@ -189,19 +209,52 @@ class CartController extends Controller
     {
         $subtotal = 0;
         $quantity = 0;
+        $totalTaxAmount = 0;
+        $taxesBreakdown = [];
 
         foreach ($cartItems as $item) {
-            $subtotal += $item->price * $item->quantity;
+            $itemTotal = $item->price * $item->quantity;
+            $subtotal += $itemTotal;
             $quantity += $item->quantity;
-        }
 
-        $tax = $subtotal * 0.03;
+            // Fetch taxes for this product
+            $productTaxes = \Illuminate\Support\Facades\DB::table('tax_product_service')
+                              ->join('tax', 'tax_product_service.tax_id', '=', 'tax.tax_id')
+                              ->where('tax_product_service.product_id', $item->product_id)
+                              ->select('tax.tax_name', 'tax_product_service.tax_percentage', 'tax.tax_id')
+                              ->get();
+
+            $calculatedTaxes = [];
+            foreach ($productTaxes as $ptax) {
+                $taxPerUnit = ($item->price * $ptax->tax_percentage) / 100;
+                $taxTotalForItem = $taxPerUnit * $item->quantity;
+                $totalTaxAmount += $taxTotalForItem;
+
+                $calculatedTaxes[] = [
+                    'tax_name' => $ptax->tax_name,
+                    'tax_id'   => $ptax->tax_id,
+                    'tax_amount_per_unit' => $taxPerUnit,
+                    'tax_percentage' => $ptax->tax_percentage
+                ];
+
+                if (!isset($taxesBreakdown[$ptax->tax_name])) {
+                    $taxesBreakdown[$ptax->tax_name] = [
+                        'amount' => 0,
+                        'name' => $ptax->tax_name,
+                        'percentage' => $ptax->tax_percentage
+                    ];
+                }
+                $taxesBreakdown[$ptax->tax_name]['amount'] += $taxTotalForItem;
+            }
+            $item->calculated_taxes = $calculatedTaxes;
+        }
 
         return [
             'subtotal' => $subtotal,
             'totalQuantity' => $quantity,
-            'tax' => $tax,
-            'total' => $subtotal + $tax,
+            'taxesBreakdown' => $taxesBreakdown,
+            'tax' => $totalTaxAmount,
+            'total' => $subtotal + $totalTaxAmount,
         ];
     }
 

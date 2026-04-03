@@ -21,6 +21,10 @@
     box-shadow: 0 1px 4px rgba(0,0,0,0.12);
     pointer-events: none;
 }
+.nav-link-mat.active {
+    color: var(--sleepsure-green) !important;
+    border-bottom: 2px solid var(--sleepsure-green) !important;
+}
 </style>
 <header class="main-header">
     <div class="header-container">
@@ -94,7 +98,19 @@
 
             @foreach($categories->take(5) as $main)
                 <li class="nav-item nav-item-mat">
-                    <a href="{{ route('products.categories', $main->category_name) }}" class="nav-link-mat">{{ $main->category_name }}</a>
+                    @php
+                        $isActive = false;
+                        if(isset($category) && is_object($category)) {
+                            if($category->category_name === $main->category_name) {
+                                $isActive = true;
+                            } elseif($category->parentCategoryDetails && $category->parentCategoryDetails->category_name === $main->category_name) {
+                                $isActive = true;
+                            } elseif($category->parentCategoryDetails && $category->parentCategoryDetails->parentCategoryDetails && $category->parentCategoryDetails->parentCategoryDetails->category_name === $main->category_name) {
+                                $isActive = true;
+                            }
+                        }
+                    @endphp
+                    <a href="{{ route('products.categories', $main->category_name) }}" class="nav-link-mat {{ $isActive ? 'active' : '' }}">{{ $main->category_name }}</a>
                     @if($main->subcategories->count() > 0)
                         <div class="mat-dropdown-container mt-2">
                             @foreach($main->subcategories as $sub)
