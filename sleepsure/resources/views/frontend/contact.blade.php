@@ -76,64 +76,51 @@
 
             <!-- Contact Information -->
             <div class="contact-info-section">
-                <!-- Customer Support -->
-                <div class="info-card support">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <i class="fas fa-headset"></i>
+                @foreach($supportCall as $item)
+                    <div class="info-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas 
+                                    @if($item->alias == 'customer_support') fa-headset
+                                    @elseif($item->alias == 'sales_team') fa-shopping-cart
+                                    @elseif($item->alias == 'visit_our_showroom') fa-store
+                                    @else fa-info-circle
+                                    @endif
+                                "></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title">{{ $item->title }}</h3>
+                                <p>
+                                    @if($item->alias == 'customer_support')
+                                        Get help with your order or product
+                                    @elseif($item->alias == 'sales_team')
+                                        Questions about products or pricing
+                                    @elseif($item->alias == 'visit_our_showroom')
+                                        Experience our mattresses in person
+                                    @endif
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="card-title">Customer Support</h3>
-                            <p>Get help with your order or product</p>
-                        </div>
-                    </div>
-                    <ul class="contact-details">
-                        <li><i class="fas fa-phone"></i> +1 (800) 555-7325</li>
-                        <li><i class="fas fa-envelope"></i> support@sleepsure.com</li>
-                        <li><i class="fas fa-clock"></i> Available 24/7 for urgent matters</li>
-                    </ul>
-                    <div class="business-hours">
-                        <div class="hours-title">Business Hours</div>
-                        <p>Monday - Friday: 8:00 AM - 8:00 PM EST</p>
-                        <p>Saturday: 9:00 AM - 6:00 PM EST</p>
-                    </div>
-                </div>
 
-                <!-- Sales Team -->
-                <div class="info-card sales">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <div>
-                            <h3 class="card-title">Sales Team</h3>
-                            <p>Questions about products or pricing</p>
-                        </div>
-                    </div>
-                    <ul class="contact-details">
-                        <li><i class="fas fa-phone"></i> +1 (800) 555-7326</li>
-                        <li><i class="fas fa-envelope"></i> sales@sleepsure.com</li>
-                        <li><i class="fas fa-comments"></i> Live chat available</li>
-                    </ul>
-                </div>
+                        <ul class="contact-details">
+                            @if($item->phone)
+                                <li><i class="fas fa-phone"></i> {{ $item->phone }}</li>
+                            @endif
 
-                <!-- Store Location -->
-                <div class="info-card store">
-                    <div class="card-header">
-                        <div class="card-icon">
-                            <i class="fas fa-store"></i>
-                        </div>
-                        <div>
-                            <h3 class="card-title">Visit Our Showroom</h3>
-                            <p>Experience our mattresses in person</p>
-                        </div>
+                            @if($item->email)
+                                <li><i class="fas fa-envelope"></i> {{ $item->email }}</li>
+                            @endif
+
+                            @if($item->address1)
+                                <li><i class="fas fa-map-marker-alt"></i> {{ $item->address1 }}</li>
+                            @endif
+
+                            @if($item->address2)
+                                <li><i class="fas fa-city"></i> {{ $item->address2 }}</li>
+                            @endif
+                        </ul>
                     </div>
-                    <ul class="contact-details">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Sleep Street, Suite 100</li>
-                        <li><i class="fas fa-city"></i> Restful City, RC 12345</li>
-                        <li><i class="fas fa-clock"></i> Mon-Sat: 10AM-8PM, Sun: 12PM-6PM</li>
-                    </ul>
-                </div>
+                @endforeach
             </div>
         </div>
 

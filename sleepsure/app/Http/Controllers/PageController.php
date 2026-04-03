@@ -69,7 +69,7 @@ class PageController extends Controller
     public function aboutUs()
     {
         $global = globalData();
-        return view('frontend.about-us', $global);
+        return view('frontend.about', $global);
     }
 
     //Display the offers page
