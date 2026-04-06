@@ -18,8 +18,48 @@
 </head>
 <body>
     <!-- Alert Bar -->
-    <div class="top-alert-bar">
+    {{-- <div class="top-alert-bar">
         Use code SLEEP (till 1st Oct) to get up to 30% off + Additional 11% off with bank offers.
+    </div> --}}
+    <div class="top-alert-bar">
+        @php
+            use App\Models\Coupon;
+            $popularCoupon = Coupon::where('status', 1)
+                ->where('is_popular', '1')
+                ->first();
+            
+            if(!$popularCoupon) {
+                $popularCoupon = Coupon::where('status', 1)->first();
+            }
+        @endphp
+        
+        @if($popularCoupon)
+            @php
+                $discountText = '';
+                if($popularCoupon->discount_type == 1) {
+                    $discountText = '৳' . number_format($popularCoupon->discount_amount, 0);
+                } else {
+                    $discountText = $popularCoupon->discount_percentage . '%';
+                }
+                
+                $endDateText = '';
+                if($popularCoupon->end_date && $popularCoupon->end_date != 'NULL') {
+                    $endDate = \Carbon\Carbon::parse($popularCoupon->end_date);
+                    if($endDate->isFuture()) {
+                        $endDateText = ' (till ' . $endDate->format('jS M') . ')';
+                    }
+                }
+            @endphp
+            
+            Use code <strong>{{ $popularCoupon->coupon_discount_code }}</strong> 
+            to get <strong>{{ $discountText }} off</strong>
+            @if($popularCoupon->coupon_msg)
+                {{ $popularCoupon->coupon_msg }}
+            @endif
+            {{ $endDateText }}
+        @else
+            Use code SLEEP (till 1st Oct) to get up to 30% off + Additional 11% off with bank offers.
+        @endif
     </div>
 
     <!-- Header -->
