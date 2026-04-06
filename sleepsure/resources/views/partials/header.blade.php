@@ -69,7 +69,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
                             <li><a class="dropdown-item" href="{{ route('account.index') }}">My Account</a></li>
                             <li><a class="dropdown-item" href="{{ route('orders.index') }}">My Orders</a></li>
-                            <li><a class="dropdown-item" href="#">Wishlist</a></li>
+                            <li><a class="dropdown-item" href="{{ route('wishlist.index') }}">Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">

@@ -109,10 +109,16 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Add to Cart
+    // Add to Cart functionality
     document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var productId = this.closest('.wishlist-card').getAttribute('data-product-id');
+            var originalText = this.innerHTML;
+            
+            // Disable button and show loading
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            
             fetch('{{ route("cart.add") }}', {
                 method: 'POST',
                 headers: {
@@ -122,22 +128,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({ product_id: productId })
             })
-            .then(res => res.json())
-            .then(data => {
+            .then(function(res) { 
+                return res.json();
+            })
+            .then(function(data) {
                 if (data.success) {
-                    alert('Added to cart!');
+                    this.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    setTimeout(function() {
+                        if (this && this.innerHTML) {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                        }
+                    }.bind(this), 2000);
                     if (window.updateCartCount) window.updateCartCount();
                 } else {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
                     alert(data.message || 'Could not add to cart.');
                 }
-            });
+            }.bind(this))
+            .catch(function(error) {
+                console.error('Error:', error);
+                this.innerHTML = originalText;
+                this.disabled = false;
+                alert('An error occurred. Please try again.');
+            }.bind(this));
         });
     });
-    // Remove from Wishlist
+    
+    // Remove from Wishlist functionality
     document.querySelectorAll('.remove-wishlist-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            var productId = this.closest('.wishlist-card').getAttribute('data-product-id');
-            fetch('{{ url("wishlist/remove") }}', {
+            var card = this.closest('.wishlist-card');
+            var productId = card.getAttribute('data-product-id');
+            var originalIcon = this.innerHTML;
+            
+            // Disable button and show loading
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            fetch('{{ route("wishlist.remove") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -146,16 +176,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({ product_id: productId })
             })
-            .then(res => res.json())
-            .then(data => {
+            .then(function(res) {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
+            .then(function(data) {
                 if (data.success) {
-                    this.closest('.wishlist-card').remove();
-                    if (!document.querySelector('.wishlist-card')) {
-                        document.querySelector('.wishlist-grid').innerHTML = `<div class='empty-wishlist'><i class='fas fa-heart-broken'></i><h3>Your wishlist is empty</h3><p>Browse products and add them to your wishlist!</p></div>`;
+                    // Remove the card from DOM
+                    card.remove();
+                    
+                    // Check if wishlist is empty
+                    var remainingCards = document.querySelectorAll('.wishlist-card');
+                    if (remainingCards.length === 0) {
+                        document.querySelector('.wishlist-grid').innerHTML = '<div class="empty-wishlist"><i class="fas fa-heart-broken"></i><h3>Your wishlist is empty</h3><p>Browse products and add them to your wishlist!</p></div>';
                     }
                 } else {
+                    this.innerHTML = originalIcon;
+                    this.disabled = false;
                     alert(data.message || 'Could not remove from wishlist.');
                 }
+            }.bind(this))
+            .catch(function(error) {
+                console.error('Error:', error);
+                this.innerHTML = originalIcon;
+                this.disabled = false;
+                alert('An error occurred. Please try again.');
             }.bind(this));
         });
     });
