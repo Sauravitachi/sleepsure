@@ -94,8 +94,8 @@
                 <form method="POST" action="{{ route('checkout.store') }}" class="form-section">
                     @csrf
                     @if(isset($savedAddresses) && count($savedAddresses) > 0)
-                        <div class="form-group mb-4" style="border: 2px solid red; padding: 15px; border-radius: 5px;">
-                            <label for="saved_address" style="color: red; font-size: 1.2rem; margin-bottom: 10px;">Previously stored address list</label>
+                        <div class="form-group mb-4" style="border: none; padding: 15px; border-radius: 5px;">
+                            <label for="saved_address" style="color: rgb(11, 11, 11); font-size: 1.2rem; margin-bottom: 10px;">Previously stored address list</label>
                             <select id="saved_address" class="form-control" onchange="fillAddress(this)">
                                 <option value="">-- Select a Saved Address --</option>
                                 @foreach($savedAddresses as $address)
