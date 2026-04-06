@@ -30,8 +30,8 @@ class CheckOutController extends Controller
             $request->validate([
                 'first_name' => ['required', 'string', 'min:2', 'max:255', 'regex:/^[\pL\s\'.-]+$/u'],
                 'last_name' => ['required', 'string', 'min:1', 'max:255', 'regex:/^[\pL\s\'.-]+$/u'],
-                'customer_email' => 'required|email:rfc|max:255',
-                'customer_mobile' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
+                'customer_email' => 'required|email:rfc,dns',
+                'customer_mobile' => ['required', 'regex:/^[0-9]{10}$/'],
                 'customer_address_line_1' => 'required|string|min:5|max:255',
                 'ship_city' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[\pL\s\'.-]+$/u'],
                 'ship_state' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[\pL\s\'.-]+$/u'],
@@ -41,8 +41,14 @@ class CheckOutController extends Controller
                 'total_amount' => 'required|numeric|min:0',
                 'payment_method' => 'required|string|in:COD,razorpay'
             ], [
-                'customer_mobile.regex' => 'Phone number must be 10 to 15 digits and may start with +.',
-                'ship_zip.regex' => 'ZIP code must be 4 to 10 characters and can contain letters, numbers, spaces, and hyphen.',
+                'customer_email.email' => 'Please enter a valid email address (e.g., name@example.com)',
+                'customer_mobile.regex' => 'Phone number must be exactly 10 digits',
+                'customer_mobile.required' => 'Phone number is required',
+                'first_name.regex' => 'First name should only contain letters, spaces, apostrophes, dots, and hyphens',
+                'last_name.regex' => 'Last name should only contain letters, spaces, apostrophes, dots, and hyphens',
+                'ship_city.regex' => 'City should only contain letters, spaces, apostrophes, dots, and hyphens',
+                'ship_state.regex' => 'State should only contain letters, spaces, apostrophes, dots, and hyphens',
+                'country.regex' => 'Country should only contain letters, spaces, apostrophes, dots, and hyphens',
             ]);
 
             // Step 1: Generate random order id

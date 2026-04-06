@@ -143,7 +143,14 @@
                     </div>
                     <div class="form-group">
                         <label for="customer_email">Email Address</label>
-                        <input type="email" id="customer_email" name="customer_email" class="form-control" value="{{ old('customer_email') }}" required maxlength="255" autocomplete="email">
+                        {{-- <input type="email" id="customer_email" name="customer_email" class="form-control" value="{{ old('customer_email') }}" required maxlength="255" autocomplete="email"> --}}
+                        <input type="email"  id="customer_email"  name="customer_email"  class="form-control"
+                            value="{{ old('customer_email') }}"
+                            required
+                            maxlength="255"
+                            autocomplete="email"
+                            pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                            title="Enter a valid email (e.g. user@gmail.com)">
                     </div>
                     <div class="form-group">
                         <label for="customer_mobile">Phone Number</label>
