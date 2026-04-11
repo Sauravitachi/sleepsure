@@ -188,12 +188,12 @@ class CartController extends Controller
     private function hydrateProducts($cartItems)
     {
         $global = [
-            'base_url' => 'https://sleepauth.kodesoft.store',
+            'base_url' => 'https://sleepauth.kodesoft.cloud',
             'fallback_slider' => asset('assets/images/default.jpg'),
         ];
 
         if (!isset($global['base_url'])) {
-            $global['base_url'] = 'https://sleepauth.kodesoft.store';
+            $global['base_url'] = 'https://sleepauth.kodesoft.cloud';
         }
         if (!isset($global['fallback_slider'])) {
             $global['fallback_slider'] = asset('assets/images/default.jpg');
@@ -271,7 +271,7 @@ class CartController extends Controller
             : (isset($product->image_large_details) ? $product->image_large_details : null);
 
           
-         $baseUrl = isset($global['base_url']) ? $global['base_url'] : 'https://sleepauth.kodesoft.store';
+         $baseUrl = isset($global['base_url']) ? $global['base_url'] : 'https://sleepauth.kodesoft.cloud';
          $fallbackSlider = isset($global['fallback_slider']) ? $global['fallback_slider'] : asset('assets/images/default.jpg');
 
          $product->image_url = $this->setImageOrPlaceholder(

@@ -246,8 +246,8 @@
             <div class="products-grid">
                 @forelse($products as $product)
              
-                <div class="wrapper">
-                <div class="container">
+                <div class="wrapper" style="margin: 0; padding: 0;">
+                <div class="container" style="margin: 0; padding: 0; width: 100%;">
                     <a href="{{ route('product.details', ['id' => $product['product_id']]) }}">
                         <div class="top"
                             style="background-image:url('{{ $product['image_url'] ?? asset('assets/images/noimage.png') }}')">

@@ -23,7 +23,7 @@ class AuthController extends Controller
         $client = new \GuzzleHttp\Client();
 
         $response = $client->post(
-            'https://sleepauth.kodesoft.store/app/sendmessage',
+            'https://sleepauth.kodesoft.cloud/app/sendmessage',
             [
                 'form_params' => [
                     'mobile' => $request->mobile,
@@ -71,7 +71,7 @@ class AuthController extends Controller
         $client = new \GuzzleHttp\Client();
 
         $response = $client->post(
-            'https://sleepauth.kodesoft.store/app/verifyotp',
+            'https://sleepauth.kodesoft.cloud/app/verifyotp',
             [
                 'form_params' => [
                     'mobile' => $mobile,
@@ -165,7 +165,7 @@ class AuthController extends Controller
         $client = new \GuzzleHttp\Client();
 
         $response = $client->post(
-            'https://sleepauth.kodesoft.store/app/sendmessage',
+            'https://sleepauth.kodesoft.cloud/app/sendmessage',
             [
                 'form_params' => [
                     'mobile' => $request->phone,

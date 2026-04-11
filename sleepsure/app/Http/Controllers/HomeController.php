@@ -48,8 +48,8 @@ class HomeController extends Controller
 
     private function getAwardsWithImage()
     {
-        $baseUrl = 'https://sleepauth.kodesoft.store/';
-        $placeholder = 'https://sleepauth.kodesoft.store/my-assets/image/product.png';
+        $baseUrl = 'https://sleepauth.kodesoft.cloud/';
+        $placeholder = 'https://sleepauth.kodesoft.cloud/my-assets/image/product.png';
         return Award::all()->map(function ($award) use ($baseUrl, $placeholder) {
             $award->img = !empty($award->img)
                 ? rtrim($baseUrl, '/') . '/' . ltrim($award->img, '/')
@@ -60,8 +60,8 @@ class HomeController extends Controller
 
     private function getRewardTypesWithImage()
     {
-        $baseUrl = 'https://sleepauth.kodesoft.store/';
-        $placeholder = 'https://sleepauth.kodesoft.store/my-assets/image/product.png';
+        $baseUrl = 'https://sleepauth.kodesoft.cloud/';
+        $placeholder = 'https://sleepauth.kodesoft.cloud/my-assets/image/product.png';
         return RewardType::with('reward')->get()->map(function ($rewardType) use ($baseUrl, $placeholder) {
             $rewardType->logo = !empty($rewardType->logo)
                 ? rtrim($baseUrl, '/') . '/' . ltrim($rewardType->logo, '/')
@@ -72,8 +72,8 @@ class HomeController extends Controller
 
     private function getCategoriesWithImage()
     {
-        $baseUrl = 'https://sleepauth.kodesoft.store/';
-        $placeholder = 'https://sleepauth.kodesoft.store/my-assets/image/product.png';
+        $baseUrl = 'https://sleepauth.kodesoft.cloud/';
+        $placeholder = 'https://sleepauth.kodesoft.cloud/my-assets/image/product.png';
         $global = globalData();
         return collect($global['categories'])->map(function ($cat) use ($baseUrl, $placeholder) {
             $cat->image = !empty($cat->image)
@@ -424,7 +424,7 @@ class HomeController extends Controller
     public function applyImageAndWarranty($product, $global)
     {
         $image = $product->image_thumb ?: $product->image_large_details;
-        $base_url = $global['base_url'] ?? 'https://sleepauth.kodesoft.store/';
+        $base_url = $global['base_url'] ?? 'https://sleepauth.kodesoft.cloud/';
         $fallback_slider = $global['fallback_slider'] ?? 'https://sleepsure-new.netlify.app/assets/images/banner2.png';
         $product->image_url = $this->setImageOrPlaceholder(
             $image,

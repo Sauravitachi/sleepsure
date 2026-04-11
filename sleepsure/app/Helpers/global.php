@@ -5,7 +5,7 @@ use App\Models\{WebSetting,PayWith,ProductCategory};
 function globalData()
 {
     // $base_url = "http://127.0.0.1:8000/";
-    $base_url = "https://sleepauth.kodesoft.store/";
+    $base_url = "https://sleepauth.kodesoft.cloud/";
 
     $fallback_logo = "https://sleepsure-new.netlify.app/assets/images/logo.png";
     $fallback_slider = "https://sleepsure-new.netlify.app/assets/images/banner2.png";
