@@ -345,6 +345,115 @@ class ProductController extends Controller
             : response()->json(['success' => false, 'message' => 'Delivery not available']);
     }
 
+    // public function getVariantPrice(Request $request)
+    // {       
+    //     $productId      = $request->product_id;
+    //     $variantId      = $request->variant_id;
+    //     $thicknessId    = $request->thickness_id;
+    //     $customLength   = (float) $request->custom_length;
+    //     $customBreadth  = (float) $request->custom_breadth;
+    //     \Log::info('Parsed input', compact('productId', 'variantId', 'thicknessId', 'customLength', 'customBreadth'));
+
+    //     $home = app(HomeController::class);
+
+    //     $baseVariant = $home->getVariantDetails($productId);
+
+    //     $sizeVariant = Variant::where('variant_id', $variantId)->first();
+
+    //     if (!$sizeVariant) {
+    //         return response()->json([
+    //             'success' => true,
+    //             'price'   => $home->formatRupee(0),
+    //             'price_value' => 0
+    //         ]);
+    //     }
+
+    //     if ($customLength > 0 && $customBreadth > 0) {
+    //         $sqft = round(($customLength * $customBreadth) / 144, 2);
+    //         $isCustom = true;
+    //     } else {
+    //         $dimensions = $home->extractDimensions($sizeVariant->variant_name);
+    //         $sqft = $home->calculateSqft(
+    //             $dimensions['dim1'] ?? 0,
+    //             $dimensions['dim2'] ?? 0
+    //         );
+    //         $isCustom = false;
+    //     }
+
+
+    //     if (!$isCustom && $variantId && $thicknessId) {
+    //         $fixedPrice = \DB::table('product_variants')
+    //             ->where('product_id', $productId)
+    //             ->where('var_size_id', $variantId)
+    //             ->where('var_thickness_id', $thicknessId)
+    //             ->value('price');            
+    //         if (!is_null($fixedPrice)) {
+    //             $fixedPriceValue = (float) $fixedPrice;
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'sqft'    => $sqft,
+    //                 'price'   => $home->formatRupee($fixedPriceValue),
+    //                 'price_value' => $fixedPriceValue,
+    //                 'type'    => 'fixed'
+    //             ]);
+    //         }
+    //     }
+
+    //     if (!$isCustom && $variantId && !$thicknessId) {
+    //         $minPrice = \DB::table('product_variants')
+    //             ->where('product_id', $productId)
+    //             ->where('var_size_id', $variantId)
+    //             ->min('price');
+            
+    //         if (!is_null($minPrice)) {
+    //             $minPriceValue = (float) $minPrice;
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'sqft'    => $sqft,
+    //                 'price'   => $home->formatRupee($minPriceValue),
+    //                 'price_value' => $minPriceValue,
+    //                 'type'    => 'dimension-only'
+    //             ]);
+    //         }
+    //     }
+
+    //     $default_rate = $baseVariant->default_rate ?? 0;
+    //     $oddsize_rate = $baseVariant->oddsize_rate ?? 0;
+    //     $sizeGroup = $sizeVariant->variant_cat ?? null;
+    //     if ($thicknessId) {
+    //         $rateRow = \DB::table('product_oddsizerate')
+    //             ->where('product_id', $productId)
+    //             ->where('var_thickness_id', $thicknessId)
+    //             ->first();
+    //         if ($rateRow) {
+    //             $default_rate = $rateRow->default_rate ?? $default_rate;
+    //             $oddsize_rate = $rateRow->oddsize_rate ?? $oddsize_rate;
+    //         }
+            
+    //     } else {
+    //         \Log::info('Rates for fallback', compact('default_rate', 'oddsize_rate'));
+    //     }
+
+    //     $priceValue = $home->calculatePrice(
+    //         $sqft,
+    //         $default_rate,
+    //         $oddsize_rate,
+    //         $baseVariant
+    //     );
+
+       
+    //     return response()->json([
+    //         'success' => true,
+    //         'sqft'    => $sqft,
+    //         'rate'    => $isCustom
+    //             ? ($oddsize_rate ?: $default_rate)
+    //             : $default_rate,
+    //         'price'   => $home->formatRupee($priceValue),
+    //         'price_value' => $priceValue,
+    //         'type'    => $isCustom ? 'custom-rate' : 'default-rate'
+    //     ]);
+    // }
+    //fix custom price calculation and fixed price priority
     public function getVariantPrice(Request $request)
     {       
         $productId      = $request->product_id;
@@ -352,74 +461,75 @@ class ProductController extends Controller
         $thicknessId    = $request->thickness_id;
         $customLength   = (float) $request->custom_length;
         $customBreadth  = (float) $request->custom_breadth;
+ 
         \Log::info('Parsed input', compact('productId', 'variantId', 'thicknessId', 'customLength', 'customBreadth'));
 
         $home = app(HomeController::class);
-
         $baseVariant = $home->getVariantDetails($productId);
 
-        $sizeVariant = Variant::where('variant_id', $variantId)->first();
-
-        if (!$sizeVariant) {
-            return response()->json([
-                'success' => true,
-                'price'   => $home->formatRupee(0),
-                'price_value' => 0
-            ]);
-        }
-
-        if ($customLength > 0 && $customBreadth > 0) {
+        // Check if this is a custom size request
+        $isCustom = ($customLength > 0 && $customBreadth > 0);
+        
+        // Calculate square footage
+        if ($isCustom) {
+            // Custom size: calculate sqft from entered dimensions
             $sqft = round(($customLength * $customBreadth) / 144, 2);
-            $isCustom = true;
+            \Log::info('Custom size calculation', ['length' => $customLength, 'breadth' => $customBreadth, 'sqft' => $sqft]);
         } else {
+            // Standard size: need variant to calculate dimensions
+            if (empty($variantId)) {
+                return response()->json([
+                    'success' => true,
+                    'price' => $home->formatRupee(0),
+                    'price_value' => 0,
+                    'error' => 'No variant selected'
+                ]);
+            }
+            
+            $sizeVariant = Variant::where('variant_id', $variantId)->first();
+            
+            if (!$sizeVariant) {
+                return response()->json([
+                    'success' => true,
+                    'price' => $home->formatRupee(0),
+                    'price_value' => 0,
+                    'error' => 'Variant not found'
+                ]);
+            }
+            
             $dimensions = $home->extractDimensions($sizeVariant->variant_name);
             $sqft = $home->calculateSqft(
                 $dimensions['dim1'] ?? 0,
                 $dimensions['dim2'] ?? 0
             );
-            $isCustom = false;
+            \Log::info('Standard size calculation', ['variant_name' => $sizeVariant->variant_name, 'sqft' => $sqft]);
         }
 
-
+        // Check for fixed price in product_variants table (only for standard sizes)
         if (!$isCustom && $variantId && $thicknessId) {
             $fixedPrice = \DB::table('product_variants')
                 ->where('product_id', $productId)
                 ->where('var_size_id', $variantId)
                 ->where('var_thickness_id', $thicknessId)
                 ->value('price');            
-            if (!is_null($fixedPrice)) {
+            if (!is_null($fixedPrice) && $fixedPrice > 0) {
                 $fixedPriceValue = (float) $fixedPrice;
+                \Log::info('Fixed price found', ['price' => $fixedPriceValue]);
                 return response()->json([
                     'success' => true,
-                    'sqft'    => $sqft,
-                    'price'   => $home->formatRupee($fixedPriceValue),
+                    'sqft' => $sqft,
+                    'price' => $home->formatRupee($fixedPriceValue),
                     'price_value' => $fixedPriceValue,
-                    'type'    => 'fixed'
+                    'type' => 'fixed'
                 ]);
             }
         }
 
-        if (!$isCustom && $variantId && !$thicknessId) {
-            $minPrice = \DB::table('product_variants')
-                ->where('product_id', $productId)
-                ->where('var_size_id', $variantId)
-                ->min('price');
-            
-            if (!is_null($minPrice)) {
-                $minPriceValue = (float) $minPrice;
-                return response()->json([
-                    'success' => true,
-                    'sqft'    => $sqft,
-                    'price'   => $home->formatRupee($minPriceValue),
-                    'price_value' => $minPriceValue,
-                    'type'    => 'dimension-only'
-                ]);
-            }
-        }
-
+        // Get rates for calculation
         $default_rate = $baseVariant->default_rate ?? 0;
         $oddsize_rate = $baseVariant->oddsize_rate ?? 0;
-        $sizeGroup = $sizeVariant->variant_cat ?? null;
+        
+        // Override rates if specific thickness rates exist
         if ($thicknessId) {
             $rateRow = \DB::table('product_oddsizerate')
                 ->where('product_id', $productId)
@@ -428,29 +538,61 @@ class ProductController extends Controller
             if ($rateRow) {
                 $default_rate = $rateRow->default_rate ?? $default_rate;
                 $oddsize_rate = $rateRow->oddsize_rate ?? $oddsize_rate;
+                \Log::info('Thickness specific rates', [
+                    'thickness_id' => $thicknessId,
+                    'default_rate' => $default_rate,
+                    'oddsize_rate' => $oddsize_rate
+                ]);
             }
-            
-        } else {
-            \Log::info('Rates for fallback', compact('default_rate', 'oddsize_rate'));
         }
-
-        $priceValue = $home->calculatePrice(
-            $sqft,
-            $default_rate,
-            $oddsize_rate,
-            $baseVariant
-        );
-
-       
+        
+        // Calculate price based on size type
+        if ($isCustom) {
+            // For custom size, use oddsize_rate (custom/odd size pricing)
+            $rateToUse = $oddsize_rate > 0 ? $oddsize_rate : $default_rate;
+            $priceValue = $sqft * $rateToUse;
+            \Log::info('Custom price calculation', [
+                'sqft' => $sqft,
+                'rate_used' => $rateToUse,
+                'oddsize_rate' => $oddsize_rate,
+                'default_rate' => $default_rate,
+                'price' => $priceValue
+            ]);
+        } else {
+            // For standard size, use the calculatePrice method
+            $priceValue = $home->calculatePrice(
+                $sqft,
+                $default_rate,
+                $oddsize_rate,
+                $baseVariant
+            );
+            \Log::info('Standard price calculation', [
+                'sqft' => $sqft,
+                'default_rate' => $default_rate,
+                'price' => $priceValue
+            ]);
+        }
+        
+        // If price is still 0, try to get any price from product_variants as fallback
+        if ($priceValue <= 0 && $thicknessId) {
+            $anyPrice = \DB::table('product_variants')
+                ->where('product_id', $productId)
+                ->where('var_thickness_id', $thicknessId)
+                ->value('price');
+            
+            if ($anyPrice && $anyPrice > 0) {
+                $priceValue = (float) $anyPrice;
+                \Log::info('Fallback price used', ['price' => $priceValue]);
+            }
+        }
+    
         return response()->json([
             'success' => true,
-            'sqft'    => $sqft,
-            'rate'    => $isCustom
-                ? ($oddsize_rate ?: $default_rate)
-                : $default_rate,
-            'price'   => $home->formatRupee($priceValue),
+            'sqft' => $sqft,
+            'rate' => $isCustom ? ($oddsize_rate ?: $default_rate) : $default_rate,
+            'price' => $home->formatRupee($priceValue),
             'price_value' => $priceValue,
-            'type'    => $isCustom ? 'custom-rate' : 'default-rate'
+            'type' => $isCustom ? 'custom-rate' : 'default-rate'
         ]);
     }
 
