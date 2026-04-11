@@ -21,6 +21,147 @@ class ProductController extends Controller
         $this->searchService = $searchService;
     }
 
+    // public function productDetails($id)
+    // {
+    //     $global = globalData();
+
+    //     $product = ProductInformation::with([
+    //         'productVariants.sizeVariant',
+    //         'reviews.reviewer',
+    //         'categoryDetails',
+    //         'categoryDetails.parentCategoryDetails'
+    //     ])->where('product_id', $id)->firstOrFail();
+    //     $homeController = app(HomeController::class);
+    //     $transformed = $homeController->transformProduct($product);
+    //     $merged = array_merge($product->toArray(), $transformed);
+    //     $productObj = (object) $merged;
+
+    //     $productObj->default_variant_id = $productObj->variant_id
+    //         ?? ($product->default_variant ?? null);
+    //     $productObj->default_thickness_id = $productObj->thickness_id
+    //         ?? ($product->default_thickness_id ?? null);
+
+    //     $this->applyImageAndWarranty($productObj, $global);
+
+    //     $dimensionVariants = Variant::query()
+    //         ->where('variant_type', 'size')
+    //         ->where('status', 1)
+    //         ->orderBy('variant_name', 'asc')
+    //         ->get(['variant_id', 'variant_name']);
+
+    //     $thicknessIds = [];
+    //     if ($product && $product->thicknesses) {
+    //         $thicknessIds = explode(',', $product->thicknesses);
+    //     }
+    //     $thicknessVariants = Thickness::whereIn('id', $thicknessIds)
+    //         ->orderBy('thick', 'asc')
+    //         ->get(['id', 'thick', 'map']);
+            
+    //     $variantCat = Variant::query()
+    //         ->where('status', 1)
+    //         ->whereNotNull('variant_cat')
+    //         ->where('variant_cat', '!=', '')
+    //         ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
+    //         ->groupBy(DB::raw('LOWER(variant_cat)'))
+    //         ->orderBy('variant_cat', 'asc')
+    //         ->get()
+    //         ->map(function($item) {
+    //             $item->variant_cat = lcfirst(str_replace(' ', '', ucwords(strtolower($item->variant_cat))));
+    //             return $item;
+    //         });
+    
+
+    //     $productVariants = $product->productVariants()->get();
+    //     $variantIds = $productVariants->pluck('var_size_id')->unique()->toArray();
+    //     $thicknessIds = $productVariants->pluck('var_thickness_id')->unique()->toArray();
+
+    //     $grouped = [];
+    //     if ($productVariants->count() > 0) {
+    //         $variants = Variant::whereIn('variant_id', $variantIds)->get();
+    //         $thicknesses = Thickness::whereIn('id', $thicknessIds)->get();
+    //         foreach ($productVariants as $pv) {
+    //             $variant = $variants->firstWhere('variant_id', $pv->var_size_id);
+    //             $thickness = $thicknesses->firstWhere('id', $pv->var_thickness_id);
+    //             if (!$variant || !$thickness) {
+    //                 continue;
+    //             }
+    //             $cat = $variant->variant_cat ? strtolower(str_replace(' ', '', $variant->variant_cat)) : 'other';
+    //             if (!isset($grouped[$cat])) {
+    //                 $grouped[$cat] = [];
+    //             }
+    //             $dimName = $variant->variant_name;
+    //             if (!isset($grouped[$cat][$dimName])) {
+    //                 $grouped[$cat][$dimName] = [];
+    //             }
+    //             $grouped[$cat][$dimName][$thickness->id] = [
+    //                 'id' => $thickness->id,
+    //                 'thick' => $thickness->thick,
+    //                 'map' => $thickness->map,
+    //                 'variant_id' => $variant->variant_id
+    //             ];
+    //         }
+    //     } else {
+    //         $fallbackVariantIds = [];
+    //         $fallbackThicknessIds = [];
+    //         if (!empty($product->variants)) {
+    //             $fallbackVariantIds = explode(',', $product->variants);
+    //         } elseif (!empty($product->default_variant)) {
+    //             $fallbackVariantIds = explode(',', $product->default_variant);
+    //         }
+    //         if (!empty($product->thicknesses)) {
+    //             $fallbackThicknessIds = explode(',', $product->thicknesses);
+    //         }
+    //         $variants = Variant::whereIn('variant_id', $fallbackVariantIds)->get();
+    //         $thicknesses = Thickness::whereIn('id', $fallbackThicknessIds)->get();
+    //         foreach ($variants as $variant) {
+    //             $cat = $variant->variant_cat ? strtolower(str_replace(' ', '', $variant->variant_cat)) : 'other';
+    //             if (!isset($grouped[$cat])) {
+    //                 $grouped[$cat] = [];
+    //             }
+    //             $dimName = $variant->variant_name;
+    //             if (!isset($grouped[$cat][$dimName])) {
+    //                 $grouped[$cat][$dimName] = [];
+    //             }
+    //             foreach ($thicknesses as $thickness) {
+    //                 $grouped[$cat][$dimName][$thickness->id] = [
+    //                     'id' => $thickness->id,
+    //                     'thick' => $thickness->thick,
+    //                     'map' => $thickness->map,
+    //                     'variant_id' => $variant->variant_id
+    //                 ];
+    //             }
+    //         }
+    //     }
+    //     $displayGrouped = [];
+    //     foreach ($grouped as $key => $val) {
+    //         $displayKey = ($key === 'other') ? 'Other' : $key;
+    //         $displayGrouped[$displayKey] = $val;
+    //     }
+    //     $sizeGroups = array_keys($displayGrouped);
+    //     $dimensionsByGroup = $displayGrouped;
+
+    //     $isWishlisted = Auth::check()
+    //         ? WishList::where('user_id', Auth::id())
+    //             ->where('product_id', $id)
+    //             ->exists()
+    //         : false;
+        
+    //     return view('frontend.product_details', [
+    //         'product'            => $productObj,
+    //         'variantName'        => $transformed['variant_name'] ?? null,
+    //         'productModel'       => $product,
+    //         'sizeGroups'         => $sizeGroups,
+    //         'dimensionsByGroup'  => $dimensionsByGroup,
+    //         'variantCat'         => $variantCat,
+    //         'dimensionVariants'  => $dimensionVariants,
+    //         'thicknessVariants'  => $thicknessVariants,
+    //         // Add these for compatibility with the Blade file
+    //         'variants'           => $dimensionVariants,
+    //         'thicknesses'        => $thicknessVariants,
+    //         'isWishlisted'       => $isWishlisted,
+    //     ]);
+    // }
+
     public function productDetails($id)
     {
         $global = globalData();
@@ -41,10 +182,6 @@ class ProductController extends Controller
         $productObj->default_thickness_id = $productObj->thickness_id
             ?? ($product->default_thickness_id ?? null);
 
-        //  dd([
-        //         'image_thumb' => $productObj->image_thumb,
-        //         'image_large_details' => $productObj->image_large_details
-        //     ]);
         $this->applyImageAndWarranty($productObj, $global);
 
         $dimensionVariants = Variant::query()
@@ -73,13 +210,31 @@ class ProductController extends Controller
                 $item->variant_cat = lcfirst(str_replace(' ', '', ucwords(strtolower($item->variant_cat))));
                 return $item;
             });
-    
+        
+        // ========== Get ALL variant categories ==========
+        $allVariantCategories = Variant::query()
+            ->where('status', 1)
+            ->whereNotNull('variant_cat')
+            ->where('variant_cat', '!=', '')
+            ->select('variant_cat')
+            ->distinct()
+            ->orderBy('variant_cat', 'asc')
+            ->get()
+            ->map(function($item) {
+                return lcfirst(str_replace(' ', '', ucwords(strtolower($item->variant_cat))));
+            })
+            ->toArray();
 
         $productVariants = $product->productVariants()->get();
         $variantIds = $productVariants->pluck('var_size_id')->unique()->toArray();
         $thicknessIds = $productVariants->pluck('var_thickness_id')->unique()->toArray();
 
+        // ==========  Initialize grouped with ALL categories ==========
         $grouped = [];
+        foreach ($allVariantCategories as $cat) {
+            $grouped[$cat] = [];
+        }
+
         if ($productVariants->count() > 0) {
             $variants = Variant::whereIn('variant_id', $variantIds)->get();
             $thicknesses = Thickness::whereIn('id', $thicknessIds)->get();
@@ -90,9 +245,14 @@ class ProductController extends Controller
                     continue;
                 }
                 $cat = $variant->variant_cat ? strtolower(str_replace(' ', '', $variant->variant_cat)) : 'other';
+                //Handle unknown categories
                 if (!isset($grouped[$cat])) {
-                    $grouped[$cat] = [];
+                    $cat = 'other';
+                    if (!isset($grouped[$cat])) {
+                        $grouped[$cat] = [];
+                    }
                 }
+
                 $dimName = $variant->variant_name;
                 if (!isset($grouped[$cat][$dimName])) {
                     $grouped[$cat][$dimName] = [];
@@ -119,9 +279,14 @@ class ProductController extends Controller
             $thicknesses = Thickness::whereIn('id', $fallbackThicknessIds)->get();
             foreach ($variants as $variant) {
                 $cat = $variant->variant_cat ? strtolower(str_replace(' ', '', $variant->variant_cat)) : 'other';
+                // Handle unknown categories in else block
                 if (!isset($grouped[$cat])) {
-                    $grouped[$cat] = [];
+                    $cat = 'other';
+                    if (!isset($grouped[$cat])) {
+                        $grouped[$cat] = [];
+                    }
                 }
+
                 $dimName = $variant->variant_name;
                 if (!isset($grouped[$cat][$dimName])) {
                     $grouped[$cat][$dimName] = [];
@@ -136,9 +301,16 @@ class ProductController extends Controller
                 }
             }
         }
+        
+        // ========== Filter out empty categories - comment if have to remove null dimensions from display ==========
+        $grouped = array_filter($grouped, function($category) {
+            return !empty($category);
+        });
+
         $displayGrouped = [];
         foreach ($grouped as $key => $val) {
-            $displayKey = ($key === 'other') ? 'Other' : $key;
+            // ========== Capitalize first letter
+            $displayKey = ($key === 'other') ? 'Other' : ucfirst($key);
             $displayGrouped[$displayKey] = $val;
         }
         $sizeGroups = array_keys($displayGrouped);
@@ -159,7 +331,6 @@ class ProductController extends Controller
             'variantCat'         => $variantCat,
             'dimensionVariants'  => $dimensionVariants,
             'thicknessVariants'  => $thicknessVariants,
-            // Add these for compatibility with the Blade file
             'variants'           => $dimensionVariants,
             'thicknesses'        => $thicknessVariants,
             'isWishlisted'       => $isWishlisted,
