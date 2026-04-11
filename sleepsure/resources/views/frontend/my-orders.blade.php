@@ -133,7 +133,15 @@
                 <div class="card-footer">
                     <div class="text-muted" style="font-size:13px;">Need help? Contact support with your Order ID.</div>
                     <div class="action-links">
-                        <a href="{{ route('contact.index') }}"><span class="material-icons" style="font-size:16px;">support_agent</span> Support</a>
+                        <a href="{{ route('order.details', $order->order_id) }}">
+                            <span class="material-icons" style="font-size:16px;">visibility</span> View Details
+                        </a>
+                        <a href="{{ route('order.invoice', $order->order_id) }}" target="_blank">
+                            <span class="material-icons" style="font-size:16px;">receipt</span> Invoice
+                        </a>
+                        <a href="{{ route('contact.index') }}">
+                            <span class="material-icons" style="font-size:16px;">support_agent</span> Support
+                        </a>
                     </div>
                 </div>
             </div>

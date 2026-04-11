@@ -101,4 +101,6 @@ Route::middleware('check.auth')->group(function () {
 // Orders - authenticated customers only
 Route::middleware('check.auth')->group(function () {
     Route::get('/my-orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/my-orders/{order_id}', [OrderController::class, 'show'])->name('order.details');
+    Route::get('/my-orders/{order_id}/invoice', [OrderController::class, 'downloadInvoice'])->name('order.invoice');
 });

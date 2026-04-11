@@ -3,7 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderDetails;
+use App\Models\OrderTaxColSummary;
+use App\Models\OrderTaxColDetails;
+use App\Models\ShippingInfo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -37,5 +43,100 @@ class OrderController extends Controller
             'orders' => $orders,
             'statusLabels' => $statusLabels,
         ]));
+    }
+
+    /**
+     * Show order details
+     */
+    public function show($order_id)
+    {
+        $customer = Auth::user();
+        $global = globalData();
+
+        $order = Order::with([
+            'orderDetails.product.categoryDetails',
+            'orderDetails.variant',
+            'delivery',
+            'payments',
+            'shippingInfo',
+            'taxSummaries',
+            'taxDetails'
+        ])
+        ->where('order_id', $order_id)
+        ->where('customer_id', $customer->customer_id)
+        ->firstOrFail();
+
+        $statusLabels = [
+            0 => 'Pending',
+            1 => 'Placed',
+            2 => 'Processing',
+            3 => 'Shipped',
+            4 => 'Delivered',
+            5 => 'Cancelled',
+            6 => 'Refunded',
+        ];
+
+        // Calculate totals
+        $subtotal = $order->orderDetails->sum('total_price');
+        $taxAmount = $order->taxSummaries->sum('tax_amount');
+        $totalAmount = $order->total_amount;
+
+        return view('frontend.order-details', array_merge($global, [
+            'order' => $order,
+            'statusLabels' => $statusLabels,
+            'subtotal' => $subtotal,
+            'taxAmount' => $taxAmount,
+            'totalAmount' => $totalAmount,
+        ]));
+    }
+
+    /**
+     * Download invoice as PDF
+     */
+    public function downloadInvoice($order_id)
+    {
+        $customer = Auth::user();
+        $global = globalData();
+
+        $order = Order::with([
+            'orderDetails.product.categoryDetails',
+            'orderDetails.variant',
+            'delivery',
+            'payments',
+            'shippingInfo',
+            'taxSummaries',
+            'taxDetails'
+        ])
+        ->where('order_id', $order_id)
+        ->where('customer_id', $customer->customer_id)
+        ->firstOrFail();
+
+        $statusLabels = [
+            0 => 'Pending',
+            1 => 'Placed',
+            2 => 'Processing',
+            3 => 'Shipped',
+            4 => 'Delivered',
+            5 => 'Cancelled',
+            6 => 'Refunded',
+        ];
+
+        $subtotal = $order->orderDetails->sum('total_price');
+        $taxAmount = $order->taxSummaries->sum('tax_amount');
+        $totalAmount = $order->total_amount;
+
+        $data = [
+            'order' => $order,
+            'statusLabels' => $statusLabels,
+            'subtotal' => $subtotal,
+            'taxAmount' => $taxAmount,
+            'totalAmount' => $totalAmount,
+            'company' => $global,
+        ];
+
+        $pdf = PDF::loadView('pdf.invoice', $data);
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->download('Invoice_' . $order->order_id . '.pdf');
     }
 }

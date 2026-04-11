@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderTaxColDetails extends Model
 {
-    protected $table = 'order_tax_col_details'; // Ensure this matches your DB table name
-
-    protected $primaryKey = 'order_tax_col_de_id'; // Use your actual primary key
-
-    public $timestamps = false; // Set to true if your table has timestamps
+    protected $table = 'order_tax_col_details'; // Make sure this matches your actual table name
+    protected $primaryKey = 'order_tax_col_de_id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    public $timestamps = false;
 
     protected $fillable = [
         'order_tax_col_de_id',
@@ -20,6 +20,23 @@ class OrderTaxColDetails extends Model
         'tax_id',
         'variant_id',
         'date',
-        // Add other fields as needed
+        'created_at',
+        'updated_at'
     ];
+
+    /**
+     * Get the order for this tax detail
+     */
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'order_id');
+    }
+
+    /**
+     * Get the product for this tax detail
+     */
+    public function product()
+    {
+        return $this->belongsTo(ProductInformation::class, 'product_id', 'product_id');
+    }
 }

@@ -38,10 +38,17 @@ class Order extends Model
     {
         return $this->hasMany(OrderDetails::class, 'order_id', 'order_id');
     }   
+    
     public function taxSummaries()
     {
         return $this->hasMany(OrderTaxColSummary::class, 'order_id', 'order_id');
     }
+    
+    public function taxDetails()
+    {
+        return $this->hasMany(OrderTaxColDetails::class, 'order_id', 'order_id');
+    }
+    
     public function delivery()
     {
         return $this->hasOne(OrderDelivery::class, 'order_id', 'order_id');
@@ -51,7 +58,17 @@ class Order extends Model
     {
         return $this->hasMany(OrderPayment::class, 'order_id', 'order_id');
     }
-    public function customer(){
+    
+    public function customer()
+    {
         return $this->belongsTo(CustomerInformation::class, 'customer_id', 'customer_id');
+    }
+    
+    /**
+     * Get the shipping information for this order
+     */
+    public function shippingInfo()
+    {
+        return $this->hasOne(ShippingInfo::class, 'order_id', 'order_id');
     }
 }
