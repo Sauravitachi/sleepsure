@@ -27,8 +27,16 @@
 .timeline-step.completed .step-label {color: #0d47a1; font-weight: 600;}
 .timeline-line {position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: #e2e8f0; z-index: 0;}
 .action-buttons {display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;}
-.btn-outline {padding: 10px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;}
-.btn-primary {background: #0d47a1; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;}
+.btn-outline {padding: 10px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #cbd5e1; background: white; color: #333;}
+.btn-outline:hover {background: #f1f5f9;}
+.btn-primary {background: #0d47a1; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border: none;}
+.btn-primary:hover {background: #1565c0;}
+.status-pill {display: inline-flex; align-items: center; gap: 6px; border-radius: 20px; padding: 6px 12px; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;}
+.status-placed {background: #e8f0fe; color: #1a73e8;}
+.status-processing {background: #fff4e5; color: #c47f00;}
+.status-shipped {background: #e3f2fd; color: #0d47a1;}
+.status-delivered {background: #e6f4ea; color: #0f9d58;}
+.status-cancelled {background: #fdecea; color: #c62828;}
 @media (max-width: 768px) {
     .order-info-grid {grid-template-columns: 1fr;}
     .order-items-table {display: block; overflow-x: auto;}
@@ -37,6 +45,7 @@
     .timeline-step {display: flex; gap: 12px; align-items: center; width: 100%;}
     .timeline-step .step-icon {margin: 0;}
     .totals-section {max-width: 100%;}
+    .action-buttons {flex-wrap: wrap; justify-content: center;}
 }
 </style>
 @endpush
@@ -62,7 +71,7 @@
                         default => 'status-placed',
                     };
                 @endphp
-                <span class="status-pill {{ $statusClass }}" style="background: rgba(255,255,255,0.2); color: white;">
+                <span class="status-pill {{ $statusClass }}">
                     <span class="material-icons" style="font-size:14px;">fiber_manual_record</span>
                     {{ $statusText }}
                 </span>
@@ -212,11 +221,11 @@
                                     @endif
                                 </div>
                             </div>
-                        </td>
-                        <td>{{ $item->variant?->variant_name ?? 'Standard' }}</td>
-                        <td>{{ $item->quantity }}</td>
-                        <td>₹{{ number_format((float) $item->rate, 2) }}</td>
-                        <td style="font-weight: 600;">₹{{ number_format((float) $item->total_price, 2) }}</td>
+                        </div>
+                        <td>{{ $item->variant?->variant_name ?? 'Standard' }}</div>
+                        <td>{{ $item->quantity }}</div>
+                        <td>₹{{ number_format((float) $item->rate, 2) }}</div>
+                        <td style="font-weight: 600;">₹{{ number_format((float) $item->total_price, 2) }}</div>
                     </tr>
                 @endforeach
             </tbody>
@@ -259,13 +268,13 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <a href="{{ route('orders.index') }}" class="btn-outline" style="border: 1px solid #cbd5e1; background: white;">
+        <a href="{{ route('orders.index') }}" class="btn-outline">
             <span class="material-icons" style="font-size:18px;">arrow_back</span> Back to Orders
         </a>
         <a href="{{ route('order.invoice', $order->order_id) }}" class="btn-primary" target="_blank">
-            <span class="material-icons" style="font-size:18px;">download</span> Download Invoice
+            <span class="material-icons" style="font-size:18px;">print</span> View Invoice
         </a>
-        <a href="{{ route('contact.index') }}" class="btn-outline" style="border: 1px solid #cbd5e1; background: white;">
+        <a href="{{ route('contact.index') }}" class="btn-outline">
             <span class="material-icons" style="font-size:18px;">support_agent</span> Need Help?
         </a>
     </div>

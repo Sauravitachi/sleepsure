@@ -102,5 +102,5 @@ Route::middleware('check.auth')->group(function () {
 Route::middleware('check.auth')->group(function () {
     Route::get('/my-orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/my-orders/{order_id}', [OrderController::class, 'show'])->name('order.details');
-    Route::get('/my-orders/{order_id}/invoice', [OrderController::class, 'downloadInvoice'])->name('order.invoice');
+    Route::get('/my-orders/{order_id}/invoice', [OrderController::class, 'viewInvoice'])->name('order.invoice');
 });

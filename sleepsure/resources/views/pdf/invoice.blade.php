@@ -60,6 +60,7 @@
             display: flex;
             margin-bottom: 25px;
             gap: 20px;
+            flex-wrap: wrap;
         }
         
         .info-box {
@@ -190,9 +191,90 @@
         .terms strong {
             font-size: 11px;
         }
+        
+        /* Print Button Styles */
+        .print-btn-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .print-btn {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .print-btn:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .print-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Print Styles */
+        @media print {
+            .print-btn-container {
+                display: none;
+            }
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .invoice-container {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+            }
+            .info-box {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .items-table tr {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .info-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .totals-table {
+                width: 100%;
+            }
+            .items-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Print Button -->
+    <div class="print-btn-container">
+        <button onclick="window.print();" class="print-btn">
+            🖨️ Print / Save as PDF
+        </button>
+    </div>
+    
     <div class="invoice-container">
         <!-- Header -->
         <div class="header">
@@ -371,7 +453,7 @@
             </table>
         </div>
 
-        <!-- Amount in Words (Direct conversion without helper) -->
+        <!-- Amount in Words -->
         <div class="amount-in-words">
             <strong>Amount in Words:</strong> 
             @php
@@ -448,5 +530,12 @@
             <p>Visit us: {{ $company['website'] ?? 'www.sleepsure.com' }}</p>
         </div>
     </div>
+    
+    <script>
+        // Auto trigger print dialog (optional - uncomment if you want print dialog to open automatically)
+        // window.onload = function() {
+        //     window.print();
+        // }
+    </script>
 </body>
 </html>
