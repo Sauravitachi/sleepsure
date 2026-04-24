@@ -63,7 +63,6 @@ class CheckOutController extends Controller
             }
 
             ShippingInfo::create([
-                'shiping_info_id'      => strtoupper(Str::random(15)),
                 'customer_id'          => $customer->customer_id,
                 'order_id'             => $order_id,
                 'customer_name'        => trim($request->first_name . ' ' . $request->last_name),
