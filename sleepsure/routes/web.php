@@ -78,6 +78,7 @@ Route::middleware('check.auth')->group(function () {
 // Account dashboard
 Route::middleware('check.auth')->group(function () {
     Route::get('/my-account', [AccountController::class, 'index'])->name('account.index');
+    Route::post('/update-profile', [AccountController::class, 'updateProfile'])->name('account.updateProfile');
 });
 
 // Payment routes

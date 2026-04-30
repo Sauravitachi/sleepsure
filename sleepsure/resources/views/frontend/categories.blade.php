@@ -166,58 +166,29 @@
                         @endforeach
                     </div>
                 </div>
-            <div class="filter-group">
-    <h3>Material</h3>
-    <div class="filter-options">
-        @foreach($allMaterials as $material)
-            <div class="filter-option">
-                <input type="checkbox"
-                    name="materials[]"
-                    id="material-{{ $loop->index }}"
-                    value="{{ $material }}"
-                    {{ in_array($material, (array)$selectedMaterials) ? 'checked' : '' }}>
-                <label for="material-{{ $loop->index }}">{{ $material }}</label>
-            </div>
-        @endforeach
-    </div>
-</div>
+
+                <div class="filter-group">
+                    <h3>Material</h3>
+                    <div class="filter-options">
+                        @foreach($allMaterials as $material)
+                            <div class="filter-option">
+                                <input type="checkbox"
+                                    name="materials[]"
+                                    id="material-{{ $loop->index }}"
+                                    value="{{ $material }}"
+                                    {{ in_array($material, (array)$selectedMaterials) ? 'checked' : '' }}>
+                                <label for="material-{{ $loop->index }}">{{ $material }}</label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
 
                 <div style="display: flex; gap: 10px; flex-direction:column">
                     <button type="submit" class="apply-filters">Apply Filters</button>                    
                     <a href="{{ route('categories.index') }}" class="btn btn-secondary" style="background: #eee; color: #333; border: 1px solid #ccc; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none;">Clear Filters</a>
                 </div>
-                    <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
-                </form>
-            </aside>
-        
-            <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Auto-submit on filter change (checkboxes, price range)
-                const filterForm = document.getElementById('filterForm');
-                if (filterForm) {
-                    // For checkboxes
-                    filterForm.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
-                        cb.addEventListener('change', function() {
-                            filterForm.submit();
-                        });
-                    });
-                    // For price range
-                    const priceSlider = document.getElementById('myRange');
-                    if (priceSlider) {
-                        priceSlider.addEventListener('change', function() {
-                            filterForm.submit();
-                        });
-                    }
-                    // For sort dropdown
-                    const sortSelect = document.getElementById('sort');
-                    if (sortSelect) {
-                        sortSelect.addEventListener('change', function() {
-                            filterForm.submit();
-                        });
-                    }
-                }
-            });
-            </script>
+                
+                <!-- FIXED: Only ONE hidden input for sort -->
                 <input type="hidden" name="sort" id="sortInput" value="{{ request('sort') }}">
             </form>
         </aside>
@@ -378,6 +349,7 @@
         const filterSidebar = document.getElementById('filterSidebar');
         const closeFilter = document.getElementById('closeFilter');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const filterForm = document.getElementById('filterForm');
 
         // Open filter sidebar
         if (filterToggle) {
@@ -417,13 +389,54 @@
             });
         }
 
-        // Auto-submit sort with filters
+        // FIXED: Auto-submit sort with filters - preserve sort value
         const sortSelect = document.getElementById('sort');
         const sortInput = document.getElementById('sortInput');
-        if (sortSelect && sortInput && filterForm) {
+        
+        if (filterForm) {
+            // For checkboxes - preserve current sort
+            filterForm.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+                cb.addEventListener('change', function() {
+                    if (sortSelect && sortSelect.value) {
+                        // Create current sort input if not exists
+                        let existingSort = filterForm.querySelector('input[name="sort"]');
+                        if (!existingSort) {
+                            existingSort = document.createElement('input');
+                            existingSort.type = 'hidden';
+                            existingSort.name = 'sort';
+                            filterForm.appendChild(existingSort);
+                        }
+                        existingSort.value = sortSelect.value;
+                    }
+                    filterForm.submit();
+                });
+            });
+            
+            // For price range
+            if (priceSlider) {
+                priceSlider.addEventListener('change', function() {
+                    if (sortSelect && sortSelect.value) {
+                        let existingSort = filterForm.querySelector('input[name="sort"]');
+                        if (!existingSort) {
+                            existingSort = document.createElement('input');
+                            existingSort.type = 'hidden';
+                            existingSort.name = 'sort';
+                            filterForm.appendChild(existingSort);
+                        }
+                        existingSort.value = sortSelect.value;
+                    }
+                    filterForm.submit();
+                });
+            }
+        }
+        
+        // For sort dropdown
+        if (sortSelect && sortInput) {
             sortSelect.addEventListener('change', function() {
                 sortInput.value = this.value;
-                filterForm.submit();
+                if (filterForm) {
+                    filterForm.submit();
+                }
             });
         }
     });

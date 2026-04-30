@@ -88,60 +88,60 @@ class PageController extends Controller
 
     public function category($categoryName)
     {
-    $global = globalData();
-    $categories = $global['categories'];
+        $global = globalData();
+        $categories = $global['categories'];
 
-    $category = ProductCategory::where('category_name', $categoryName)
-        ->where('status', 1)
-        ->firstOrFail();
+        $category = ProductCategory::where('category_name', $categoryName)
+            ->where('status', 1)
+            ->firstOrFail();
 
-    $categoryIds = $this->getCategoryTreeIds($category);
+        $categoryIds = $this->getCategoryTreeIds($category);
 
-    $paginatedProducts = ProductInformation::whereIn('category_id', $categoryIds)
-        ->where('status', 1)
-        ->paginate(12);
+        $paginatedProducts = ProductInformation::whereIn('category_id', $categoryIds)
+            ->where('status', 1)
+            ->paginate(12);
 
-    $products = $paginatedProducts->map(function ($product) use ($global) {
-        $homeController = app(HomeController::class);
-        $homeController->applyImageAndWarranty($product, $global);
-        $homeController->calculateReview($product);
-        return $homeController->transformProduct($product);
-    });
-
-    $variantCat = \App\Models\Variant::query()
-        ->where('status', 1)
-        ->whereNotNull('variant_cat')
-        ->where('variant_cat', '!=', '')
-        ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
-        ->groupBy(\DB::raw('LOWER(variant_cat)'))
-        ->orderBy('variant_cat', 'asc')
-        ->get()
-        ->map(function($item) {
-            $item->variant_cat = strtolower(str_replace(' ', '', $item->variant_cat));
-            return $item;
+        $products = $paginatedProducts->map(function ($product) use ($global) {
+            $homeController = app(HomeController::class);
+            $homeController->applyImageAndWarranty($product, $global);
+            $homeController->calculateReview($product);
+            return $homeController->transformProduct($product);
         });
 
-    $allMaterials = ProductInformation::where('status', 1)
-        ->pluck('tag')
-        ->flatMap(function ($tags) {
-            return array_map('trim', explode(',', $tags));
-        })
-        ->unique()
-        ->filter()
-        ->values();
+        $variantCat = \App\Models\Variant::query()
+            ->where('status', 1)
+            ->whereNotNull('variant_cat')
+            ->where('variant_cat', '!=', '')
+            ->selectRaw('MIN(variant_id) as variant_id, MIN(variant_name) as variant_name, LOWER(variant_cat) as variant_cat')
+            ->groupBy(\DB::raw('LOWER(variant_cat)'))
+            ->orderBy('variant_cat', 'asc')
+            ->get()
+            ->map(function($item) {
+                $item->variant_cat = strtolower(str_replace(' ', '', $item->variant_cat));
+                return $item;
+            });
+
+        $allMaterials = ProductInformation::where('status', 1)
+            ->pluck('tag')
+            ->flatMap(function ($tags) {
+                return array_map('trim', explode(',', $tags));
+            })
+            ->unique()
+            ->filter()
+            ->values();
 
 
-    $selectedMaterials = request()->input('materials', []);
+        $selectedMaterials = request()->input('materials', []);
 
-    return view('frontend.categories', compact(
-        'products',
-        'paginatedProducts',
-        'categories',
-        'category',
-        'variantCat',
-        'allMaterials',
-        'selectedMaterials'
-    ));
+        return view('frontend.categories', compact(
+            'products',
+            'paginatedProducts',
+            'categories',
+            'category',
+            'variantCat',
+            'allMaterials',
+            'selectedMaterials'
+        ));
     }
 
     private function getCategoryTreeIds($category)
