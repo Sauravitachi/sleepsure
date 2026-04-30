@@ -134,57 +134,49 @@
                     <h2>Save with Offers</h2>
                     <div class="offers-container">
                         <div class="offers-track">
-                            <div class="offer-card2">
-                                <div class="offer-content">
-                                    <div class="bank-logo">
-                                        <i class="fas fa-credit-card"></i>
-                                        HDFC Bank
+
+                            @foreach($rewardTypes as $rewardType)
+                                <div class="offer-card2" data-type="{{ strtolower($rewardType->title ?? '') }}">
+                                    <div class="offer-content">
+
+                                        {{-- Logo + Title --}}
+                                        <div class="bank-logo">
+                                            @if($rewardType->logo)
+                                                <img src="{{ "https://sleepauth.kodesoft.cloud/" . $rewardType->logo }}" 
+                                                    alt="Logo" 
+                                                    style="height:20px;">
+                                            @else
+                                                <i class="fas fa-gift"></i>
+                                            @endif
+                                        </div>
+
+                                        {{-- Static text (since no subtitle in DB) --}}
+                                        <div class="offer-detail">
+                                            <div class="lowest-price">
+                                                {{ $rewardType->title }}
+                                            </div>
+
+                                            {{-- Optional: extract % from message --}}
+                                            <div class="price-value">
+                                                {{ $rewardType->message }}
+                                            </div>
+                                        </div>
+
+                                        {{-- Offer Message --}}
+                                        <div class="offer-type">
+                                            <i class="fas fa-tags"></i>
+                                            {{ $rewardType->message }}
+                                        </div>
+
+                                        {{-- Button --}}
+                                        {{-- <button class="view-offer-btn">
+                                            Apply Now
+                                        </button> --}}
+
                                     </div>
-                                    <div class="offer-detail">
-                                        <div class="lowest-price">Lowest price with</div>
-                                        <div class="price-value">₹6,039</div>
-                                    </div>
-                                    <div class="offer-type">
-                                        <i class="fas fa-percentage"></i>
-                                        10% Instant Discount
-                                    </div>
-                                    <button class="view-offer-btn">Apply Now</button>
                                 </div>
-                            </div>
-                            <div class="offer-card2">
-                                <div class="offer-content">
-                                    <div class="bank-logo">
-                                        <i class="fas fa-mobile-alt"></i>
-                                        UPI
-                                    </div>
-                                    <div class="offer-detail">
-                                        <div class="lowest-price">UPI Special Price</div>
-                                        <div class="price-value">₹6,424</div>
-                                    </div>
-                                    <div class="offer-type">
-                                        <i class="fas fa-rupee-sign"></i>
-                                        Extra ₹125 Cashback
-                                    </div>
-                                    <button class="view-offer-btn">Pay Now</button>
-                                </div>
-                            </div>
-                            <div class="offer-card2">
-                                <div class="offer-content">
-                                    <div class="bank-logo">
-                                        <i class="fas fa-chart-line"></i>
-                                        EMI
-                                    </div>
-                                    <div class="offer-detail">
-                                        <div class="lowest-price">Easy EMI Options</div>
-                                        <div class="price-value">₹1,704/month</div>
-                                    </div>
-                                    <div class="offer-type">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        3 months • No Cost EMI
-                                    </div>
-                                    <button class="view-offer-btn">View Plans</button>
-                                </div>
-                            </div>
+                            @endforeach
+
                         </div>
                     </div>
                 </div>

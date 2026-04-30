@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Variant;
 use App\Services\SearchService;    
 use App\Http\Controllers\HomeController;
-use App\Models\Thickness;
+use App\Models\{Thickness,RewardType};
 use App\Models\WishList;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -180,7 +180,9 @@ class ProductController extends Controller
                 ->where('product_id', $id)
                 ->exists()
             : false;
-        
+
+        $rewardTypes = RewardType::with('reward')->get();
+
         return view('frontend.product_details', [
             'product'            => $productObj,
             'variantName'        => $transformed['variant_name'] ?? null,
@@ -193,6 +195,7 @@ class ProductController extends Controller
             'variants'           => $dimensionVariants,
             'thicknesses'        => $thicknessVariants,
             'isWishlisted'       => $isWishlisted,
+            'rewardTypes'        => $rewardTypes,
         ]);
     }
 
@@ -310,7 +313,7 @@ class ProductController extends Controller
                 'price' => $priceValue
             ]);
         } else {
-            // For standard size, use the calculatePrice method
+            // For standard size, use the calculate Price method
             $priceValue = $home->calculatePrice(
                 $sqft,
                 $default_rate,
