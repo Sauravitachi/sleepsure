@@ -111,6 +111,7 @@
                         }
                     @endphp
                     <a href="{{ route('products.categories', $main->category_name) }}" class="nav-link-mat {{ $isActive ? 'active' : '' }}">{{ $main->category_name }}</a>
+                    
                     @if($main->subcategories->count() > 0)
                         <div class="mat-dropdown-container mt-2">
                             @foreach($main->subcategories as $sub)
@@ -121,15 +122,20 @@
                                             {{ Str::title($sub->category_name) }}
                                         </a>
                                     </div>
-                                    {{-- Third-level Models --}}
-                                    @if($sub->models->count() > 0)
+                                    
+                                    {{-- PRODUCTS instead of Models (3rd level) --}}
+                                    @if($sub->products->count() > 0)
                                         <ul class="col-links">
-                                            @foreach($sub->models as $model)
+                                            @foreach($sub->products as $product)
                                                 <li>
-                                                    <a href="{{ route('products.categories', $model->category_name) }}">{{ Str::title($model->category_name) }}</a>
+                                                    <a href="{{ $product->product_url }}">
+                                                        {{ Str::title($product->product_name) }}
+                                                    </a>
                                                 </li>
                                             @endforeach
                                         </ul>
+                                    @else
+                                        <div class="text-muted small" style="padding: 8px 0;">No products</div>
                                     @endif
                                 </div>
                             @endforeach

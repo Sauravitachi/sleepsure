@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\{WebSetting,PayWith,ProductCategory};
+use App\Models\{WebSetting, PayWith, ProductCategory, ProductInformation};
 
 function globalData()
 {
@@ -23,7 +23,6 @@ function globalData()
         }
         return $item;
     });
-
 
     $categories = ProductCategory::where(function($q) {
         $q->whereNull('parent_category_id')
@@ -48,22 +47,21 @@ function globalData()
                 $sub->image_url = !empty($sub->cat_favicon)
                     ? rtrim($base_url, '/') . '/' . ltrim($sub->cat_favicon, '/')
                     : $fallback_logo;
-                $sub->models = ProductCategory::where('parent_category_id', $sub->category_id)
-                    ->where('cat_type', 2)
-                    ->where('top_menu', 0)
+                
+                // CHANGE HERE: Get products instead of models (3rd level categories)
+                $sub->products = ProductInformation::where('category_id', $sub->category_id)
                     ->where('status', 1)
-                    ->orderBy('menu_pos', 'asc')
+                    ->orderBy('product_name', 'asc')
+                    ->limit(15)
                     ->get()
-                    ->map(function ($model) use ($base_url, $fallback_logo) {
-                        $model->image_url = !empty($model->cat_favicon)
-                            ? rtrim($base_url, '/') . '/' . ltrim($model->cat_favicon, '/')
-                            : $fallback_logo;
-                        $model->parent_category = null;
-                        if (!empty($model->parent_category_id)) {
-                            $model->parent_category = ProductCategory::where('category_id', $model->parent_category_id)->first();
-                        }
-                        return $model;
+                    ->map(function ($product) use ($base_url) {
+                        $product->product_url = $base_url . 'product/' . $product->product_id;
+                        $product->image_url = !empty($product->product_image)
+                            ? rtrim($base_url, '/') . '/' . ltrim($product->product_image, '/')
+                            : null;
+                        return $product;
                     });
+                
                 $sub->parent_category = null;
                 if (!empty($sub->parent_category_id)) {
                     $sub->parent_category = ProductCategory::where('category_id', $sub->parent_category_id)->first();

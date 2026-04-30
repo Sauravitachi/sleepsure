@@ -44,12 +44,12 @@ class AccountController extends Controller
         // Validation
         $request->validate([
             'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255|unique:customer_information,customer_email,' . auth()->id() . ',customer_id',
+            'customer_email' => 'required|email|max:255',
             'customer_mobile' => 'nullable|string|max:20|unique:customer_information,customer_mobile,' . auth()->id() . ',customer_id',
         ], [
             'customer_name.required' => 'Name is required',
             'customer_email.required' => 'Email is required',
-            'customer_email.unique' => 'This email is already registered',
+            // 'customer_email.unique' => 'This email is already registered',
             'customer_mobile.unique' => 'This mobile number is already registered',
         ]);
 
