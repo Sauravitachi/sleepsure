@@ -15,8 +15,9 @@
         <div class="footer-column">
             <h4 class="footer-heading">Quick Links</h4>
             <ul class="footer-links">
-                <li><a href="{{ route('categories.index') }}">Shop All Mattresses</a></li>
-                <li><a href="{{ route('categories.index') }}">Pillows & Comfort</a></li>
+                <li><a href="{{ route('products.categories', ['categoryName' => 'Mattress']) }}">Shop All Mattresses</a></li>
+                <li><a href="{{ route('products.categories', ['categoryName' => 'Pillows']) }}">Pillows & Comfort</a></li>
+                <li><a href="{{ route('products.categories', ['categoryName' => 'Accessories']) }}">Accessories</a></li>
                 <li><a href="{{ route('bulk-orders.index') }}">Bulk Orders (B2B)</a></li>
                 <li><a href="{{ route('contact.index') }}">Contact Us</a></li>
                 <li><a href="{{ route('faq.index') }}">FAQs</a></li>

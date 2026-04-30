@@ -55,7 +55,7 @@ function globalData()
                     ->limit(15)
                     ->get()
                     ->map(function ($product) use ($base_url) {
-                        $product->product_url = $base_url . 'product/' . $product->product_id;
+                        $product->product_url = url('product/' . $product->product_id);
                         $product->image_url = !empty($product->product_image)
                             ? rtrim($base_url, '/') . '/' . ltrim($product->product_image, '/')
                             : null;
