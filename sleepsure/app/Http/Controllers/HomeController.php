@@ -238,9 +238,9 @@ class HomeController extends Controller
                 foreach ($quizKeywords as $keyword) {
                     $like = '%' . strtolower($keyword) . '%';
                     $q->orWhereRaw('LOWER(product_information.tag) LIKE ?', [$like])
-                      ->orWhereRaw('LOWER(product_information.product_name) LIKE ?', [$like])
-                      ->orWhereRaw('LOWER(product_information.description) LIKE ?', [$like])
-                      ->orWhereRaw('LOWER(product_information.product_details) LIKE ?', [$like]);
+                    ->orWhereRaw('LOWER(product_information.product_name) LIKE ?', [$like])
+                    ->orWhereRaw('LOWER(product_information.description) LIKE ?', [$like])
+                    ->orWhereRaw('LOWER(product_information.product_details) LIKE ?', [$like]);
                 }
             });
         }
@@ -259,7 +259,6 @@ class HomeController extends Controller
             $title = 'All Products';
         }
 
-
         // Apply category filter
         $selectedCategories = $request->input('categories', []);
         if (!empty($selectedCategories)) {
@@ -275,6 +274,7 @@ class HomeController extends Controller
             $joinedVariants = true;
         }
 
+        // Apply size filter
         $sizes = $request->input('sizes', []);
         if (!empty($sizes)) {
             $normalizedSizes = collect($sizes)->map(function($size) {
@@ -287,7 +287,7 @@ class HomeController extends Controller
             $productsQuery->where(function($q) use ($normalizedSizes, $variantIds) {
                 foreach ($normalizedSizes as $size) {
                     $q->orWhereRaw('LOWER(REPLACE(product_information.product_name, " ", "")) LIKE ?', ["%$size%"])
-                      ->orWhereRaw('LOWER(REPLACE(product_information.tag, " ", "")) LIKE ?', ["%$size%"]);
+                    ->orWhereRaw('LOWER(REPLACE(product_information.tag, " ", "")) LIKE ?', ["%$size%"]);
                 }
                 if (!empty($variantIds)) {
                     foreach ($variantIds as $variantId) {
@@ -297,34 +297,61 @@ class HomeController extends Controller
             });
         }
 
-        $sortBy = $request->input('sort', 'newest');
-        switch ($sortBy) {
-            case 'price_low':
-                if (!$joinedVariants) {
-                    $productsQuery->leftJoin('product_variants', 'product_information.product_id', '=', 'product_variants.product_id')
-                        ->select('product_information.*');
-                    $joinedVariants = true;
+        // Apply material filter
+        $allMaterials = ProductInformation::where('status', 1)
+            ->pluck('tag')
+            ->flatMap(function ($tags) {
+                return array_map('trim', explode(',', $tags));
+            })
+            ->unique()
+            ->filter()
+            ->values();
+            
+        $selectedMaterials = $request->input('materials', []);
+        if (!empty($selectedMaterials)) {
+            $productsQuery->where(function($q) use ($selectedMaterials) {
+                foreach ($selectedMaterials as $mat) {
+                    $q->orWhereRaw('FIND_IN_SET(?, product_information.tag)', [$mat]);
                 }
-                $productsQuery->orderBy('product_variants.price', 'asc');
-                break;
-            case 'price_high':
-                if (!$joinedVariants) {
-                    $productsQuery->leftJoin('product_variants', 'product_information.product_id', '=', 'product_variants.product_id')
-                        ->select('product_information.*');
-                    $joinedVariants = true;
-                }
-                $productsQuery->orderBy('product_variants.price', 'desc');
-                break;
-            case 'rating':
-                break;
-            case 'newest':
-                $productsQuery->orderBy('product_information.created_at', 'desc');
-                break;
-            case 'featured':
-            default:
-                $productsQuery->orderBy('product_information.is_featured', 'desc');
-                break;
+            });
         }
+
+        //apply sorting - Only apply if sort parameter is not empty
+        $sortBy = $request->input('sort');
+        
+        // Only apply sorting if a valid sort option is selected (not empty)
+        if (!empty($sortBy)) {
+            switch ($sortBy) {
+                case 'price_low':
+                    if (!$joinedVariants) {
+                        $productsQuery->leftJoin('product_variants', 'product_information.product_id', '=', 'product_variants.product_id')
+                            ->select('product_information.*');
+                        $joinedVariants = true;
+                    }
+                    $productsQuery->orderBy('product_variants.price', 'asc');
+                    break;
+                case 'price_high':
+                    if (!$joinedVariants) {
+                        $productsQuery->leftJoin('product_variants', 'product_information.product_id', '=', 'product_variants.product_id')
+                            ->select('product_information.*');
+                        $joinedVariants = true;
+                    }
+                    $productsQuery->orderBy('product_variants.price', 'desc');
+                    break;
+                case 'rating':
+                    // Sorting by rating would require aggregate function
+                    // Can be implemented later with subquery
+                    break;
+                case 'newest':
+                    $productsQuery->orderBy('product_information.created_at', 'desc');
+                    break;
+                case 'featured':
+                    $productsQuery->orderBy('product_information.is_featured', 'desc');
+                    break;
+                // No default case - if sort is not recognized, don't apply sorting
+            }
+        }
+        // If $sortBy is empty, NO sorting is applied - products appear in natural order (by ID)
 
         $paginatedProducts = $productsQuery->distinct()->paginate(12);
         $products = $paginatedProducts->map(function ($product) use ($global) {
@@ -345,8 +372,8 @@ class HomeController extends Controller
                 $item->variant_cat = strtolower(str_replace(' ', '', $item->variant_cat));
                 return $item;
             });
-           
-        return view('frontend.viewproducts', compact('products', 'title', 'paginatedProducts', 'categories', 'variantCat'));   
+        
+        return view('frontend.viewproducts', compact('products', 'title', 'paginatedProducts', 'categories', 'variantCat', 'selectedMaterials', 'allMaterials'));   
     }
 
     private function buildQuizKeywords(Request $request): array
