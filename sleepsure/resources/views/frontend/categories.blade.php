@@ -218,7 +218,7 @@
                 }
             });
             </script>
-                <input type="hidden" name="sort" id="sortInput" value="{{ request('sort', 'featured') }}">
+                <input type="hidden" name="sort" id="sortInput" value="{{ request('sort') }}">
             </form>
         </aside>
 
@@ -230,6 +230,7 @@
                     <div class="sort-options">
                         <label for="sort" style="font-size: 12px;">Sort by:</label>
                         <select id="sort" name="sort">
+                            <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Select Option</option>
                             <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
                             <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>

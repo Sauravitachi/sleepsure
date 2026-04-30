@@ -157,7 +157,7 @@ class HomeController extends Controller
                 });
             }
 
-        $sortBy = $request->input('sort', 'featured');
+        $sortBy = $request->input('sort');
         switch ($sortBy) {
             case 'price_low':
                 if (!$joinedVariants) {
@@ -297,7 +297,7 @@ class HomeController extends Controller
             });
         }
 
-        $sortBy = $request->input('sort', 'featured');
+        $sortBy = $request->input('sort', 'newest');
         switch ($sortBy) {
             case 'price_low':
                 if (!$joinedVariants) {
