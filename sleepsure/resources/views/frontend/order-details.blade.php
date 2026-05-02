@@ -208,7 +208,7 @@
                 @foreach($order->orderDetails as $item)
                     @php
                         $product = $item->product;
-                        $thumb = $product?->image_thumb ? asset($product->image_thumb) : 'https://via.placeholder.com/60x60?text=Product';
+                        $thumb = $product?->image_thumb ? ($baseUrl . $product->image_thumb) : ($baseUrl . '/my-assets/image/product.png');
                     @endphp
                     <tr>
                         <td>

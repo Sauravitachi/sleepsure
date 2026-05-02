@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\CustomerInformation;
+use App\Models\{CustomerInformation, SoftSetting};
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -21,9 +21,10 @@ class AuthController extends Controller
         ]);
 
         $client = new \GuzzleHttp\Client();
+        $base_url = SoftSetting::pluck('web_base_url')->first();
 
         $response = $client->post(
-            'https://sleepauth.kodesoft.cloud/app/sendmessage',
+            $base_url . 'app/sendmessage',
             [
                 'form_params' => [
                     'mobile' => $request->mobile,
@@ -69,9 +70,9 @@ class AuthController extends Controller
         }
 
         $client = new \GuzzleHttp\Client();
-
+        $base_url = SoftSetting::pluck('web_base_url')->first();
         $response = $client->post(
-            'https://sleepauth.kodesoft.cloud/app/verifyotp',
+            $base_url . 'app/verifyotp',
             [
                 'form_params' => [
                     'mobile' => $mobile,
@@ -163,9 +164,9 @@ class AuthController extends Controller
 
         // Send OTP via SleepAuth
         $client = new \GuzzleHttp\Client();
-
+        $base_url = SoftSetting::pluck('web_base_url')->first();
         $response = $client->post(
-            'https://sleepauth.kodesoft.cloud/app/sendmessage',
+            $base_url . 'app/sendmessage',
             [
                 'form_params' => [
                     'mobile' => $request->phone,

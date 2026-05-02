@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderDetails;
-use App\Models\OrderTaxColSummary;
+use App\Models\{OrderTaxColSummary,SoftSetting};
 use App\Models\OrderTaxColDetails;
 use App\Models\ShippingInfo;
 use Illuminate\Support\Facades\Auth;
@@ -42,9 +42,12 @@ class OrderController extends Controller
             6 => 'Refunded',
         ];
 
+        $baseUrl = SoftSetting::pluck('web_base_url')->first();
+
         return view('frontend.my-orders', array_merge($global, [
             'orders' => $orders,
             'statusLabels' => $statusLabels,
+            'baseUrl' => $baseUrl,
         ]));
     }
 
@@ -91,6 +94,7 @@ class OrderController extends Controller
         $subtotal = $order->orderDetails->sum('total_price');
         $taxAmount = $order->taxSummaries->sum('tax_amount');
         $totalAmount = $order->total_amount;
+        $baseUrl = SoftSetting::pluck('web_base_url')->first();
 
         return view('frontend.order-details', array_merge($global, [
             'order' => $order,
@@ -98,6 +102,7 @@ class OrderController extends Controller
             'subtotal' => $subtotal,
             'taxAmount' => $taxAmount,
             'totalAmount' => $totalAmount,
+            'baseUrl' => $baseUrl,
         ]));
     }
 
@@ -144,7 +149,7 @@ class OrderController extends Controller
         $subtotal = $order->orderDetails->sum('total_price');
         $taxAmount = $order->taxSummaries->sum('tax_amount');
         $totalAmount = $order->total_amount;
-
+        $baseUrl = SoftSetting::pluck('web_base_url')->first();
         return view('pdf.invoice', [
             'order' => $order,
             'statusLabels' => $statusLabels,
@@ -153,6 +158,7 @@ class OrderController extends Controller
             'totalAmount' => $totalAmount,
             'company' => $global,
             'customer' => $customer,
+            'baseUrl' => $baseUrl,
         ]);
     }
 }

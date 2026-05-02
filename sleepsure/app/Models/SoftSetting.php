@@ -12,6 +12,6 @@ class SoftSetting extends Model
     
     protected $fillable = [
         'logo', 'invoice_logo', 'favicon', 'footer_text', 'country_id',
-        'language', 'time_zone', 'rtr', 'captcha', 'site_key', 'secret_key', 'sms_service'
+        'language', 'time_zone', 'rtr', 'captcha', 'site_key', 'secret_key', 'sms_service','web_base_url'
     ];
 }

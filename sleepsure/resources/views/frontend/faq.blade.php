@@ -39,8 +39,7 @@
 
                             <div class="faq-icon me-2">
                                 @php
-                                    $baseUrl = 'https://sleepauth.kodesoft.cloud/';
-                                    $placeholder = $baseUrl . 'my-assets/image/product.png';
+                                    $placeholder = $baseUrl . '/my-assets/image/product.png';
                                     $iconPath = $faq->icon
                                         ? $baseUrl . ltrim($faq->icon, '/')
                                         : $placeholder;

@@ -142,7 +142,7 @@
                                         {{-- Logo + Title --}}
                                         <div class="bank-logo">
                                             @if($rewardType->logo)
-                                                <img src="{{ "https://sleepauth.kodesoft.cloud/" . $rewardType->logo }}" 
+                                                <img src="{{ $baseUrl . $rewardType->logo }}" 
                                                     alt="Logo" 
                                                     style="height:20px;">
                                             @else

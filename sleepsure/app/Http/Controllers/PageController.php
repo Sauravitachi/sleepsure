@@ -6,7 +6,7 @@ use App\Models\Faq;
 use App\Models\ProductCategory;
 use App\Models\ProductInformation;
 use App\Models\Reward;
-use App\Models\RewardType;
+use App\Models\{RewardType,SoftSetting};
 use App\Models\StoreSet;
 use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
@@ -59,10 +59,11 @@ class PageController extends Controller
     public function faq()
     {
         $global = globalData();
+        $baseUrl = SoftSetting::pluck('web_base_url')->first();
         $faqCategories = \App\Models\ProductFaqCat::with(['faqs' => function($q) {
             $q->where('status', 1);
         }])->where('status', 1)->get();
-        return view('frontend.faq', array_merge($global, compact('faqCategories')));
+        return view('frontend.faq', array_merge($global, compact('faqCategories', 'baseUrl')));
     }
 
     //Display the about us page

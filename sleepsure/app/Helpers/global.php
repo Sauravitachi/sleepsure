@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\{WebSetting, PayWith, ProductCategory, ProductInformation};
+use App\Models\{WebSetting, PayWith, ProductCategory, ProductInformation,SoftSetting};
 
 function globalData()
 {
     // $base_url = "http://127.0.0.1:8000/";
-    $base_url = "https://sleepauth.kodesoft.cloud/";
+    $base_url = SoftSetting::pluck('web_base_url')->first();
 
     $fallback_logo = "https://sleepsure-new.netlify.app/assets/images/logo.png";
     $fallback_slider = "https://sleepsure-new.netlify.app/assets/images/banner2.png";

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Variant;
 use App\Services\SearchService;    
 use App\Http\Controllers\HomeController;
-use App\Models\{Thickness,RewardType};
+use App\Models\{Thickness,RewardType,SoftSetting};
 use App\Models\WishList;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -182,6 +182,7 @@ class ProductController extends Controller
             : false;
 
         $rewardTypes = RewardType::with('reward')->get();
+        $baseUrl = SoftSetting::pluck('web_base_url')->first();
 
         return view('frontend.product_details', [
             'product'            => $productObj,
@@ -196,6 +197,7 @@ class ProductController extends Controller
             'thicknesses'        => $thicknessVariants,
             'isWishlisted'       => $isWishlisted,
             'rewardTypes'        => $rewardTypes,
+            'baseUrl'            => $baseUrl,
         ]);
     }
 

@@ -108,7 +108,8 @@
                         @php
                             $product = $item->product;
                             $variantLabel = $item->variant?->variant_name;
-                            $thumb = $product?->image_thumb ? asset($product->image_thumb) : 'https://via.placeholder.com/80x80?text=Product';
+                            //use baseUrl from controller to construct thumb url
+                            $thumb = $product?->image_thumb ? ($baseUrl . $product->image_thumb) : ($baseUrl . '/my-assets/image/product.png');
                         @endphp
                         <div class="order-item">
                             <img src="{{ $thumb }}" alt="{{ $product->product_name ?? 'Product' }}">
