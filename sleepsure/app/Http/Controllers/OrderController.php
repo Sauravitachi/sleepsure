@@ -70,7 +70,9 @@ class OrderController extends Controller
             'payments',
             'shippingInfo',
             'taxSummaries',
-            'taxDetails'
+            'taxDetails',
+            'taxSummaries.tax',
+            'taxDetails.tax' 
         ])
         ->where('order_id', $order_id)
         ->where('customer_id', $customer->customer_id)
@@ -125,7 +127,9 @@ class OrderController extends Controller
             'payments',
             'shippingInfo',
             'taxSummaries',
-            'taxDetails'
+            'taxDetails',
+            'taxSummaries.tax',
+            'taxDetails.tax' 
         ])
         ->where('order_id', $order_id)
         ->where('customer_id', $customer->customer_id)

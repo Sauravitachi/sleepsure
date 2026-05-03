@@ -29,4 +29,20 @@ class OrderTaxColSummary extends Model
     {
         return $this->belongsTo(Order::class, 'order_id', 'order_id');
     }
+
+    /**
+     * Get the tax for this summary
+     */
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class, 'tax_id', 'tax_id');
+    }
+    
+    /**
+     * Get tax name accessor
+     */
+    public function getTaxNameAttribute()
+    {
+        return $this->tax ? $this->tax->tax_name : null;
+    }
 }

@@ -39,4 +39,20 @@ class OrderTaxColDetails extends Model
     {
         return $this->belongsTo(ProductInformation::class, 'product_id', 'product_id');
     }
+
+    /**
+     * Get the tax for this detail
+     */
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class, 'tax_id', 'tax_id');
+    }
+    
+    /**
+     * Get tax name accessor
+     */
+    public function getTaxNameAttribute()
+    {
+        return $this->tax ? $this->tax->tax_name : null;
+    }
 }

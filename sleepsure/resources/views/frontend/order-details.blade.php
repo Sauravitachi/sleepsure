@@ -248,7 +248,7 @@
         
         @foreach($order->taxSummaries as $tax)
         <div class="totals-row">
-            <span>Tax ({{ $tax->tax_id ?? 'GST' }})</span>
+            <span>Tax ({{ $tax->tax?->tax_name ?? $tax->tax_id ?? 'GST' }})</span>
             <span>₹{{ number_format($tax->tax_amount, 2) }}</span>
         </div>
         @endforeach

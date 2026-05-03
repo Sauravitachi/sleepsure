@@ -424,7 +424,7 @@
                 @endif
                 @foreach($order->taxSummaries as $tax)
                 <tr>
-                    <td>Tax ({{ $tax->tax_id ?? 'GST' }}):</td>
+                    <td>Tax ({{ $tax->tax?->tax_name ?? $tax->tax_id ?? 'GST' }}):</td>
                     <td class="amount">₹{{ number_format($tax->tax_amount, 2) }}</td>
                 </tr>
                 @endforeach
