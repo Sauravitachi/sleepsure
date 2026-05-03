@@ -17,7 +17,7 @@ class ProductReview extends Model
         'reviewer_id',
         'rate',
         'comments',
-            'media',
+        'media',
         'date_time',
         'status',
     ];

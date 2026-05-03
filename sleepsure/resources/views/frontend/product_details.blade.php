@@ -404,6 +404,83 @@
 
         <hr>
 
+        <section class="reviews-section">
+            <!-- HEADER -->
+            <div class="reviews-header">
+                <h2 class="reviews-title">Customer Reviews</h2>
+
+                <div class="total-reviews-count">
+                    {{ count($product->reviews) }} verified reviews
+                </div>
+            </div>
+
+            <!-- SCROLL AREA -->
+            <div class="reviews-scroll">
+                @forelse($product->reviews as $review)
+
+                    <div class="review-card">
+
+                        <div class="review-top">
+
+                            <!-- Avatar -->
+                            <div class="reviewer-avatar">
+                                @if(isset($review['reviewer']['image']) && $review['reviewer']['image'])
+                                    <img src="{{ $baseUrl . $review['reviewer']['image'] }}" alt="Reviewer Image" class="avatar-image">
+                                @else
+                                    <div class="avatar-placeholder">
+                                        {{ strtoupper(substr($review['reviewer']['customer_name'] ?? 'U', 0, 1)) }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Info -->
+                            <div class="reviewer-details">
+                                <div class="reviewer-name">
+                                    {{ $review['reviewer']['customer_name'] ?? 'Verified Customer' }}
+                                </div>
+
+                                <div class="review-rating">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $review['rate'])
+                                            ★
+                                        @else
+                                            ☆
+                                        @endif
+                                    @endfor
+                                </div>
+
+                                <div class="review-date">
+                                    {{ date('d M Y', strtotime($review['date_time'])) }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Comment -->
+                        <div class="review-content">
+                            {{ $review['comments'] }}
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="review-footer">
+                            ✔ Verified Purchase
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <div class="no-reviews">
+                        <p>No reviews yet. Be the first to review!</p>
+                    </div>
+
+                @endforelse
+            </div>
+
+        </section>
+
+        <hr>
+
         <!-- FAQ Section -->
         <section class="faq-section">
             <h1 class="faq-title">Frequently Asked Questions</h1>
@@ -1612,6 +1689,149 @@
             border-bottom: none;
         }
 
+        /* ============================= */
+        /* FULL WIDTH REVIEW SECTION */
+        /* ============================= */
+
+        .reviews-section {
+            width: 100%;
+            padding: 40px 60px;
+            background: #f4f6fb;
+        }
+
+        /* HEADER */
+        .reviews-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .reviews-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .rating-star {
+            font-size: 22px;
+            color: #f59e0b;
+        }
+
+        .total-reviews-count {
+            margin-top: 8px;
+            color: #777;
+        }
+
+        /* SCROLL AREA */
+        .reviews-scroll {
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        /* SCROLLBAR */
+        .reviews-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .reviews-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* CARD */
+        .review-card {
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+            transition: 0.25s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+
+        /* TOP */
+        .review-top {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* AVATAR */
+        .reviewer-avatar img,
+        .avatar-placeholder {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+        }
+
+        .avatar-placeholder {
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* NAME */
+        .reviewer-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* STARS */
+        .review-rating {
+            font-size: 13px;
+            color: #f59e0b;
+        }
+
+        /* DATE */
+        .review-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* COMMENT */
+        .review-content {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        /* FOOTER */
+        .review-footer {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #2e7d32;
+            background: #e8f5e9;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* EMPTY */
+        .no-reviews {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .reviews-section {
+                padding: 20px;
+            }
+
+            .reviews-title {
+                font-size: 24px;
+            }
+        }
+
+
         /* FAQ Section */
         .faq-section {
             max-width: 1200px;
@@ -1795,6 +2015,35 @@
                 flex: 0 0 100%;
                 border-bottom: 1px solid #ddd;
             }
+            
+            /* Reviews Section Mobile */
+            .reviews-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .reviews-summary {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .review-content {
+                padding-left: 0;
+            }
+            
+            .review-footer {
+                padding-left: 0;
+            }
+            
+            .reviewer-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .review-card {
+                text-align: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1864,6 +2113,26 @@
 
             .feature-text p {
                 font-size: 0.85rem;
+            }
+            
+            /* Reviews Section Mobile Small */
+            .reviews-title {
+                font-size: 28px;
+                font-weight: bold;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            
+            .rating-star {
+                font-size: 1.6rem;
+            }
+            
+            .reviewer-name {
+                font-size: 1rem;
+            }
+            
+            .review-comment {
+                font-size: 0.9rem;
             }
         }
 
