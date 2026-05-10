@@ -5,6 +5,7 @@ use App\Models\{WebSetting,Slider,ProductInformation,ProductCategory,StoreSet,
     ProductReview,Thickness,ProductVariant,ProductOddSizeRate,Award,Faq,Reward,RewardType, Variant,SoftSetting};
 use DB;
 use Illuminate\Http\Request;
+use App\Http\Controllers\PageController;
 
 class HomeController extends Controller
 {
@@ -100,11 +101,30 @@ class HomeController extends Controller
         
         $joinedVariants = false;
         
-        // Apply category filter
+        // ========== CATEGORY FILTER - USING PAGE CONTROLLER'S TREE LOGIC ==========
         $selectedCategories = $request->input('categories', []);
         if (!empty($selectedCategories)) {
-            $productsQuery->whereIn('product_information.category_id', $selectedCategories);
+            $pageController = app(PageController::class);
+            $allCategoryIds = [];
+            
+            foreach ($selectedCategories as $catName) {
+                // Find category by name
+                $category = ProductCategory::where('category_name', $catName)
+                    ->where('status', 1)
+                    ->first();
+                
+                if ($category) {
+                    // Get complete tree IDs using PageController's method
+                    $treeIds = $pageController->getCategoryTreeIds($category);
+                    $allCategoryIds = array_merge($allCategoryIds, $treeIds);
+                }
+            }
+            
+            if (!empty($allCategoryIds)) {
+                $productsQuery->whereIn('product_information.category_id', array_unique($allCategoryIds));
+            }
         }
+        // ========== END CATEGORY FILTER ==========
         
         // Apply price filter
         $priceMax = $request->input('price_max');
@@ -115,24 +135,21 @@ class HomeController extends Controller
             $joinedVariants = true;
         }
         
-        // Apply sorting
-        // Size filter (normalize to match variantCat in view)
+        // Size filter
         $sizes = $request->input('sizes', []);
         if (!empty($sizes)) {
             $normalizedSizes = collect($sizes)->map(function($size) {
                 return strtolower(str_replace(' ', '', $size));
             })->toArray();
 
-            // Get all variant_ids for the selected sizes (MySQL: use LOWER instead of lcfirst)
             $variantIds = Variant::whereIn(DB::raw('LOWER(REPLACE(variant_cat, " ", ""))'), $normalizedSizes)
                 ->pluck('variant_id')->toArray();
 
             $productsQuery->where(function($q) use ($normalizedSizes, $variantIds) {
                 foreach ($normalizedSizes as $size) {
                     $q->orWhereRaw('LOWER(REPLACE(product_information.product_name, " ", "")) LIKE ?', ["%$size%"])
-                      ->orWhereRaw('LOWER(REPLACE(product_information.tag, " ", "")) LIKE ?', ["%$size%"]);
+                    ->orWhereRaw('LOWER(REPLACE(product_information.tag, " ", "")) LIKE ?', ["%$size%"]);
                 }
-                // Also match products whose variants column contains a matching variant_id
                 if (!empty($variantIds)) {
                     foreach ($variantIds as $variantId) {
                         $q->orWhereRaw('FIND_IN_SET(?, product_information.variants)', [$variantId]);
@@ -140,6 +157,7 @@ class HomeController extends Controller
                 }
             });
         }
+        
         $allMaterials = ProductInformation::where('status', 1)
             ->pluck('tag')
             ->flatMap(function ($tags) {
@@ -148,14 +166,15 @@ class HomeController extends Controller
             ->unique()
             ->filter()
             ->values();
+            
         $selectedMaterials = $request->input('materials', []);
-            if (!empty($selectedMaterials)) {
-                $productsQuery->where(function($q) use ($selectedMaterials) {
-                    foreach ($selectedMaterials as $mat) {
-                        $q->orWhereRaw('FIND_IN_SET(?, product_information.tag)', [$mat]);
-                    }
-                });
-            }
+        if (!empty($selectedMaterials)) {
+            $productsQuery->where(function($q) use ($selectedMaterials) {
+                foreach ($selectedMaterials as $mat) {
+                    $q->orWhereRaw('FIND_IN_SET(?, product_information.tag)', [$mat]);
+                }
+            });
+        }
 
         $sortBy = $request->input('sort');
         switch ($sortBy) {
@@ -174,6 +193,12 @@ class HomeController extends Controller
                     $joinedVariants = true;
                 }
                 $productsQuery->orderBy('product_variants.price', 'desc');
+                break;
+            case 'best_sale':
+                $productsQuery->orderBy('product_information.best_sale', 'desc');
+                break;
+            case 'top_rated':
+                $productsQuery->orderBy('product_information.top_rated', 'desc');
                 break;
             case 'rating':
                 // Sorting by rating would require aggregate function
@@ -195,8 +220,8 @@ class HomeController extends Controller
             $this->calculateReview($product);
             return $this->transformProduct($product);
         });
-     
-      $variantCat = Variant::query()
+    
+        $variantCat = Variant::query()
             ->where('status', 1)
             ->whereNotNull('variant_cat')
             ->where('variant_cat', '!=', '')
@@ -208,6 +233,7 @@ class HomeController extends Controller
                 $item->variant_cat = strtolower(str_replace(' ', '', $item->variant_cat));
                 return $item;
             });
+            
         return view('frontend.categories', compact(
             'categories',
             'products',
@@ -256,17 +282,35 @@ class HomeController extends Controller
             $productsQuery->where('top_rated', 1);
             $title = 'All Top Rated Products';
         } elseif (!empty($type)) {
-            // If type has a value but doesn't match above, treat as category? Or just show all
             $title = 'All Products';
         } else {
             $title = 'All Products';
         }
 
-        // Apply category filter
+        // ========== CATEGORY FILTER - FIXED WITH TREE LOGIC ==========
         $selectedCategories = $request->input('categories', []);
         if (!empty($selectedCategories)) {
-            $productsQuery->whereIn('product_information.category_id', $selectedCategories);
+            $pageController = app(\App\Http\Controllers\PageController::class);
+            $allCategoryIds = [];
+            
+            foreach ($selectedCategories as $catName) {
+                // Find category by name
+                $category = \App\Models\ProductCategory::where('category_name', $catName)
+                    ->where('status', 1)
+                    ->first();
+                
+                if ($category) {
+                    // Get complete tree IDs using PageController's method
+                    $treeIds = $pageController->getCategoryTreeIds($category);
+                    $allCategoryIds = array_merge($allCategoryIds, $treeIds);
+                }
+            }
+            
+            if (!empty($allCategoryIds)) {
+                $productsQuery->whereIn('product_information.category_id', array_unique($allCategoryIds));
+            }
         }
+        // ========== END CATEGORY FILTER ==========
 
         // Apply price filter
         $priceMax = $request->input('price_max');
@@ -319,10 +363,9 @@ class HomeController extends Controller
             });
         }
 
-        //apply sorting - Only apply if sort parameter is not empty
+        //apply sorting
         $sortBy = $request->input('sort');
         
-        // Only apply sorting if a valid sort option is selected (not empty)
         if (!empty($sortBy)) {
             switch ($sortBy) {
                 case 'price_low':
@@ -348,7 +391,6 @@ class HomeController extends Controller
                     $productsQuery->orderBy('product_information.top_rated', 'desc');
                     break;
                 case 'rating':
-                    // Rating sorting - can be implemented with subquery
                     break;
                 case 'newest':
                     $productsQuery->orderBy('product_information.created_at', 'desc');
@@ -359,7 +401,6 @@ class HomeController extends Controller
                     break;
             }
         }
-        // If $sortBy is empty, NO sorting is applied - products appear in natural order (by ID)
 
         $paginatedProducts = $productsQuery->distinct()->paginate(12);
         $products = $paginatedProducts->map(function ($product) use ($global) {

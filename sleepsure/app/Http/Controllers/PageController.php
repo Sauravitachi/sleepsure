@@ -145,7 +145,7 @@ class PageController extends Controller
         ));
     }
 
-    private function getCategoryTreeIds($category)
+    public function getCategoryTreeIds($category)
     {
         $ids = [$category->category_id];
 

@@ -115,14 +115,16 @@
                             }
                         @endphp
                         @foreach($categories as $cat)
-                            <div class="filter-option">
-                                <input type="checkbox"
-                                    name="categories[]"
-                                    id="category-{{ $cat['category_id'] ?? $cat->category_id }}"
-                                    value="{{ $cat['category_id'] ?? $cat->category_id }}"
-                                    {{ in_array($cat['category_id'] ?? $cat->category_id, (array)$selectedCategories) ? 'checked' : '' }}>
-                                <label for="category-{{ $cat['category_id'] ?? $cat->category_id }}">{{ $cat['category_name'] ?? $cat->category_name }}</label>
-                            </div>
+                        <div class="filter-option">
+                            <input type="checkbox"
+                                name="categories[]"
+                                id="category-{{ $cat['category_id'] ?? $cat->category_id }}"
+                                value="{{ $cat['category_name'] ?? $cat->category_name }}"
+                                {{ in_array($cat['category_name'] ?? $cat->category_name, (array)request('categories', [])) ? 'checked' : '' }}>
+                            <label for="category-{{ $cat['category_id'] ?? $cat->category_id }}">
+                                {{ $cat['category_name'] ?? $cat->category_name }}
+                            </label>
+                        </div>
                         @endforeach
                     </div>
                 </div>
@@ -200,16 +202,19 @@
                 <div class="sort-bar">
                     <div class="sort-options">
                         <label for="sort" style="font-size: 12px;">Sort by:</label>
+                        <div class="sort-options">
+                        <label for="sort" style="font-size: 12px;">Sort by:</label>
                         <select id="sort" name="sort">
-                            <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Select Option</option>
-                            <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
-                            <option value="best_sale" {{ request('sort') == 'best_sale' ? 'selected' : '' }}>Best Seller</option>
-                            <option value="top_rated" {{ request('sort') == 'top_rated' ? 'selected' : '' }}>Top Rated</option>
+                            <option value="" {{ (request('sort') == '' && request('type') == '') ? 'selected' : '' }}>Select Option</option>
+                            <option value="featured" {{ (request('sort') == 'featured' || request('type') == 'featured') ? 'selected' : '' }}>Featured</option>
+                            <option value="best_sale" {{ (request('sort') == 'best_sale' || request('type') == 'best_sale') ? 'selected' : '' }}>Best Seller</option>
+                            <option value="top_rated" {{ (request('sort') == 'top_rated' || request('type') == 'top_rated') ? 'selected' : '' }}>Top Rated</option>
                             <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
                             <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Customer Rating</option>
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
                         </select>
+                    </div>
                     </div>
                 </div>
                 <div class="filter-toggle mobile-only" id="filterToggle">

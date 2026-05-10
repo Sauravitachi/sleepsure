@@ -116,8 +116,8 @@
                             <input type="checkbox"
                                 name="categories[]"
                                 id="category-{{ $category->category_id }}"
-                                value="{{ $category->category_id }}"
-                                {{ in_array($category->category_id, (array)request('categories', [])) ? 'checked' : '' }}>
+                                value="{{ $category->category_name }}"
+                                {{ in_array($category->category_name, (array)request('categories', [])) ? 'checked' : '' }}>
                             <label for="category-{{ $category->category_id }}">{{ $category->category_name }}</label>
                         </div>
                         @endforeach
@@ -204,10 +204,10 @@
                     <div class="sort-options">
                         <label for="sort" style="font-size: 12px;">Sort by:</label>
                         <select id="sort" name="sort">
-                            <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Select Option</option>
-                            <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
-                            <option value="best_sale" {{ request('sort') == 'best_sale' ? 'selected' : '' }}>Best Seller</option>
-                            <option value="top_rated" {{ request('sort') == 'top_rated' ? 'selected' : '' }}>Top Rated</option>
+                            <option value="" {{ (request('sort') == '' && request('type') == '') ? 'selected' : '' }}>Select Option</option>
+                            <option value="featured" {{ (request('sort') == 'featured' || request('type') == 'featured') ? 'selected' : '' }}>Featured</option>
+                            <option value="best_sale" {{ (request('sort') == 'best_sale' || request('type') == 'best_sale') ? 'selected' : '' }}>Best Seller</option>
+                            <option value="top_rated" {{ (request('sort') == 'top_rated' || request('type') == 'top_rated') ? 'selected' : '' }}>Top Rated</option>
                             <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
                             <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Customer Rating</option>
@@ -356,6 +356,45 @@
             });
         }
         
+        // ========== AUTO-SUBMIT ON CHECKBOX CHANGE ==========
+        if (filterForm) {
+            // Auto-submit when any checkbox changes
+            filterForm.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    // Preserve current sort value before submit
+                    if (sortSelect && sortSelect.value) {
+                        let existingSort = filterForm.querySelector('input[name="sort"]');
+                        if (!existingSort) {
+                            existingSort = document.createElement('input');
+                            existingSort.type = 'hidden';
+                            existingSort.name = 'sort';
+                            filterForm.appendChild(existingSort);
+                        }
+                        existingSort.value = sortSelect.value;
+                    }
+                    filterForm.submit();
+                });
+            });
+            
+            // Auto-submit when price slider changes
+            if (priceSlider) {
+                priceSlider.addEventListener('change', function() {
+                    if (sortSelect && sortSelect.value) {
+                        let existingSort = filterForm.querySelector('input[name="sort"]');
+                        if (!existingSort) {
+                            existingSort = document.createElement('input');
+                            existingSort.type = 'hidden';
+                            existingSort.name = 'sort';
+                            filterForm.appendChild(existingSort);
+                        }
+                        existingSort.value = sortSelect.value;
+                    }
+                    filterForm.submit();
+                });
+            }
+        }
+        // ========== END AUTO-SUBMIT ==========
+        
         // Sort dropdown - Update hidden input and submit form
         if (sortSelect && sortInput && filterForm) {
             sortSelect.addEventListener('change', function() {
@@ -368,18 +407,15 @@
             });
         }
         
-        // Apply Filters button
+        // Apply Filters button (keep for backup)
         const applyFiltersBtn = document.querySelector('.apply-filters');
         if (applyFiltersBtn && filterForm) {
             applyFiltersBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                filterForm.submit();
-            });
-        }
-        
-        // Price slider submit on change
-        if (priceSlider && filterForm) {
-            priceSlider.addEventListener('change', function() {
+                // Preserve sort value
+                if (sortSelect && sortSelect.value) {
+                    sortInput.value = sortSelect.value;
+                }
                 filterForm.submit();
             });
         }
