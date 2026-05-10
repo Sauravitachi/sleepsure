@@ -334,7 +334,7 @@
     </section>
 
     {{-- dynamic best seller --}}
- @include('partials.best_saller',['best_seller' => $best_seller])
+ @include('partials.best_saller',['best_sale' => $best_sale])
 
 
     {{-- dynamic --}}

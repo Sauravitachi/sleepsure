@@ -203,6 +203,8 @@
                         <select id="sort" name="sort">
                             <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Select Option</option>
                             <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>Featured</option>
+                            <option value="best_sale" {{ request('sort') == 'best_sale' ? 'selected' : '' }}>Best Seller</option>
+                            <option value="top_rated" {{ request('sort') == 'top_rated' ? 'selected' : '' }}>Top Rated</option>
                             <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
                             <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Customer Rating</option>

@@ -1,7 +1,7 @@
 <section class="featured-products mt-4" id="bestSeller">
     <div class="section-header">
         <h2>Best Seller Products</h2>
-        <a href="{{ route('view.products', ['type' => 'best_seller']) }}" class="view-all">View All</a>
+        <a href="{{ route('view.products', ['type' => 'best_sale']) }}" class="view-all">View All</a>
     </div>
 
     <!-- NEW WRAPPER -->
@@ -14,7 +14,7 @@
 
         <!-- EXISTING SLIDER -->
         <div class="slider-container" id="best-seller-slider">
-            @forelse($best_seller as $product)
+            @forelse($best_sale as $product)
             <div class="wrapper">
                 <div class="container">
                     <a href="{{ route('product.details', ['id' => $product['product_id']]) }}">

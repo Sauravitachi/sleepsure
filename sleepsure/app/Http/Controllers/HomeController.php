@@ -15,7 +15,7 @@ class HomeController extends Controller
 
         $sliders = $this->getSliders($global);
         $featured_products = $this->getProducts('is_featured', $global);
-        $best_seller = $this->getProducts('best_sale', $global);
+        $best_sale = $this->getProducts('best_sale', $global);
         $top_rated = $this->getProducts('top_rated', $global);
         $store_sets = StoreSet::get();
         $awards = $this->getAwardsWithImage();
@@ -34,7 +34,7 @@ class HomeController extends Controller
         return view('frontend.home', compact(
             'sliders',
             'featured_products',
-            'best_seller',
+            'best_sale',
             'top_rated',
             'store_sets',
             'awards',
@@ -249,13 +249,16 @@ class HomeController extends Controller
         if ($type === 'featured') {
             $productsQuery->where('is_featured', 1);
             $title = 'All Featured Products';
-        } elseif ($type === 'best_seller' || $type === 'best_sale') {
+        } elseif ($type === 'best_sale') {
             $productsQuery->where('best_sale', 1);
             $title = 'All Best Seller Products';
         } elseif ($type === 'top_rated') {
             $productsQuery->where('top_rated', 1);
             $title = 'All Top Rated Products';
-        } elseif (empty($title)) {
+        } elseif (!empty($type)) {
+            // If type has a value but doesn't match above, treat as category? Or just show all
+            $title = 'All Products';
+        } else {
             $title = 'All Products';
         }
 
@@ -338,17 +341,22 @@ class HomeController extends Controller
                     }
                     $productsQuery->orderBy('product_variants.price', 'desc');
                     break;
+                case 'best_sale':
+                    $productsQuery->orderBy('product_information.best_sale', 'desc');
+                    break;
+                case 'top_rated':
+                    $productsQuery->orderBy('product_information.top_rated', 'desc');
+                    break;
                 case 'rating':
-                    // Sorting by rating would require aggregate function
-                    // Can be implemented later with subquery
+                    // Rating sorting - can be implemented with subquery
                     break;
                 case 'newest':
                     $productsQuery->orderBy('product_information.created_at', 'desc');
                     break;
                 case 'featured':
+                default:
                     $productsQuery->orderBy('product_information.is_featured', 'desc');
                     break;
-                // No default case - if sort is not recognized, don't apply sorting
             }
         }
         // If $sortBy is empty, NO sorting is applied - products appear in natural order (by ID)
